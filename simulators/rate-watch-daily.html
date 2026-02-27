@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rate Watch Daily — All 8 Episodes — The Equity Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0A1628;--navy2:#0D1E35;--navy3:#162540;--gold:#C9A84C;--gold2:#E8C84A;--gold3:#B8942A;--white:#F8F9FA;--mid:#8A95A3;--red:#C0392B;--green:#27AE60;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060E1A;color:var(--white);font-family:'Source Sans 3',sans-serif;font-weight:300;overflow:hidden;}
+.broadcast{width:1280px;height:720px;position:relative;background:var(--navy);overflow:hidden;margin:0 auto;}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:100;}
+.progress-bar-track{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(201,168,76,0.15);z-index:90;}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));width:0%;transition:width 0.5s ease;}
+.top-bar{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:80;}
+.clock{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--gold);opacity:0.8;letter-spacing:2px;}
+#live-badge{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--green);padding:4px 10px;border:1px solid rgba(39,174,96,0.4);border-radius:2px;}
+.en-bug{position:absolute;top:36px;right:16px;width:44px;height:44px;background:rgba(10,22,40,0.7);border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--gold);opacity:0.15;z-index:80;}
+.ticker-bar{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(10,22,40,0.96);border-top:2px solid var(--gold3);display:flex;align-items:center;overflow:hidden;z-index:80;}
+.ticker-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);padding:0 14px;white-space:nowrap;border-right:1px solid rgba(201,168,76,0.3);}
+.ticker-scroll{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+.ticker-content{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 55s linear infinite;}
+@keyframes tickerScroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+.ticker-item{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--white);padding:0 18px;}
+.ticker-sep{color:rgba(201,168,76,0.4);padding:0 4px;}
+.t-name{color:var(--gold);opacity:0.8;}
+.t-up{color:var(--green);}
+.t-dn{color:var(--red);}
+.lower-third{position:absolute;bottom:44px;left:0;background:linear-gradient(90deg,rgba(10,22,40,0.97) 0%,rgba(10,22,40,0.85) 80%,transparent 100%);padding:10px 48px 10px 20px;border-left:3px solid var(--gold);z-index:70;transform:translateX(-102%);transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.lower-third.visible{transform:translateX(0);}
+.lt-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--white);}
+.lt-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:2px;}
+.segment{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.8s ease;}
+.segment.active{opacity:1;pointer-events:all;}
+
+/* IDENT */
+.ident-bg{width:100%;height:100%;background:radial-gradient(ellipse at 50%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ident-center{position:relative;display:flex;align-items:center;justify-content:center;}
+.ident-ring{width:180px;height:180px;border:2px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:ringPulse 2.5s ease-in-out infinite;}
+.ident-ring2{width:220px;height:220px;border:1px solid rgba(201,168,76,0.15);border-radius:50%;position:absolute;animation:ringPulse 2.5s ease-in-out infinite 0.3s;}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.04);opacity:1;}}
+.ident-letters{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:var(--gold);}
+
+/* OPEN */
+.open-bg{width:100%;height:100%;background:linear-gradient(160deg,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:60px 72px;position:relative;overflow:hidden;}
+.open-bg::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold3),var(--gold2),var(--gold3));}
+.open-ep-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:16px;z-index:1;}
+.open-title{font-family:'Playfair Display',serif;font-size:56px;font-weight:900;color:var(--white);line-height:1.05;z-index:1;}
+.open-title span{color:var(--gold);}
+.open-rule{width:80px;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));margin:20px 0;z-index:1;}
+.open-sub{font-size:17px;color:var(--mid);z-index:1;max-width:620px;line-height:1.65;}
+.open-meta{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);opacity:0.4;letter-spacing:2px;margin-top:20px;z-index:1;}
+
+/* RATE DASHBOARD */
+.rate-layout{width:100%;height:100%;display:grid;grid-template-columns:5fr 4fr;gap:0;}
+.rate-main{padding:40px 40px 48px;background:linear-gradient(160deg,#0D1E35,#0A1628);display:flex;flex-direction:column;gap:16px;}
+.rate-sidebar{background:#060E1A;border-left:1px solid rgba(201,168,76,0.1);padding:40px 28px 48px;display:flex;flex-direction:column;gap:14px;}
+.seg-headline{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);line-height:1.3;border-left:3px solid var(--gold);padding-left:14px;}
+.seg-body{font-size:13.5px;color:var(--mid);line-height:1.75;}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-card{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:14px 16px;}
+.stat-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:6px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--white);line-height:1;}
+.stat-sub{font-size:11px;color:var(--mid);margin-top:4px;}
+.stat-chg{font-family:'Roboto Mono',monospace;font-size:10px;margin-top:4px;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+.chart-wrap{background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:12px;flex:1;}
+.chart-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-bottom:8px;}
+.metric-list{display:flex;flex-direction:column;gap:8px;}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.08);border-radius:3px;}
+.metric-name{font-size:12px;color:var(--mid);}
+.metric-val{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--white);}
+.insight-box{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:14px;margin-top:auto;}
+.insight-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-bottom:8px;}
+.insight-body{font-size:12px;color:var(--mid);line-height:1.5;}
+.insight-body em{color:var(--white);font-style:normal;}
+
+/* AD */
+.ad-bg{width:100%;height:100%;background:#040A12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+
+/* OUTRO */
+.outro-bg{width:100%;height:100%;background:radial-gradient(ellipse at 30% 60%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:48px;}
+
+/* NAV */
+.nav-panel{background:#040A12;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;}
+.nav-btn{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:8px 18px;cursor:pointer;}
+.nav-btn:hover{background:rgba(201,168,76,0.15);}
+.dots{display:flex;gap:6px;align-items:center;}
+.seg-dot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);cursor:pointer;transition:all 0.2s;}
+.seg-dot.active{background:var(--gold);width:9px;height:9px;}
+.seg-dot.done{background:rgba(201,168,76,0.5);}
+.seg-counter{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--mid);}
+.ep-tabs{display:flex;gap:5px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:7px 24px;background:#030810;border-top:1px solid rgba(201,168,76,0.08);}
+.ep-tab{font-family:'Roboto Mono',monospace;font-size:8px;color:var(--mid);background:transparent;border:1px solid rgba(255,255,255,0.08);padding:5px 9px;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.ep-tab:hover{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.ep-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.script-panel{background:#020608;border-top:1px solid rgba(201,168,76,0.1);max-width:1280px;margin:0 auto;padding:18px 28px;}
+.script-label{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);opacity:0.5;text-transform:uppercase;margin-bottom:8px;}
+.script-text{font-size:13px;color:var(--mid);line-height:1.8;max-height:85px;overflow-y:auto;}
+.script-text em{color:var(--white);font-style:normal;}
+.vo-dir{color:rgba(201,168,76,0.5);font-size:11px;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="broadcast">
+  <div class="scanlines"></div>
+  <div class="progress-bar-track"><div class="progress-bar" id="progress-bar"></div></div>
+  <div class="top-bar">
+    <div class="clock" id="clock">00:00</div>
+    <div id="live-badge">⟳ LOADING...</div>
+  </div>
+  <div class="en-bug">EN</div>
+  <div class="ticker-bar" id="ticker-bar" style="display:none;">
+    <div class="ticker-label">RATE WATCH</div>
+    <div class="ticker-scroll"><div class="ticker-content" id="ticker-content">Loading live data...</div></div>
+  </div>
+  <div class="lower-third" id="lower-third">
+    <div class="lt-name" id="lt-name">Morgan Hayes</div>
+    <div class="lt-title" id="lt-title">Rate Watch Daily · The Equity Network</div>
+  </div>
+
+  <!-- IDENT -->
+  <div class="segment active" id="seg-ident">
+    <div class="ident-bg">
+      <div class="ident-center">
+        <div class="ident-ring2"></div>
+        <div class="ident-ring"><div class="ident-letters">EN</div></div>
+      </div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:6px;color:var(--gold);opacity:0.6;margin-top:90px;">The Equity Network</div>
+      <div style="font-size:13px;color:var(--mid);letter-spacing:2px;margin-top:8px;">Build Wealth · Build Knowledge · Build Home</div>
+    </div>
+  </div>
+
+  <!-- OPEN -->
+  <div class="segment" id="seg-open">
+    <div class="open-bg">
+      <div class="open-ep-label" id="ep-label">Season 1 · Episode 2 · Rate Intelligence</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--gold);opacity:0.6;margin-bottom:8px;z-index:1;">RATE WATCH DAILY</div>
+      <div class="open-title" id="ep-open-title">What the <span>10-Year Treasury</span><br/>Has to Do With Your Rate</div>
+      <div class="open-rule"></div>
+      <div class="open-sub" id="ep-open-sub">The number your mortgage rate actually follows — and it's not the Fed Funds Rate.</div>
+      <div class="open-meta">TheEquityNetwork.tv · A Huit.ai Media Property</div>
+    </div>
+  </div>
+
+  <!-- SEG 1: CORE CONCEPT -->
+  <div class="segment" id="seg-s1">
+    <div class="rate-layout">
+      <div class="rate-main">
+        <div class="seg-headline" id="s1-hed">The Core Concept</div>
+        <div class="seg-body" id="s1-body">Loading...</div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label" id="s1-l1">30-Yr Fixed Rate</div>
+            <div class="stat-val" id="s1-v1">—</div>
+            <div class="stat-sub" id="s1-sub1">National avg</div>
+            <div class="stat-chg" id="s1-c1"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="s1-l2">10-Yr Treasury</div>
+            <div class="stat-val" id="s1-v2">—</div>
+            <div class="stat-sub" id="s1-sub2">Bond benchmark</div>
+            <div class="stat-chg" id="s1-c2"></div>
+          </div>
+        </div>
+        <div class="seg-body" id="s1-body2" style="margin-top:8px;">Loading analysis...</div>
+      </div>
+      <div class="rate-sidebar">
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title" id="chart1-title">12-Month Rate vs. Treasury Trend</div>
+          <svg id="chart1" viewBox="0 0 340 180" style="width:100%;height:180px;display:block;"></svg>
+        </div>
+        <div class="metric-list" id="sidebar-metrics1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEG 2: DEEP ANALYSIS -->
+  <div class="segment" id="seg-s2">
+    <div class="rate-layout">
+      <div class="rate-main">
+        <div class="seg-headline" id="s2-hed">Why This Matters Today</div>
+        <div class="seg-body" id="s2-body">Loading...</div>
+        <div class="stat-row" style="margin-top:auto;">
+          <div class="stat-card">
+            <div class="stat-label" id="s2-l1">Fed Funds Rate</div>
+            <div class="stat-val" id="s2-v1">—</div>
+            <div class="stat-sub">FOMC target</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="s2-l2">Spread (Mtg-T10)</div>
+            <div class="stat-val" id="s2-v2">—</div>
+            <div class="stat-sub">Risk premium</div>
+          </div>
+        </div>
+      </div>
+      <div class="rate-sidebar">
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title" id="chart2-title">Rate Scenario Analysis</div>
+          <svg id="chart2" viewBox="0 0 340 200" style="width:100%;height:200px;display:block;"></svg>
+        </div>
+        <div class="insight-box">
+          <div class="insight-label">Key Insight</div>
+          <div class="insight-body" id="key-insight">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD BREAK -->
+  <div class="segment" id="seg-break">
+    <div class="ad-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:7px;color:var(--gold);text-transform:uppercase;opacity:0.7;">The Equity Network</div>
+      <div style="width:50px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-size:13px;color:var(--mid);">More programming after this</div>
+      <div style="height:20px;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);">Huit.ai</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--mid);text-transform:uppercase;">Mortgage Intelligence Platform</div>
+      <div style="font-size:13px;color:var(--mid);margin-top:12px;text-align:center;max-width:420px;line-height:1.6;">Seven years of HMDA data · AI-powered recruiting intelligence · Mortgage CRM built exclusively for loan professionals.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-top:14px;opacity:0.7;">Huit.ai · H-U-I-T dot A-I</div>
+    </div>
+  </div>
+
+  <!-- SEG 3: TAKEAWAY -->
+  <div class="segment" id="seg-s3">
+    <div class="rate-layout">
+      <div class="rate-main">
+        <div class="seg-headline" id="s3-hed">The Takeaway</div>
+        <div class="seg-body" id="s3-body">Loading...</div>
+        <div class="stat-row" style="margin-top:auto;">
+          <div class="stat-card">
+            <div class="stat-label" id="s3-l1">Payment ($400K, 80% LTV)</div>
+            <div class="stat-val" id="s3-v1">—</div>
+            <div class="stat-sub">Principal + interest</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="s3-l2">If Rate -0.5%</div>
+            <div class="stat-val up" id="s3-v2">—</div>
+            <div class="stat-sub" id="s3-savings">Monthly savings</div>
+          </div>
+        </div>
+      </div>
+      <div class="rate-sidebar">
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title" id="chart3-title">Monthly Payment Across Rate Scenarios</div>
+          <svg id="chart3" viewBox="0 0 340 200" style="width:100%;height:200px;display:block;"></svg>
+        </div>
+        <div class="insight-box">
+          <div class="insight-label">Next Episode</div>
+          <div class="insight-body" id="next-ep-preview">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTRO -->
+  <div class="segment" id="seg-outro">
+    <div class="outro-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:6px;color:var(--gold);text-transform:uppercase;opacity:0.8;">The Equity Network</div>
+      <div style="width:60px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);" id="outro-next-title">Next: Reading a Rate Sheet</div>
+      <div style="font-size:14px;color:var(--mid);max-width:480px;line-height:1.7;" id="outro-next-body">Tomorrow on Rate Watch Daily — we decode the rate sheet your lender sends you.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);opacity:0.7;margin-top:8px;">TheEquityNetwork.tv · Huit.ai</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--gold);opacity:0.6;margin-top:8px;">"Build Wealth · Build Knowledge · Build Home"</div>
+    </div>
+  </div>
+</div>
+
+<div class="ep-tabs" id="ep-tabs"></div>
+<div class="nav-panel">
+  <button class="nav-btn" onclick="prevSeg()">◀ PREV</button>
+  <div class="dots" id="dots"></div>
+  <div class="seg-counter" id="seg-counter">Scene 1 of 7</div>
+  <button class="nav-btn" id="next-btn" onclick="nextSeg()">NEXT ▶</button>
+</div>
+<div class="script-panel">
+  <div class="script-label" id="script-seg-label">Scene 1 of 7 · Channel Ident</div>
+  <div class="script-text" id="voiceover-text"></div>
+</div>
+
+<script>
+// ═══════════════════════ DATA ENGINE ═══════════════════════
+const FRED='https://fred.stlouisfed.org/graph/fredgraph.csv';
+const PROXY='https://corsproxy.io/?';
+let R={r30:5.98,r30Prev:6.01,r30Hist:[],r15:5.44,t10:4.05,t10Prev:4.12,t10Hist:[],t2:4.35,ff:3.64,ffPrev:3.89,isLive:false};
+
+function parseFred(csv){const rows=csv.trim().split('\n').filter(r=>!r.startsWith('DATE'));const last=rows[rows.length-1].split(',');const prev=rows.length>1?rows[rows.length-2].split(','):last;return{value:parseFloat(last[1]),prev:parseFloat(prev[1]),date:last[0]};}
+function parseFredHist(csv,n=14){return csv.trim().split('\n').filter(r=>!r.startsWith('DATE')).slice(-n).map(r=>{const[d,v]=r.split(',');return{date:d,value:parseFloat(v)};}).filter(r=>!isNaN(r.value));}
+async function fetch1(id){return await(await fetch(PROXY+encodeURIComponent(FRED+'?id='+id))).text();}
+async function fetchAll(){
+  setLoading(true);
+  try{
+    const[c30,c15,ct10,ct2,cff]=await Promise.all([fetch1('MORTGAGE30US'),fetch1('MORTGAGE15US'),fetch1('DGS10'),fetch1('DGS2'),fetch1('FEDFUNDS')]);
+    const p30=parseFred(c30),p15=parseFred(c15),pt10=parseFred(ct10),pt2=parseFred(ct2),pff=parseFred(cff);
+    R.r30=p30.value;R.r30Prev=p30.prev;R.r15=p15.value;R.t10=pt10.value;R.t10Prev=pt10.prev;R.t2=pt2.value;R.ff=pff.value;R.ffPrev=pff.prev;
+    R.r30Hist=parseFredHist(c30,14);R.t10Hist=parseFredHist(ct10,14);R.isLive=true;
+  }catch(e){console.warn('FRED:',e.message);}
+  applyAll();setLoading(false);
+}
+function setLoading(l){const b=document.getElementById('live-badge');if(b){b.textContent=l?'⟳ LOADING...':(R.isLive?'● LIVE':'● FALLBACK');b.style.color=R.isLive?'var(--green)':'var(--gold)';}}
+function fmt(n,d=2){return typeof n==='number'?n.toFixed(d):'—';}
+function fmtD(n){return'$'+Math.round(n).toLocaleString();}
+function pmt(amt,rate,pct=0.80){const l=amt*pct,r=rate/100/12,n=360;return l*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+function safeSet(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function safeHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v;}
+function chgSpan(now,prev,invert=false){const d=(now-prev).toFixed(2);const up=invert?d<0:d>0;const cls=d==0?'':(up?'up':'dn');return`<span class="${cls}">${d>0?'▲ +':d<0?'▼ ':''}`+Math.abs(d)+`%</span>`;}
+
+function buildTicker(){
+  const spread=(R.r30-R.t10).toFixed(2);
+  const items=[{n:'30YR FIXED',v:fmt(R.r30)+'%'},{n:'10YR TREASURY',v:fmt(R.t10)+'%'},{n:'FED FUNDS',v:fmt(R.ff)+'%'},{n:'15YR FIXED',v:fmt(R.r15)+'%'},{n:'2YR TREASURY',v:fmt(R.t2)+'%'},{n:'MTG-T10 SPREAD',v:'+'+spread+'%'},{n:'YIELD CURVE',v:R.t10>R.t2?'NORMAL':'INVERTED'}];
+  const html=items.map(it=>`<span class="ticker-item"><span class="t-name">${it.n}</span> ${it.v}</span><span class="ticker-sep">|</span>`).join('');
+  safeHTML('ticker-content',html+html);
+}
+
+function buildCharts(){
+  const W=340,H=180,P=16;
+  // Chart 1: 30yr vs 10yr overlay
+  if(R.r30Hist.length>1&&R.t10Hist.length>1){
+    const len=Math.min(R.r30Hist.length,R.t10Hist.length);
+    const v30=R.r30Hist.slice(-len).map(h=>h.value);
+    const v10=R.t10Hist.slice(-len).map(h=>h.value);
+    const mx=Math.max(...v30,...v10),mn=Math.min(...v30,...v10),rng=mx-mn||0.5;
+    const pw=(W-P*2)/(len-1);
+    const pts30=v30.map((v,i)=>`${(P+i*pw).toFixed(1)},${(P+(1-(v-mn)/rng)*(H-P*2)).toFixed(1)}`).join(' ');
+    const pts10=v10.map((v,i)=>`${(P+i*pw).toFixed(1)},${(P+(1-(v-mn)/rng)*(H-P*2)).toFixed(1)}`).join(' ');
+    document.getElementById('chart1').innerHTML=`
+      <polyline points="${pts30}" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linejoin="round"/>
+      <polyline points="${pts10}" fill="none" stroke="rgba(39,174,96,0.7)" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4,2"/>
+      <text x="${P}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(201,168,76,0.7)">30-Yr Rate</text>
+      <text x="${P+80}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(39,174,96,0.7)">10-Yr Treasury</text>
+    `;
+  }
+
+  // Chart 2: Rate sensitivity bar chart
+  const rates=[R.r30-1,R.r30-0.5,R.r30,R.r30+0.5,R.r30+1];
+  const pmts=rates.map(r=>pmt(400000,r));
+  const pmx=Math.max(...pmts),pmn=Math.min(...pmts),prng=pmx-pmn||50;
+  const bw=(W-P*2)/rates.length*0.6,bs=(W-P*2)/rates.length;
+  const H2=200;
+  document.getElementById('chart2').innerHTML=rates.map((r,i)=>{
+    const bh=((pmts[i]-pmn)/prng*0.7+0.3)*(H2-P*2);
+    const x=P+i*bs+(bs-bw)/2,y=H2-P-bh;
+    const clr=i<2?'rgba(39,174,96,0.7)':i===2?'var(--gold)':'rgba(192,57,43,0.7)';
+    return`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${clr}" rx="2"/>
+    <text x="${(x+bw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" font-family="Roboto Mono" font-size="7" fill="rgba(255,255,255,0.6)" text-anchor="middle">${fmtD(pmts[i])}</text>
+    <text x="${(x+bw/2).toFixed(1)}" y="${H2-4}" font-family="Roboto Mono" font-size="7" fill="rgba(201,168,76,0.5)" text-anchor="middle">${r.toFixed(1)}%</text>`;
+  }).join('');
+
+  // Chart 3: Same payment chart (copy)
+  document.getElementById('chart3').innerHTML=document.getElementById('chart2').innerHTML;
+}
+
+function applyAll(){
+  const spread=(R.r30-R.t10).toFixed(2);
+  const pmtNow=pmt(400000,R.r30);
+  const pmtLow=pmt(400000,R.r30-0.5);
+  safeSet('s1-v1',fmt(R.r30)+'%');safeSet('s1-v2',fmt(R.t10)+'%');
+  safeHTML('s1-c1',chgSpan(R.r30,R.r30Prev,true));safeHTML('s1-c2',chgSpan(R.t10,R.t10Prev,true));
+  safeSet('s2-v1',fmt(R.ff)+'%');safeSet('s2-v2','+'+spread+'%');
+  safeSet('s3-v1',fmtD(pmtNow)+'/mo');safeSet('s3-v2',fmtD(pmtLow)+'/mo');
+  safeSet('s3-savings','Save '+fmtD(pmtNow-pmtLow)+'/mo');
+  safeHTML('sidebar-metrics1',`
+    <div class="metric-row"><span class="metric-name">Fed Funds Rate</span><span class="metric-val">${fmt(R.ff)}%</span></div>
+    <div class="metric-row"><span class="metric-name">2-Yr Treasury</span><span class="metric-val">${fmt(R.t2)}%</span></div>
+    <div class="metric-row"><span class="metric-name">Yield Curve</span><span class="metric-val">${R.t10>R.t2?'Normal':'Inverted'}</span></div>
+  `);
+  buildCharts();buildTicker();buildScripts();
+}
+
+// ═══════════════════════ EPISODE DATA ═══════════════════════
+const EPISODES=[
+  {num:1,title:'Why Mortgage Rates Move Every Day',sub:'Rates changed again. Here\'s why — and why your client should care.',
+   s1hed:'The Market Forces Behind Every Rate Move',
+   s1body:'Mortgage rates changed again today. The 30-year fixed national average is {R30}%. But here\'s what most buyers don\'t know: why rates move. Three forces drive every change: bond market sentiment, economic data releases, and Federal Reserve policy signals. Every rate move has a cause — and when you understand the cause, you can anticipate the direction.',
+   s1body2:'Right now the 10-year Treasury yield — the real benchmark mortgage rates follow — is at {T10}%. The spread between the 30-year mortgage rate and the 10-year Treasury is {SPREAD}%. That spread represents the risk premium lenders charge above the risk-free Treasury rate.',
+   s2hed:'Why the Fed Rate and Mortgage Rate Are Different',
+   s2body:'The Federal Funds Rate, set by the Fed, is currently {FF}%. Your mortgage rate is {R30}%. They move in the same direction — but not the same amount, and not at the same time. Mortgage rates follow the 10-year Treasury yield, which is driven by the bond market — not the Fed. Bond markets price in expected Fed moves weeks or months before they happen.',
+   s3hed:'What This Means for Your Client',
+   s3body:'On a $400,000 loan with 20% down, today\'s rate puts the principal and interest payment at {PMT_NOW}. A half-point difference in rate moves that payment by {HALF_DIFF}/month — {HALF_DIFF_YR}/year. Rates don\'t move randomly. Understanding the cause of rate movement helps every buyer make better decisions about timing and locking.',
+   insight:'Watch the 10-yr Treasury yield — not the Fed Funds Rate — for the most accurate leading indicator of mortgage rate direction.',
+   nextPrev:'Next: What the 10-Year Treasury Has to Do With Your Rate',
+   nextBody:'Tomorrow — the number your mortgage rate actually follows, and how to read bond markets like a professional.',
+   outro:'Next: The 10-Year Treasury'
+  },
+  {num:2,title:'What the 10-Year Treasury Has to Do With Your Rate',sub:'The number your mortgage rate actually follows.',
+   s1hed:'The 10-Year Is the Benchmark — Not the Fed',
+   s1body:'The Federal Funds Rate is set by the Federal Reserve. Your 30-year mortgage rate follows the 10-year Treasury yield — set by the bond market. Right now the 10-year is at {T10}% and the mortgage rate is {R30}%. That {SPREAD}% spread is the risk premium lenders charge above the risk-free Treasury benchmark.',
+   s1body2:'When 10-year yields rise — because inflation expectations increase or investors demand higher returns — mortgage rates follow. When 10-year yields fall, mortgage rates typically follow within days.',
+   s2hed:'The Spread Tells You About Market Health',
+   s2body:'Historically the spread between the 10-year Treasury and 30-year mortgage rate is about 1.5% to 2%. Right now the spread is {SPREAD}%. Wider-than-normal spreads signal elevated lender caution or market stress. Narrowing spreads signal normalizing credit conditions. Watch the spread to understand where the mortgage market stands.',
+   s3hed:'Your Morning Signal',
+   s3body:'Every morning before quoting a rate, smart loan officers check the 10-year first. If futures are up — rates will likely rise. If futures are down — rates may improve. This is the most actionable number in mortgage intelligence.',
+   insight:'The 10-yr Treasury moves on: inflation expectations · Fed signals · Economic data · Global capital flows.',
+   nextPrev:'Next: Reading a Rate Sheet for the First Time',
+   nextBody:'Tomorrow — what all those rows and numbers on a lender rate sheet actually mean.',
+   outro:'Next: Reading a Rate Sheet'
+  },
+  {num:3,title:'Reading a Rate Sheet for the First Time',sub:'What every number on a lender rate sheet actually means.',
+   s1hed:'The Anatomy of a Rate Sheet',
+   s1body:'A lender rate sheet has three components. One: the par rate — where you pay no points and receive no credits. Two: points and credits — paying a point buys a lower rate; accepting a higher rate generates lender credits for closing costs. Three: adjustments — your actual rate is the par rate plus adjustments for LTV, credit score, property type, and lock period.',
+   s1body2:'The 30-year rate of {R30}% you see quoted nationally is not what your client gets. It is the par rate for a hypothetical perfect borrower. Your client\'s actual rate depends on their specific risk profile.',
+   s2hed:'Loan Level Price Adjustments (LLPAs)',
+   s2body:'Fannie Mae and Freddie Mac publish Loan Level Price Adjustments — fees added to your rate based on credit score and loan-to-value ratio. A 760+ credit score with 20% down pays minimal LLPAs. A 680 score with 5% down pays significant LLPAs — often 0.5% to 0.75% higher in rate. This is the most impactful variable in mortgage pricing for most borrowers.',
+   s3hed:'The Number to Compare',
+   s3body:'When comparing lenders, use APR — Annual Percentage Rate — not just the interest rate. APR includes the rate plus fees, converted to an annualized cost. One lender\'s 6.5% with low fees may be a better deal than another\'s 6.25% with high origination costs. APR captures the true comparison.',
+   insight:'Credit score and LTV are the biggest rate adjustors for conventional loans — often worth 0.5-0.75% in rate.',
+   nextPrev:'Next: What a 0.25% Rate Difference Actually Costs You',
+   nextBody:'Tomorrow — the actual dollar impact of a quarter-point rate difference over 30 years.',
+   outro:'Next: The Cost of a Quarter Point'
+  },
+  {num:4,title:'What a 0.25% Rate Difference Actually Costs You',sub:'A quarter percent sounds small. Over 30 years, it\'s not.',
+   s1hed:'The Math on a Quarter Point',
+   s1body:'At today\'s rate of {R30}%, the monthly P&I payment on a $400,000 loan (20% down, $320,000 financed) is {PMT_NOW}. At {R30_LESS}%, the payment is {PMT_LOW}. The difference: {PMT_DIFF}/month — {PMT_DIFF_YR}/year — {PMT_DIFF_30YR} over 30 years.',
+   s1body2:'For a $600,000 loan — common in higher-cost markets — those numbers scale proportionally. Half a point in rate on a $600K loan can be the difference between a comfortable payment and a stretched budget.',
+   s2hed:'The Lock Decision Framework',
+   s2body:'When a buyer asks "should I wait for rates to drop another quarter point?" — the answer requires a real calculation. If they wait and rates drop 0.25%, they save {PMT_DIFF}/month. If rates rise 0.25% while waiting, they pay {PMT_DIFF}/month more — every month for 30 years. That asymmetry is the risk of floating.',
+   s3hed:'Certainty Has a Value',
+   s3body:'The rate conversation isn\'t just about the number. It\'s about risk tolerance. A buyer who locks today pays {PMT_NOW}/month. A buyer who waits and rates rise pays {PMT_HIGH}/month. The question is: what is certainty worth to this specific buyer at this specific moment?',
+   insight:'A quarter-point rate difference on a $400K loan = ~${QTR_PT_DIFF}/month and ${QTR_PT_30YR} over 30 years.',
+   nextPrev:'Next: Morning Rate Check — What to Look for Before You Lock',
+   nextBody:'Tomorrow — the three-point morning checklist every loan officer should run before quoting a rate.',
+   outro:'Next: The Morning Rate Check'
+  },
+  {num:5,title:'Morning Rate Check — What to Look for Before You Lock',sub:'Three things to check every morning before you quote a rate.',
+   s1hed:'The Three-Point Morning Checklist',
+   s1body:'Point one: the 10-year Treasury. Right now at {T10}% — this is your anchor. Check Treasury futures before markets open to see which direction yields are heading. Point two: today\'s economic data releases. High-impact releases — CPI, jobs reports, PCE — can move rates 0.25% to 0.50% within minutes of publication. Point three: MBS pricing. When mortgage-backed securities prices fall, lenders raise rates. When MBS prices rise, lenders can lower rates — in real time.',
+   s1body2:'A rate quoted at 9 AM may be different from one quoted at 2 PM on the same day. This is normal. This is how the mortgage market works.',
+   s2hed:'Lock Period Economics',
+   s2body:'Longer lock periods cost more because the lender absorbs more rate risk. A 30-day lock is the baseline. A 45-day lock typically costs 0.125% more. A 60-day lock costs more still. The optimal lock period depends on expected closing date, current rate trend, and the buyer\'s risk tolerance.',
+   s3hed:'Today\'s Signal',
+   s3body:'The 10-year is at {T10}% and the 30-year rate is {R30}%. The spread is {SPREAD}%. If you have a borrower in process — know your lock expiration. Know when you need to act. Rate protection is not free. Price it correctly and use it strategically.',
+   insight:'Check the 10yr Treasury, today\'s econ calendar, and MBS pricing — in that order, every morning.',
+   nextPrev:'Next: Why Your Rate Quote Expired Overnight',
+   nextBody:'Tomorrow — why the rate from yesterday\'s email is different this morning, and how to explain it to clients.',
+   outro:'Next: Why Quotes Expire Overnight'
+  },
+  {num:6,title:'Why Your Rate Quote Expired Overnight',sub:'Rates changed. Here\'s how to explain it — and prevent the conversation.',
+   s1hed:'Rate Quotes Are Not Commitments',
+   s1body:'A mortgage rate quote is a snapshot of market conditions at a specific moment. Until a rate is locked — formally, in writing — it is subject to change. This is not a policy of your lender. This is how bond markets work. Overnight, rates can move based on Federal Reserve official speeches, international market movements, economic data from overseas, and MBS repricing by lenders before the next trading session.',
+   s1body2:'The 30-year rate right now is {R30}%. Yesterday at this time it may have been different. That movement is real, and it is not anyone\'s fault.',
+   s2hed:'Setting Client Expectations Upfront',
+   s2body:'The best loan officers solve this before it becomes a problem. At the point of rate quote: "This rate is accurate as of right now. Markets move daily. Here are your options: lock today and have certainty, or wait and accept rate risk." That one conversation sets expectations and positions you as an expert — not someone whose numbers are unreliable.',
+   s3hed:'The Rate Alert System',
+   s3body:'Give every active buyer a rate monitoring resource — a way to see market movement themselves. When they watch the 10-year Treasury move {T10}%, they understand why their rate changed. It\'s no longer mysterious. Informed buyers are easier to work with. They make better decisions. They refer people.',
+   insight:'Every rate quote should come with a brief education: "This is live market pricing — here is how it moves."',
+   nextPrev:'Next: Rate Volatility — What It Means and How to Prepare',
+   nextBody:'Tomorrow — when rates swing 0.25% in a single session, here\'s how to lead clients through it.',
+   outro:'Next: Rate Volatility'
+  },
+  {num:7,title:'Rate Volatility — What It Means and How to Prepare',sub:'When rates swing hard, buyers panic. Here\'s how to lead.',
+   s1hed:'What Volatility Actually Means',
+   s1body:'Rate volatility means rates are moving more than usual in both directions over a short period. The cause: competing economic signals. Some data pointing to cuts, other data pointing to rate increases — leaving bond markets uncertain about direction. In volatile periods, the 30-year rate can move 0.25% or more in a single session.',
+   s1body2:'The 30-year rate is currently {R30}%. Historically the 12-week range for this market has been {RANGE_LOW}% to {RANGE_HIGH}%. Understanding where today\'s rate sits in that range helps frame the conversation with buyers about what "high" and "low" actually mean.',
+   s2hed:'The Four-Point Client Script for Volatile Markets',
+   s2body:'One: rates are not going to zero — the volatility you\'re seeing is within a range. Two: locking eliminates your personal rate volatility. Three: the purchase matters more than the rate — the right home at today\'s rate, refinanced when rates fall, beats waiting for perfect conditions. Four: show them the math — calculate the dollar difference of waiting vs. locking now.',
+   s3hed:'The Practical Toolkit',
+   s3body:'Clients in volatile markets need leadership, not sympathy. Practical preparation: get pre-approvals done before volatility hits, not after. Know your lender\'s float-down options — some lenders offer float-down if rates drop by a certain amount before closing. Have a lock extension policy ready. These tools exist. Know them.',
+   insight:'Volatility is information — it signals market uncertainty. Certainty has real dollar value in volatile environments.',
+   nextPrev:'Next: Interest Rate vs. APR — The Final Episode',
+   nextBody:'Tomorrow — the final episode of Rate Watch Daily Season 1: the difference between the rate and the APR.',
+   outro:'Next: Rate vs. APR — Season Finale'
+  },
+  {num:8,title:'The Difference Between Interest Rate and APR',sub:'Rate: 6.5%. APR: 6.78%. Which matters? Why are they different?',
+   s1hed:'Rate vs. APR — The Clear Explanation',
+   s1body:'The interest rate is the cost of borrowing the principal — what your monthly payment calculation uses. The APR — Annual Percentage Rate — includes the interest rate PLUS most loan costs: origination fees, discount points, broker fees, and certain closing costs, converted into an annualized rate over the full loan term. APR is almost always higher than the interest rate.',
+   s1body2:'Today\'s national average 30-year rate is {R30}%. The APR on the same loan — after adding typical origination costs — would be approximately {APR}%. The gap is the cost of obtaining the loan.',
+   s2hed:'When APR Misleads You',
+   s2body:'APR assumes you hold the loan for the full 30-year term. Most buyers don\'t — they sell or refinance within 7 to 10 years. If you plan to move in 5 years, paying points to get a lower rate may not make sense — even if the APR looks favorable. The break-even calculation: upfront points paid ÷ monthly savings = months to break even. If break-even is 72 months and you\'ll move in 48 — you\'re overpaying.',
+   s3hed:'The Final Rule',
+   s3body:'When comparing loan offers: collect the rate, the APR, and a full Loan Estimate. Compare APRs across lenders — but also calculate break-even on any points paid. Long-term buyers: APR matters most. Likely-to-move buyers: focus on rate and upfront costs separately. Know your client\'s plan before you optimize.',
+   insight:'APR is the best tool for comparing across lenders — but only for borrowers who plan to hold long-term.',
+   nextPrev:'Season 2 coming soon to The Equity Network',
+   nextBody:'Thank you for watching Rate Watch Daily, Season 1. Eight episodes. Eight fundamentals. All of it built to make you a smarter buyer and a more confident professional.',
+   outro:'Rate Watch Daily · Season 1 Complete'
+  }
+];
+let currentEp=0;
+
+function loadEpisode(idx){
+  currentEp=idx;const ep=EPISODES[idx];
+  safeSet('ep-label',`Season 1 · Episode ${ep.num} · Rate Intelligence`);
+  safeSet('ep-open-title','');
+  // Set open title with dynamic HTML
+  const t=document.getElementById('ep-open-title');
+  if(t){t.innerHTML=ep.title.replace(/(Rate|Treasury|APR|Quarter|Morning|Volatility|Quote)/g,'<span>$1</span>');}
+  safeSet('ep-open-sub',ep.sub);
+  safeSet('s1-hed',ep.s1hed);
+  safeSet('s2-hed',ep.s2hed);
+  safeSet('s3-hed',ep.s3hed);
+  safeSet('outro-next-title','Next: '+ep.outro);
+  safeSet('outro-next-body',ep.nextBody);
+  document.querySelectorAll('.ep-tab').forEach((t2,i)=>t2.classList.toggle('active',i===idx));
+  buildScripts();
+  goTo(0);
+}
+
+function buildScripts(){
+  const ep=EPISODES[currentEp];
+  const spread=fmt(R.r30-R.t10);
+  const pmtNow=pmt(400000,R.r30);
+  const pmtLow=pmt(400000,R.r30-0.5);
+  const pmtHigh=pmt(400000,R.r30+0.25);
+  const qtrDiff=pmt(400000,R.r30)-pmt(400000,R.r30-0.25);
+
+  const fill=(s)=>s
+    .replace(/{R30}/g,fmt(R.r30))
+    .replace(/{T10}/g,fmt(R.t10))
+    .replace(/{SPREAD}/g,spread)
+    .replace(/{R30_LESS}/g,fmt(R.r30-0.25))
+    .replace(/{PMT_NOW}/g,fmtD(pmtNow)+'/mo')
+    .replace(/{PMT_LOW}/g,fmtD(pmt(400000,R.r30-0.25))+'/mo')
+    .replace(/{PMT_HIGH}/g,fmtD(pmtHigh)+'/mo')
+    .replace(/{PMT_DIFF}/g,fmtD(qtrDiff))
+    .replace(/{PMT_DIFF_YR}/g,fmtD(qtrDiff*12))
+    .replace(/{PMT_DIFF_30YR}/g,fmtD(qtrDiff*360))
+    .replace(/{QTR_PT_DIFF}/g,fmtD(qtrDiff))
+    .replace(/{QTR_PT_30YR}/g,fmtD(qtrDiff*360))
+    .replace(/{FF}/g,fmt(R.ff))
+    .replace(/{PMT_NOW}/g,fmtD(pmt(400000,R.r30))+'/mo')
+    .replace(/{HALF_DIFF}/g,fmtD(Math.abs(pmt(400000,R.r30)-pmt(400000,R.r30-0.5))))
+    .replace(/{HALF_DIFF_YR}/g,fmtD(Math.abs(pmt(400000,R.r30)-pmt(400000,R.r30-0.5))*12))
+    .replace(/{APR}/g,fmt(R.r30+0.3))
+    .replace(/{RANGE_HIGH}/g,fmt(R.r30+0.3));
+
+  safeHTML('s1-body',fill(ep.s1body).replace(/(\d+\.\d+%)/g,'<em>$1</em>'));
+  safeHTML('s1-body2',fill(ep.s1body2).replace(/(\d+\.\d+%)/g,'<em>$1</em>'));
+  safeHTML('s2-body',fill(ep.s2body).replace(/(\d+\.\d+%)/g,'<em>$1</em>'));
+  safeHTML('s3-body',fill(ep.s3body).replace(/(\d+\.\d+%)/g,'<em>$1</em>'));
+  safeHTML('key-insight',fill(ep.insight));
+  safeHTML('next-ep-preview',ep.nextPrev);
+
+  SEGMENTS[2].script=`<em>${fill(ep.s1body)}</em><br/><br/>${fill(ep.s1body2)}`;
+  SEGMENTS[3].script=fill(ep.s2body);
+  SEGMENTS[5].script=fill(ep.s3body)+'<br/><br/><em>'+ep.nextPrev+'</em>';
+  const seg=SEGMENTS[current];safeHTML('voiceover-text',seg.script);
+}
+
+// ═══════════════════════ SEGMENT NAV ═══════════════════════
+const SEGMENTS=[
+  {id:'seg-ident',label:'Channel Ident',lt:false,ticker:false,script:`<span class="vo-dir">Music: orchestral swell. Network animation only.</span>`},
+  {id:'seg-open',label:'Show Open',lt:false,ticker:false,script:`<span class="vo-dir">Music: Rate Watch Daily theme, fade under VO</span><br/><br/>From <em>The Equity Network</em>... this is <strong>Rate Watch Daily.</strong><br/><br/>Every weekday, the mortgage rate numbers that matter — explained in under four minutes.`},
+  {id:'seg-s1',label:'Segment 01',lt:true,ticker:true,script:''},
+  {id:'seg-s2',label:'Segment 02',lt:true,ticker:true,script:''},
+  {id:'seg-break',label:'Ad Break',lt:false,ticker:false,script:`<span class="vo-dir">Music: brand sting</span><br/><br/>Rate Watch Daily continues in a moment on <em>The Equity Network.</em><br/><br/><em>[HUIT.AI SPOT — 0:30]</em>`},
+  {id:'seg-s3',label:'Segment 03',lt:true,ticker:true,script:''},
+  {id:'seg-outro',label:'Outro',lt:false,ticker:false,script:`<span class="vo-dir">Music: Rate Watch Daily theme returns</span><br/><br/>Rate Watch Daily. On <em>The Equity Network.</em><br/><br/>Build wealth. Build knowledge. Build home.`},
+];
+let current=0;
+
+function updateClock(){const n=new Date();safeSet('clock',String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));}
+updateClock();setInterval(updateClock,30000);
+
+function goTo(idx){
+  if(idx<0||idx>=SEGMENTS.length)return;
+  document.getElementById(SEGMENTS[current].id).classList.remove('active');
+  current=idx;const seg=SEGMENTS[current];
+  document.getElementById(seg.id).classList.add('active');
+  document.getElementById('progress-bar').style.width=(current/(SEGMENTS.length-1)*100)+'%';
+  document.getElementById('ticker-bar').style.display=seg.ticker?'flex':'none';
+  const lt=document.getElementById('lower-third');
+  if(seg.lt)lt.classList.add('visible');else lt.classList.remove('visible');
+  document.querySelectorAll('.seg-dot').forEach((d,i)=>{d.classList.remove('active','done');if(i===current)d.classList.add('active');else if(i<current)d.classList.add('done');});
+  safeHTML('voiceover-text',SEGMENTS[current].script);
+  safeSet('script-seg-label',`Scene ${current+1} of ${SEGMENTS.length} · ${seg.label}`);
+  safeSet('seg-counter',`Scene ${current+1} of ${SEGMENTS.length}`);
+  const btn=document.getElementById('next-btn');
+  if(current===SEGMENTS.length-1){btn.textContent='↺ RESTART';btn.onclick=()=>goTo(0);}
+  else{btn.textContent='NEXT ▶';btn.onclick=nextSeg;}
+}
+function nextSeg(){goTo(current<SEGMENTS.length-1?current+1:0);}
+function prevSeg(){goTo(current>0?current-1:0);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextSeg();if(e.key==='ArrowLeft')prevSeg();});
+
+const dotsEl=document.getElementById('dots');
+SEGMENTS.forEach((_,i)=>{const d=document.createElement('div');d.className='seg-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);dotsEl.appendChild(d);});
+
+const tabsEl=document.getElementById('ep-tabs');
+EPISODES.forEach((ep,i)=>{const t=document.createElement('button');t.className='ep-tab'+(i===0?' active':'');t.textContent=`EP ${ep.num}: ${ep.title.slice(0,32)}${ep.title.length>32?'…':''}`;t.onclick=()=>loadEpisode(i);tabsEl.appendChild(t);});
+
+window.addEventListener('DOMContentLoaded',()=>{applyAll();fetchAll();loadEpisode(0);});
+</script>
+</body>
+</html>

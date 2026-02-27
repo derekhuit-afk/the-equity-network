@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Fed Report — The Equity Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0A1628;--navy2:#0D1E35;--gold:#C9A84C;--gold2:#E8C84A;--gold3:#B8942A;--white:#F8F9FA;--mid:#8A95A3;--red:#C0392B;--green:#27AE60;--slate:#4A5568;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060E1A;color:var(--white);font-family:'Source Sans 3',sans-serif;font-weight:300;overflow:hidden;}
+.broadcast{width:1280px;height:720px;position:relative;background:var(--navy);overflow:hidden;margin:0 auto;}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:100;}
+.progress-bar-track{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(201,168,76,0.15);z-index:90;}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));width:0%;transition:width 0.5s ease;}
+.top-bar{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:80;}
+.clock{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--gold);opacity:0.8;letter-spacing:2px;}
+.fed-badge{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);padding:4px 10px;border:1px solid rgba(201,168,76,0.4);border-radius:2px;}
+#live-badge{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--green);padding:4px 10px;border:1px solid rgba(39,174,96,0.4);border-radius:2px;}
+.en-bug{position:absolute;top:36px;right:16px;width:44px;height:44px;background:rgba(10,22,40,0.7);border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--gold);opacity:0.15;z-index:80;}
+.ticker-bar{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(10,22,40,0.96);border-top:2px solid var(--gold3);display:flex;align-items:center;overflow:hidden;z-index:80;}
+.ticker-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);padding:0 14px;white-space:nowrap;border-right:1px solid rgba(201,168,76,0.3);}
+.ticker-scroll{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+.ticker-content{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 60s linear infinite;}
+@keyframes tickerScroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+.ticker-item{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--white);padding:0 18px;}
+.ticker-sep{color:rgba(201,168,76,0.4);padding:0 4px;}
+.t-name{color:var(--gold);opacity:0.8;}
+.lower-third{position:absolute;bottom:44px;left:0;background:linear-gradient(90deg,rgba(10,22,40,0.97) 0%,rgba(10,22,40,0.85) 80%,transparent 100%);padding:10px 48px 10px 20px;border-left:3px solid var(--gold);z-index:70;transform:translateX(-102%);transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.lower-third.visible{transform:translateX(0);}
+.lt-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--white);}
+.lt-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:2px;}
+.segment{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.8s ease;}
+.segment.active{opacity:1;pointer-events:all;}
+
+/* IDENT */
+.ident-bg{width:100%;height:100%;background:radial-gradient(ellipse at 50%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ident-center{position:relative;display:flex;align-items:center;justify-content:center;}
+.ident-ring{width:180px;height:180px;border:2px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:ringPulse 2.5s ease-in-out infinite;}
+.ident-ring2{width:220px;height:220px;border:1px solid rgba(201,168,76,0.15);border-radius:50%;position:absolute;animation:ringPulse 2.5s ease-in-out infinite 0.3s;}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.04);opacity:1;}}
+.ident-letters{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:var(--gold);}
+
+/* OPEN */
+.open-bg{width:100%;height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:60px 72px;position:relative;overflow:hidden;}
+.open-bg::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold3),var(--gold2),var(--gold3));}
+.open-ep-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:16px;z-index:1;}
+.open-title{font-family:'Playfair Display',serif;font-size:62px;font-weight:900;color:var(--white);line-height:1.05;z-index:1;}
+.open-title span{color:var(--gold);}
+.open-rule{width:80px;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));margin:24px 0;z-index:1;}
+.open-sub{font-size:18px;color:var(--mid);z-index:1;max-width:560px;line-height:1.6;}
+.open-meta{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);opacity:0.4;letter-spacing:2px;margin-top:24px;z-index:1;}
+
+/* FED DASHBOARD LAYOUT */
+.fed-layout{width:100%;height:100%;display:grid;grid-template-columns:2fr 3fr;gap:0;}
+.fed-left{background:linear-gradient(180deg,#0A1628,#060E1A);padding:40px 32px 48px;display:flex;flex-direction:column;gap:16px;border-right:1px solid rgba(201,168,76,0.1);}
+.fed-right{background:#080F1C;padding:40px 36px 48px;display:flex;flex-direction:column;gap:16px;}
+
+/* RATE DISPLAY */
+.fed-rate-main{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:20px;}
+.fed-rate-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:8px;}
+.fed-rate-val{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--gold);line-height:1;}
+.fed-rate-sub{font-size:11px;color:var(--mid);margin-top:4px;}
+.fed-rate-chg{font-family:'Roboto Mono',monospace;font-size:11px;margin-top:6px;}
+
+/* RATE TABLE */
+.rate-table{display:flex;flex-direction:column;gap:8px;flex:1;}
+.rate-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:3px;}
+.rate-row-name{font-size:12px;color:var(--mid);}
+.rate-row-val{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--white);}
+.rate-row-chg{font-family:'Roboto Mono',monospace;font-size:10px;margin-left:8px;}
+
+/* CHART */
+.chart-wrap{background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:12px;}
+.chart-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-bottom:8px;}
+svg.chart{width:100%;display:block;}
+
+/* FED POLICY BOX */
+.policy-box{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:16px;}
+.policy-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-bottom:8px;}
+.policy-text{font-size:13px;color:var(--mid);line-height:1.6;}
+.policy-text em{color:var(--white);font-style:normal;}
+
+/* SEGMENT CONTENT */
+.seg-headline{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);line-height:1.3;border-left:3px solid var(--gold);padding-left:14px;margin-bottom:12px;}
+.seg-body{font-size:13px;color:var(--mid);line-height:1.7;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* DOT PLOT VIZ */
+.dotplot{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:12px;}
+.dp-col{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.dp-year{font-family:'Roboto Mono',monospace;font-size:8px;color:var(--gold);opacity:0.6;margin-bottom:4px;}
+.dp-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);opacity:0.7;}
+.dp-dot.med{background:var(--gold2);opacity:1;width:12px;height:12px;}
+.dp-val{font-family:'Roboto Mono',monospace;font-size:8px;color:var(--mid);}
+
+/* OUTRO / AD */
+.ad-bg{width:100%;height:100%;background:#040A12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.outro-bg{width:100%;height:100%;background:radial-gradient(ellipse at 30% 60%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:48px;}
+
+/* NAV */
+.nav-panel{background:#040A12;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;}
+.nav-btn{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:8px 18px;cursor:pointer;}
+.nav-btn:hover{background:rgba(201,168,76,0.15);}
+.dots{display:flex;gap:6px;}
+.seg-dot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);cursor:pointer;transition:all 0.2s;}
+.seg-dot.active{background:var(--gold);width:9px;height:9px;}
+.seg-dot.done{background:rgba(201,168,76,0.5);}
+.seg-counter{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--mid);}
+.ep-tabs{display:flex;gap:6px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:8px 24px;background:#030810;border-top:1px solid rgba(201,168,76,0.08);}
+.ep-tab{font-family:'Roboto Mono',monospace;font-size:9px;color:var(--mid);background:transparent;border:1px solid rgba(255,255,255,0.08);padding:5px 10px;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.ep-tab:hover{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.ep-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.script-panel{background:#020608;border-top:1px solid rgba(201,168,76,0.1);max-width:1280px;margin:0 auto;padding:20px 28px;}
+.script-label{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);opacity:0.5;text-transform:uppercase;margin-bottom:10px;}
+.script-text{font-size:13px;color:var(--mid);line-height:1.8;max-height:90px;overflow-y:auto;}
+.script-text em{color:var(--white);font-style:normal;}
+.vo-dir{color:rgba(201,168,76,0.5);font-size:11px;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="broadcast">
+  <div class="scanlines"></div>
+  <div class="progress-bar-track"><div class="progress-bar" id="progress-bar"></div></div>
+  <div class="top-bar">
+    <div class="clock" id="clock">00:00</div>
+    <div class="fed-badge">⬤ FED WATCH</div>
+    <div id="live-badge">⟳ LOADING...</div>
+  </div>
+  <div class="en-bug">EN</div>
+
+  <div class="ticker-bar" id="ticker-bar" style="display:none;">
+    <div class="ticker-label">FED DATA</div>
+    <div class="ticker-scroll"><div class="ticker-content" id="ticker-content">Loading live data...</div></div>
+  </div>
+  <div class="lower-third" id="lower-third">
+    <div class="lt-name" id="lt-name"></div>
+    <div class="lt-title" id="lt-title"></div>
+  </div>
+
+  <!-- IDENT -->
+  <div class="segment active" id="seg-ident">
+    <div class="ident-bg">
+      <div class="ident-center">
+        <div class="ident-ring2"></div>
+        <div class="ident-ring"><div class="ident-letters">EN</div></div>
+      </div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:6px;color:var(--gold);opacity:0.6;margin-top:90px;">The Equity Network</div>
+      <div style="font-size:13px;color:var(--mid);letter-spacing:2px;margin-top:8px;">Build Wealth · Build Knowledge · Build Home</div>
+    </div>
+  </div>
+
+  <!-- OPEN -->
+  <div class="segment" id="seg-open">
+    <div class="open-bg" style="background:linear-gradient(160deg,#0D1E35,#060E1A);">
+      <div class="open-ep-label" id="open-ep-label">Season 1 · Episode 1 · Federal Reserve Intelligence</div>
+      <div class="open-title">The <span>Fed</span><br/>Report</div>
+      <div class="open-rule"></div>
+      <div class="open-sub" id="open-sub">The Federal Reserve decisions that move mortgage rates — explained in plain English.</div>
+      <div class="open-meta">TheEquityNetwork.tv · A Huit.ai Media Property</div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 3: RATE DASHBOARD -->
+  <div class="segment" id="seg-rates">
+    <div class="fed-layout">
+      <div class="fed-left">
+        <div class="fed-rate-main">
+          <div class="fed-rate-label">Federal Funds Rate (Target)</div>
+          <div class="fed-rate-val" id="fed-rate-val">—</div>
+          <div class="fed-rate-sub">Current FOMC target range</div>
+          <div class="fed-rate-chg" id="fed-rate-chg">Loading...</div>
+        </div>
+        <div class="rate-table">
+          <div class="rate-row"><span class="rate-row-name">30-Yr Mortgage</span><span><span class="rate-row-val" id="r-30">—</span><span class="rate-row-chg" id="r-30-chg"></span></span></div>
+          <div class="rate-row"><span class="rate-row-name">15-Yr Mortgage</span><span><span class="rate-row-val" id="r-15">—</span></span></div>
+          <div class="rate-row"><span class="rate-row-name">10-Yr Treasury</span><span><span class="rate-row-val" id="r-t10">—</span></span></div>
+          <div class="rate-row"><span class="rate-row-name">2-Yr Treasury</span><span><span class="rate-row-val" id="r-t2">—</span></span></div>
+          <div class="rate-row"><span class="rate-row-name">Fed Spread (10yr-Fed)</span><span><span class="rate-row-val" id="r-spread">—</span></span></div>
+        </div>
+      </div>
+      <div class="fed-right">
+        <div class="seg-headline" id="seg3-hed">Why the Fed Matters to Your Rate</div>
+        <div class="seg-body" id="seg3-body">Loading analysis...</div>
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title">10-Year Treasury vs. 30-Year Mortgage Rate — 12-Month Spread</div>
+          <svg class="chart" id="spread-chart" viewBox="0 0 500 160" style="height:160px;"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 4: FED EXPLANATION -->
+  <div class="segment" id="seg-explain">
+    <div class="fed-layout">
+      <div class="fed-left">
+        <div class="policy-box">
+          <div class="policy-label">The Fed's Dual Mandate</div>
+          <div class="policy-text"><em>Maximum Employment</em> — keep unemployment low<br/><br/><em>Price Stability</em> — target 2% inflation<br/><br/>When these goals conflict, <em>the Fed must choose.</em> That choice determines your clients' mortgage rate.</div>
+        </div>
+        <div class="policy-box" style="flex:1;">
+          <div class="policy-label">Current Policy Stance</div>
+          <div class="policy-text" id="policy-stance">Loading...</div>
+        </div>
+      </div>
+      <div class="fed-right">
+        <div class="seg-headline" id="seg4-hed">Understanding Fed Language</div>
+        <div class="seg-body" id="seg4-body">Loading...</div>
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title">Federal Funds Rate — Historical Context</div>
+          <svg class="chart" id="ff-chart" viewBox="0 0 500 160" style="height:160px;"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD BREAK -->
+  <div class="segment" id="seg-break">
+    <div class="ad-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:7px;color:var(--gold);text-transform:uppercase;opacity:0.7;">The Equity Network</div>
+      <div style="width:50px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-size:13px;color:var(--mid);">More coverage after this</div>
+      <div style="height:20px;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);">Huit.ai</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--mid);text-transform:uppercase;">Mortgage Intelligence Platform</div>
+      <div style="font-size:13px;color:var(--mid);margin-top:12px;text-align:center;max-width:420px;line-height:1.6;">7 years of HMDA data · AI-powered recruiting · Mortgage CRM built exclusively for mortgage professionals.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-top:14px;opacity:0.7;">Huit.ai · H-U-I-T dot A-I</div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 6: IMPACT ON BUYERS -->
+  <div class="segment" id="seg-impact">
+    <div class="fed-layout">
+      <div class="fed-left">
+        <div class="seg-headline" style="font-size:17px;" id="seg6-hed">What Fed Moves Mean for Buyers</div>
+        <div class="rate-table">
+          <div class="rate-row"><span class="rate-row-name">Current 30-yr payment ($400K home)</span><span class="rate-row-val" id="impact-pmt">—</span></div>
+          <div class="rate-row"><span class="rate-row-name">If rates drop 0.50%</span><span class="rate-row-val" id="impact-pmt-low">—</span></div>
+          <div class="rate-row"><span class="rate-row-name">Monthly savings</span><span class="rate-row-val up" id="impact-savings">—</span></div>
+          <div class="rate-row"><span class="rate-row-name">Annual savings</span><span class="rate-row-val up" id="impact-annual">—</span></div>
+          <div class="rate-row"><span class="rate-row-name">30-yr savings</span><span class="rate-row-val up" id="impact-30yr">—</span></div>
+        </div>
+      </div>
+      <div class="fed-right">
+        <div class="seg-headline" id="seg6-hed-r">Rate Impact Analysis</div>
+        <div class="seg-body" id="seg6-body">Loading...</div>
+        <div class="chart-wrap" style="flex:1;">
+          <div class="chart-title">Payment on $400K Home Across Rate Scenarios</div>
+          <svg class="chart" id="pmt-chart" viewBox="0 0 500 160" style="height:160px;"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTRO -->
+  <div class="segment" id="seg-outro">
+    <div class="outro-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:6px;color:var(--gold);text-transform:uppercase;opacity:0.8;">The Equity Network</div>
+      <div style="width:60px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--white);" id="outro-next">Next: The Fed's Dual Mandate</div>
+      <div style="font-size:14px;color:var(--mid);max-width:480px;line-height:1.7;" id="outro-body">The Fed Report — every episode, the Federal Reserve intelligence mortgage professionals need.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);opacity:0.7;margin-top:8px;">TheEquityNetwork.tv · Huit.ai</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--gold);opacity:0.6;margin-top:8px;">"Build Wealth · Build Knowledge · Build Home"</div>
+    </div>
+  </div>
+</div>
+
+<div class="ep-tabs" id="ep-tabs"></div>
+<div class="nav-panel">
+  <button class="nav-btn" onclick="prevSeg()">◀ PREV</button>
+  <div class="dots" id="dots"></div>
+  <div class="seg-counter" id="seg-counter">Scene 1 of 7</div>
+  <button class="nav-btn" id="next-btn" onclick="nextSeg()">NEXT ▶</button>
+</div>
+<div class="script-panel">
+  <div class="script-label" id="script-seg-label">Scene 1 of 7 · Channel Ident</div>
+  <div class="script-text" id="voiceover-text"></div>
+</div>
+
+<script>
+const FRED='https://fred.stlouisfed.org/graph/fredgraph.csv';
+const PROXY='https://corsproxy.io/?';
+let R={ff:3.64,ffPrev:3.89,rate30:5.98,rate30Prev:6.01,rate15:5.44,t10:4.05,t10Prev:4.12,t2:4.35,isLive:false};
+
+function parseFred(csv){const rows=csv.trim().split('\n').filter(r=>!r.startsWith('DATE'));const last=rows[rows.length-1].split(',');const prev=rows.length>1?rows[rows.length-2].split(','):last;return{value:parseFloat(last[1]),prev:parseFloat(prev[1]),date:last[0]};}
+function parseFredHist(csv,n=14){return csv.trim().split('\n').filter(r=>!r.startsWith('DATE')).slice(-n).map(r=>{const[d,v]=r.split(',');return{date:d,value:parseFloat(v)};}).filter(r=>!isNaN(r.value));}
+async function fetch1(id){return await(await fetch(PROXY+encodeURIComponent(FRED+'?id='+id))).text();}
+async function fetchAll(){
+  setLoading(true);
+  try{
+    const [cff,c30,c15,ct10,ct2]=await Promise.all([fetch1('FEDFUNDS'),fetch1('MORTGAGE30US'),fetch1('MORTGAGE15US'),fetch1('DGS10'),fetch1('DGS2')]);
+    const pff=parseFred(cff),p30=parseFred(c30),p15=parseFred(c15),pt10=parseFred(ct10),pt2=parseFred(ct2);
+    R.ff=pff.value;R.ffPrev=pff.prev;R.rate30=p30.value;R.rate30Prev=p30.prev;R.rate15=p15.value;R.t10=pt10.value;R.t10Prev=pt10.prev;R.t2=pt2.value;R.isLive=true;
+    R.hist30=parseFredHist(c30,14);R.histff=parseFredHist(cff,12);R.hist10=parseFredHist(ct10,14);
+  }catch(e){console.warn('FRED failed:',e.message);}
+  applyAll();setLoading(false);
+}
+function setLoading(l){const b=document.getElementById('live-badge');if(b){b.textContent=l?'⟳ LOADING...':(R.isLive?'● LIVE':'● FALLBACK');b.style.color=R.isLive?'var(--green)':'var(--gold)';}}
+function fmt(n,d=2){return n.toFixed(d);}
+function fmtD(n){return '$'+Math.round(n).toLocaleString();}
+function safeSet(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function safeHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v;}
+function pmt(price,rate,pct=0.80){const l=price*pct,r=rate/100/12,n=360;return l*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+
+function applyAll(){
+  const spread=(R.rate30-R.t10).toFixed(2);
+  const ffChg=(R.ff-R.ffPrev).toFixed(2);
+  const t10Chg=(R.t10-R.t10Prev).toFixed(2);
+  const r30Chg=(R.rate30-R.rate30Prev).toFixed(2);
+
+  safeSet('fed-rate-val',fmt(R.ff,2)+'%');
+  safeHTML('fed-rate-chg',`<span class="${ffChg>0?'up':ffChg<0?'dn':''}">${ffChg>0?'▲ +':ffChg<0?'▼ ':'— '}${ffChg}% vs prior</span>`);
+  safeSet('r-30',fmt(R.rate30,2)+'%');
+  safeHTML('r-30-chg',`<span class="${r30Chg>0?'dn':r30Chg<0?'up':''}" style="font-size:10px;">${r30Chg>0?'▲':r30Chg<0?'▼':'—'} ${Math.abs(r30Chg)}%</span>`);
+  safeSet('r-15',fmt(R.rate15,2)+'%');
+  safeSet('r-t10',fmt(R.t10,2)+'%');
+  safeSet('r-t2',fmt(R.t2,2)+'%');
+  safeSet('r-spread','+'+spread+'%');
+
+  // Payment calculations
+  const pmtNow=pmt(380000,R.rate30);
+  const pmtLow=pmt(380000,R.rate30-0.5);
+  const savings=pmtNow-pmtLow;
+  safeSet('impact-pmt',fmtD(pmtNow)+'/mo');
+  safeSet('impact-pmt-low',fmtD(pmtLow)+'/mo');
+  safeSet('impact-savings',fmtD(savings)+'/mo');
+  safeSet('impact-annual',fmtD(savings*12)+'/yr');
+  safeSet('impact-30yr',fmtD(savings*360)+' total');
+
+  const ffPos=R.ff<2?'historically low':R.ff<4?'moderate':R.ff<6?'restrictive':'highly restrictive';
+  safeHTML('policy-stance',`Fed Funds at <em>${fmt(R.ff,2)}%</em> — this is a <em>${ffPos}</em> policy environment.<br/><br/>The 10-year Treasury at <em>${fmt(R.t10,2)}%</em> is the actual benchmark mortgage rates follow. The spread between the 10-year and 30-year mortgage is <em>+${spread}%</em> — ${parseFloat(spread)>2?'wider than historical norms, reflecting elevated market risk premium':'within historical norms, suggesting normal credit conditions'}.`);
+
+  buildCharts();
+  buildTicker();
+  buildScripts();
+}
+
+function buildCharts(){
+  // Spread chart (10yr vs 30yr)
+  const h10=R.hist10||[];const h30=R.hist30||[];
+  if(h30.length>1&&h10.length>1){
+    const len=Math.min(h30.length,h10.length);
+    const s10=h10.slice(-len),s30=h30.slice(-len);
+    const W=500,H=160,P=20,pw=(W-P*2)/(len-1);
+    const allV=[...s10.map(h=>h.value),...s30.map(h=>h.value)];
+    const mx=Math.max(...allV),mn=Math.min(...allV),rng=mx-mn||1;
+    const pts10=s10.map((h,i)=>`${(P+i*pw).toFixed(1)},${(P+(1-(h.value-mn)/rng)*(H-P*2)).toFixed(1)}`).join(' ');
+    const pts30=s30.map((h,i)=>`${(P+i*pw).toFixed(1)},${(P+(1-(h.value-mn)/rng)*(H-P*2)).toFixed(1)}`).join(' ');
+    document.getElementById('spread-chart').innerHTML=`
+      <polyline points="${pts10}" fill="none" stroke="rgba(201,168,76,0.7)" stroke-width="2" stroke-linejoin="round"/>
+      <polyline points="${pts30}" fill="none" stroke="rgba(192,57,43,0.8)" stroke-width="2" stroke-linejoin="round" stroke-dasharray="4,2"/>
+      <text x="${P}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(201,168,76,0.6)">10-Yr Treasury</text>
+      <text x="${P+100}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(192,57,43,0.6)">30-Yr Mortgage</text>
+    `;
+  }
+
+  // Fed funds historical (simple bar)
+  const hff=R.histff||[];
+  if(hff.length>1){
+    const W=500,H=160,P=20,bw=(W-P*2)/hff.length*0.6,bs=(W-P*2)/hff.length;
+    const mx=Math.max(...hff.map(h=>h.value),0.5);
+    document.getElementById('ff-chart').innerHTML=hff.map((h,i)=>{
+      const bh=(h.value/mx)*(H-P*2);
+      const x=P+i*bs+(bs-bw)/2,y=H-P-bh;
+      return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="rgba(201,168,76,0.6)" rx="2"/>`;
+    }).join('')+`<text x="${P}" y="${H-2}" font-family="Roboto Mono" font-size="8" fill="rgba(138,149,163,0.5)">${hff[0].date.slice(0,7)}</text><text x="${W-60}" y="${H-2}" font-family="Roboto Mono" font-size="8" fill="rgba(138,149,163,0.5)">${hff[hff.length-1].date.slice(0,7)}</text>`;
+  }
+
+  // Payment scenario chart (bar chart across rate scenarios)
+  const rates=[R.rate30-1,R.rate30-0.5,R.rate30,R.rate30+0.5,R.rate30+1];
+  const pmts=rates.map(r=>pmt(380000,r));
+  const pmx=Math.max(...pmts),pmn=Math.min(...pmts),prng=pmx-pmn||100;
+  const W=500,H=160,P=20,bw=(W-P*2)/rates.length*0.6,bs=(W-P*2)/rates.length;
+  document.getElementById('pmt-chart').innerHTML=rates.map((r,i)=>{
+    const bh=((pmts[i]-pmn)/prng*0.7+0.3)*(H-P*2);
+    const x=P+i*bs+(bs-bw)/2,y=H-P-bh;
+    const clr=i===2?'var(--gold)':i<2?'var(--green)':'var(--red)';
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${clr}" opacity="0.7" rx="2"/>
+    <text x="${(x+bw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" font-family="Roboto Mono" font-size="7" fill="rgba(255,255,255,0.6)" text-anchor="middle">${fmtD(pmts[i])}</text>
+    <text x="${(x+bw/2).toFixed(1)}" y="${H-4}" font-family="Roboto Mono" font-size="7" fill="rgba(201,168,76,0.5)" text-anchor="middle">${r.toFixed(1)}%</text>`;
+  }).join('');
+}
+
+function buildTicker(){
+  const spread=(R.rate30-R.t10).toFixed(2);
+  const items=[
+    {n:'FED FUNDS',v:fmt(R.ff,2)+'%'},{n:'30YR MTG',v:fmt(R.rate30,2)+'%'},{n:'10YR TREASURY',v:fmt(R.t10,2)+'%'},
+    {n:'2YR TREASURY',v:fmt(R.t2,2)+'%'},{n:'MTG-TREAS SPREAD',v:'+'+spread+'%'},{n:'15YR MTG',v:fmt(R.rate15,2)+'%'},
+    {n:'YIELD CURVE',v:R.t10>R.t2?'NORMAL':'INVERTED'},{n:'FOMC STATUS',v:'DATA DEPENDENT'},
+  ];
+  const html=items.map(it=>`<span class="ticker-item"><span class="t-name">${it.n}</span> ${it.v}</span><span class="ticker-sep">|</span>`).join('');
+  safeHTML('ticker-content',html+html);
+}
+
+function buildScripts(){
+  const spread=(R.rate30-R.t10).toFixed(2);
+  const pmtNow=pmt(380000,R.rate30);
+  const pmtLow=pmt(380000,R.rate30-0.5);
+  SEGMENTS[2].script=`Here are the numbers that matter right now.<br/><br/>The Federal Funds Rate is at <em>${fmt(R.ff,2)}%</em>. The 10-year Treasury — the actual benchmark your mortgage rate follows — sits at <em>${fmt(R.t10,2)}%</em>. The 30-year fixed rate national average is <em>${fmt(R.rate30,2)}%</em>.<br/><br/>That spread between the 10-year and 30-year mortgage? <em>+${spread}%</em>. ${parseFloat(spread)>2?'That\'s wider than historical norms — elevated risk premium is adding cost to every mortgage in America right now.':'Within historical range, suggesting lenders are pricing credit risk normally.'}`;
+  SEGMENTS[3].script=`The Fed doesn't set your mortgage rate directly. Here's what actually happens:<br/><br/>The Fed controls the overnight lending rate between banks — the Federal Funds Rate, currently at <em>${fmt(R.ff,2)}%</em>. Mortgage rates follow the <em>10-year Treasury yield</em>, not the Fed Funds Rate. They move in the same direction, but not on the same schedule.<br/><br/>When the Fed signals rate cuts, bond markets <em>anticipate</em> the move and Treasury yields drop — which pulls mortgage rates down with them. The key word is <em>signals.</em> Rates often move before the Fed acts.`;
+  SEGMENTS[5].script=`What does this rate environment mean for your buyers?<br/><br/>On a $380,000 home purchase at today's rate of <em>${fmt(R.rate30,2)}%</em> with 20% down — the monthly principal and interest payment is <em>${fmtD(pmtNow)}.</em><br/><br/>If rates drop half a percent — to <em>${fmt(R.rate30-0.5,2)}%</em> — that same buyer pays <em>${fmtD(pmtLow)}</em> per month. That's a savings of <em>${fmtD(pmtNow-pmtLow)} per month, ${fmtD((pmtNow-pmtLow)*12)} per year, and ${fmtD((pmtNow-pmtLow)*360)} over 30 years.</em><br/><br/>That's the stakes of every Fed meeting. Every basis point matters.`;
+  const seg=SEGMENTS[current];safeHTML('voiceover-text',seg.script);
+}
+
+const EPISODES=[
+  {num:1,hed:'The Federal Reserve — What It Does',sub:'Understanding the institution that controls the cost of money',bod3:'The Federal Reserve is America\'s central bank. Created in 1913, its core job is to manage the U.S. economy through monetary policy — controlling the money supply and the cost of borrowing. For mortgage professionals, no institution matters more.',bod4:'When the Fed speaks, listen for these key phrases: "data dependent" means they\'re watching inflation and employment before deciding. "Restrictive policy" means they\'re intentionally keeping rates high to cool inflation. "Neutral rate" is the theoretical rate that neither stimulates nor restricts the economy.',next:'The Federal Funds Rate vs. Mortgage Rates'},
+  {num:2,hed:'The Federal Funds Rate vs. Mortgage Rates',sub:'The relationship every loan officer must understand',bod3:'Here\'s the most important thing to understand: the Federal Funds Rate and mortgage rates are related, but not the same. The Fed controls overnight bank lending rates. Your 30-year mortgage rate follows the 10-year Treasury yield — which is set by the bond market, not the Fed.',bod4:'The connection is indirect. When the Fed raises rates, bond markets anticipate slower growth, which can actually cause Treasury yields — and therefore mortgage rates — to move differently than expected. This is why mortgage rates sometimes fall when the Fed hikes, and vice versa.',next:'How to Read a Fed Meeting Statement'},
+  {num:3,hed:'How to Read a Fed Meeting Statement',sub:'What the FOMC actually says and what it means',bod3:'The Federal Open Market Committee meets eight times per year and issues a policy statement after each meeting. These documents are dense with central bank language — but three things always matter: the rate decision, the vote count, and the forward guidance.',bod4:'"Forward guidance" is the most actionable part of any Fed statement. When the Fed says it anticipates "maintaining the current target range," that signals stability. When it says conditions "may warrant" changes, that\'s a signal to watch. When unanimous, markets trust the decision; split votes create uncertainty.',next:'What "Data Dependent" Actually Means'},
+  {num:4,hed:'What "Data Dependent" Means for Mortgage Rates',sub:'Decoding the most important phrase in Fed communication',bod3:'"Data dependent" is the Fed\'s way of saying: we\'ll decide based on what the numbers show. For mortgage professionals, that means watching the same data the Fed watches: CPI inflation reports, the PCE price index, monthly jobs reports, and GDP growth.',bod4:'When inflation runs hot, the Fed feels pressure to keep rates restrictive — or raise them further. When employment weakens, the calculus changes. The Fed is trying to thread a needle: cool inflation without triggering a recession. Every data point moves that needle — and moves your clients\' rate.',next:'The Fed Dot Plot Explained'},
+  {num:5,hed:'The Fed Dot Plot — A Plain English Explanation',sub:'Reading the projection tool that moves mortgage markets',bod3:'Eight times a year, each Fed official submits an anonymous projection for where they think rates should be — now, next year, and 3 years out. These projections are plotted as dots on a chart: the famous "dot plot." The median dot becomes the market\'s reference point.',bod4:'When dot plots shift lower — when officials project more rate cuts than previously expected — mortgage rates often fall in anticipation. When dots shift higher, rates rise. The dot plot is not a promise; officials change their minds. But it\'s the clearest forward guidance the Fed gives, and markets move on it.',next:'Inflation and Mortgage Rates — The Direct Connection'},
+  {num:6,hed:'Inflation and Mortgage Rates — The Direct Connection',sub:'Why CPI and PCE reports move your clients\' rate',bod3:'Inflation is the Fed\'s primary enemy. When prices rise too fast, the Fed raises rates to make borrowing more expensive — which cools spending and slows inflation. But it also makes mortgages more expensive. This is the fundamental tension at the heart of every housing market cycle.',bod4:'The two inflation measures that matter most: CPI (Consumer Price Index), released monthly by the BLS, is the headline number markets watch. PCE (Personal Consumption Expenditures) is the Fed\'s preferred measure — it captures a broader basket and tends to run slightly lower than CPI.',next:'Fed Rate Cuts — What Actually Happens to Mortgage Rates'},
+  {num:7,hed:'Fed Rate Cuts — What Actually Happens to Mortgage Rates',sub:'Why cuts don\'t always lower your clients\' rate immediately',bod3:'When the Fed cuts rates, homebuyers expect mortgage rates to drop immediately. The reality is more complicated. The Fed Funds Rate and mortgage rates don\'t move in lockstep. Markets often price in anticipated cuts weeks or months in advance — meaning mortgage rates may have already fallen before the official cut.',bod4:'After a cut, mortgage rates may actually rise if markets interpret the move as inflationary or insufficient. What drives rates down is not the cut itself — it\'s the bond market\'s confidence that inflation is under control and the economy is stable. Watch the 10-year Treasury yield, not the Fed announcement, for the real signal.',next:'How to Prepare Clients for Rate Volatility'},
+  {num:8,hed:'How to Prepare Clients for Rate Volatility',sub:'Practical strategies for every rate environment',bod3:'Rate volatility is the new normal. In this environment, your value as a loan officer isn\'t quoting a rate — it\'s helping clients make smart decisions despite uncertainty. That means understanding lock strategies, float-down options, ARMs, and the real cost of waiting.',bod4:'Three conversations every client needs: First, the "lock vs. float" conversation — helping them understand when certainty is worth more than hope. Second, the payment reality check — what their actual monthly payment is at today\'s rate. Third, the long-game perspective — rates change, and refinancing exists.',next:'Episode 1 — next season'},
+];
+let currentEp=0;
+function loadEpisode(idx){
+  currentEp=idx;const ep=EPISODES[idx];
+  safeSet('open-ep-label',`Season 1 · Episode ${ep.num} · Federal Reserve Intelligence`);
+  safeSet('open-sub',ep.hed);
+  safeSet('seg3-hed',ep.hed+' — The Numbers');
+  safeSet('seg3-body',ep.bod3);
+  safeSet('seg4-hed',ep.hed+' — Deeper Analysis');
+  safeSet('seg4-body',ep.bod4);
+  safeSet('seg6-hed','Rate Impact: What This Means for Buyers');
+  safeSet('outro-next','Next: '+ep.next);
+  safeSet('outro-body',`Next episode of The Fed Report: "${ep.next}" — Federal Reserve intelligence for mortgage professionals, only on The Equity Network.`);
+  buildScripts();
+  document.querySelectorAll('.ep-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  goTo(0);
+}
+
+const SEGMENTS=[
+  {id:'seg-ident',label:'Channel Ident',lt:null,ticker:false,script:`<span class="vo-dir">Music: orchestral swell. Network animation only.</span>`},
+  {id:'seg-open',label:'Show Open',lt:null,ticker:false,script:`<span class="vo-dir">Music: authoritative news theme, fade under VO</span><br/><br/>From <em>The Equity Network</em>... this is <strong>The Fed Report.</strong><br/><br/>The Federal Reserve is the most powerful economic institution in the world. Its decisions move mortgage rates, reshape housing markets, and determine whether your clients can afford to buy. This show explains what the Fed is doing, why it matters, and what you should tell your clients about it.`},
+  {id:'seg-rates',label:'Rate Dashboard',lt:{name:'Alex Rivera',title:'The Fed Report · The Equity Network'},ticker:true,script:''},
+  {id:'seg-explain',label:'Fed Analysis',lt:{name:'Alex Rivera',title:'The Fed Report · The Equity Network'},ticker:true,script:''},
+  {id:'seg-break',label:'Ad Break',lt:null,ticker:false,script:`<span class="vo-dir">Music: brand sting</span><br/><br/>The Fed Report continues in a moment on <em>The Equity Network.</em><br/><br/><em>[HUIT.AI SPOT]</em><br/><br/>Understanding the Fed is one thing. Having the data to act on it is another. <em>Huit dot A-I</em> gives you seven years of HMDA federal mortgage data and AI-powered market intelligence. Visit <em>Huit dot A-I</em> — H-U-I-T dot A-I.`},
+  {id:'seg-impact',label:'Rate Impact',lt:{name:'Alex Rivera',title:'The Fed Report · The Equity Network'},ticker:true,script:''},
+  {id:'seg-outro',label:'Outro',lt:null,ticker:false,script:`<span class="vo-dir">Music: theme returns softly</span><br/><br/>That's The Fed Report on <em>The Equity Network.</em><br/><br/>Understanding the Federal Reserve isn't optional for mortgage professionals. Every rate conversation you have with a client, every lock decision, every timing discussion — they all trace back to the institution we covered today.<br/><br/>Build wealth. Build knowledge. Build home. <em>We'll see you next time.</em>`},
+];
+let current=0;
+
+function updateClock(){const n=new Date();safeSet('clock',String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));}
+updateClock();setInterval(updateClock,30000);
+function goTo(idx){
+  if(idx<0||idx>=SEGMENTS.length)return;
+  document.getElementById(SEGMENTS[current].id).classList.remove('active');
+  current=idx;const seg=SEGMENTS[current];
+  document.getElementById(seg.id).classList.add('active');
+  document.getElementById('progress-bar').style.width=(current/(SEGMENTS.length-1)*100)+'%';
+  document.getElementById('ticker-bar').style.display=seg.ticker?'flex':'none';
+  const lt=document.getElementById('lower-third');
+  if(seg.lt){safeSet('lt-name',seg.lt.name);safeSet('lt-title',seg.lt.title);lt.classList.add('visible');}
+  else lt.classList.remove('visible');
+  document.querySelectorAll('.seg-dot').forEach((d,i)=>{d.classList.remove('active','done');if(i===current)d.classList.add('active');else if(i<current)d.classList.add('done');});
+  safeHTML('voiceover-text',seg.script);
+  safeSet('script-seg-label',`Scene ${current+1} of ${SEGMENTS.length} · ${seg.label}`);
+  safeSet('seg-counter',`Scene ${current+1} of ${SEGMENTS.length}`);
+  const btn=document.getElementById('next-btn');
+  if(current===SEGMENTS.length-1){btn.textContent='↺ RESTART';btn.onclick=()=>goTo(0);}
+  else{btn.textContent='NEXT ▶';btn.onclick=nextSeg;}
+}
+function nextSeg(){goTo(current<SEGMENTS.length-1?current+1:0);}
+function prevSeg(){goTo(current>0?current-1:0);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextSeg();if(e.key==='ArrowLeft')prevSeg();});
+const dotsEl=document.getElementById('dots');
+SEGMENTS.forEach((_,i)=>{const d=document.createElement('div');d.className='seg-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);dotsEl.appendChild(d);});
+const tabsEl=document.getElementById('ep-tabs');
+EPISODES.forEach((ep,i)=>{const t=document.createElement('button');t.className='ep-tab'+(i===0?' active':'');t.textContent=`EP ${ep.num}: ${ep.hed.slice(0,28)}...`;t.onclick=()=>loadEpisode(i);tabsEl.appendChild(t);});
+window.addEventListener('DOMContentLoaded',()=>{applyAll();fetchAll();loadEpisode(0);});
+</script>
+</body>
+</html>

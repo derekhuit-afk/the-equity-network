@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    { "src": "/shows/rate-watch-daily", "dest": "/shows/rate-watch-daily.html" },
+    { "src": "/shows/housing-market-weekly", "dest": "/shows/housing-market-weekly.html" },
+    { "src": "/shows/mortgage-news-now", "dest": "/shows/mortgage-news-now.html" },
+    { "src": "/shows/the-fed-report", "dest": "/shows/the-fed-report.html" },
+    { "src": "/shows/hmda-deep-dive", "dest": "/shows/hmda-deep-dive.html" },
+    { "src": "/shows/credit-score-clinic", "dest": "/shows/credit-score-clinic.html" },
+    { "src": "/shows/down-payment-decoded", "dest": "/shows/down-payment-decoded.html" },
+    { "src": "/shows/the-affordability-index", "dest": "/shows/the-affordability-index.html" },
+    { "src": "/simulators/(.*)", "dest": "/simulators/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/simulators/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ]
+}

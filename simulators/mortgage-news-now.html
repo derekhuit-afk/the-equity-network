@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mortgage News Now — The Equity Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#0A1628;--navy2:#0D1E35;--gold:#C9A84C;--gold2:#E8C84A;--gold3:#B8942A;--white:#F8F9FA;--mid:#8A95A3;--red:#C0392B;--green:#27AE60;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060E1A;color:var(--white);font-family:'Source Sans 3',sans-serif;font-weight:300;overflow:hidden;}
+.broadcast{width:1280px;height:720px;position:relative;background:var(--navy);overflow:hidden;margin:0 auto;}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:100;}
+.progress-bar-track{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(201,168,76,0.15);z-index:90;}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));width:0%;transition:width 0.5s ease;}
+.top-bar{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:80;}
+.clock{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--gold);opacity:0.8;letter-spacing:2px;}
+.breaking-bug{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--red);padding:4px 10px;border:1px solid rgba(192,57,43,0.5);border-radius:2px;animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.5;}}
+#live-badge{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--green);padding:4px 10px;border:1px solid rgba(39,174,96,0.4);border-radius:2px;}
+.en-bug{position:absolute;top:36px;right:16px;width:44px;height:44px;background:rgba(10,22,40,0.7);border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--gold);opacity:0.15;z-index:80;}
+.ticker-bar{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(10,22,40,0.96);border-top:2px solid var(--red);display:flex;align-items:center;overflow:hidden;z-index:80;}
+.ticker-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);padding:0 14px;white-space:nowrap;border-right:1px solid rgba(192,57,43,0.3);}
+.ticker-scroll{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+.ticker-content{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 50s linear infinite;}
+@keyframes tickerScroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+.ticker-item{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--white);padding:0 18px;}
+.ticker-sep{color:rgba(192,57,43,0.4);padding:0 4px;}
+.t-name{color:var(--red);opacity:0.8;}
+.lower-third{position:absolute;bottom:44px;left:0;background:linear-gradient(90deg,rgba(10,22,40,0.97) 0%,rgba(10,22,40,0.85) 80%,transparent 100%);padding:10px 48px 10px 20px;border-left:3px solid var(--red);z-index:70;transform:translateX(-102%);transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.lower-third.visible{transform:translateX(0);}
+.lt-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--white);}
+.lt-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-top:2px;}
+.segment{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.8s ease;}
+.segment.active{opacity:1;pointer-events:all;}
+
+/* IDENT */
+.ident-bg{width:100%;height:100%;background:radial-gradient(ellipse at 50%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ident-center{position:relative;display:flex;align-items:center;justify-content:center;}
+.ident-ring{width:180px;height:180px;border:2px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:ringPulse 2.5s ease-in-out infinite;}
+.ident-ring2{width:220px;height:220px;border:1px solid rgba(201,168,76,0.15);border-radius:50%;position:absolute;animation:ringPulse 2.5s ease-in-out infinite 0.3s;}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.04);opacity:1;}}
+.ident-letters{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:var(--gold);}
+.ident-sub{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:6px;color:var(--gold);opacity:0.6;margin-top:90px;}
+.ident-tagline{font-family:'Source Sans 3',sans-serif;font-size:13px;color:var(--mid);letter-spacing:2px;margin-top:8px;}
+
+/* OPEN */
+.open-bg{width:100%;height:100%;background:linear-gradient(160deg,#150A0A 0%,#060E1A 100%);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:60px 72px;position:relative;overflow:hidden;}
+.open-bg::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),#E84A4A,var(--red));}
+.open-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(192,57,43,0.05) 0%,transparent 70%);}
+.open-ep-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--red);opacity:0.8;text-transform:uppercase;margin-bottom:16px;z-index:1;}
+.open-title{font-family:'Playfair Display',serif;font-size:62px;font-weight:900;color:var(--white);line-height:1.05;z-index:1;}
+.open-title span{color:var(--red);}
+.open-rule{width:80px;height:3px;background:var(--red);margin:24px 0;z-index:1;}
+.open-sub{font-size:18px;color:var(--mid);font-weight:300;z-index:1;max-width:560px;line-height:1.6;}
+.open-meta{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--red);opacity:0.4;letter-spacing:2px;margin-top:24px;z-index:1;}
+
+/* NEWS LAYOUT */
+.news-layout{width:100%;height:100%;display:grid;grid-template-columns:3fr 2fr;gap:0;}
+.news-main{padding:40px 36px 48px;background:linear-gradient(160deg,#0D1E35,#0A1628);display:flex;flex-direction:column;gap:16px;}
+.news-sidebar{background:#060E1A;border-left:1px solid rgba(192,57,43,0.15);padding:40px 24px 48px;display:flex;flex-direction:column;gap:14px;}
+.story-label{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--red);opacity:0.8;text-transform:uppercase;margin-bottom:4px;}
+.story-hed{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);line-height:1.3;border-left:3px solid var(--red);padding-left:14px;}
+.story-body{font-size:13px;color:var(--mid);line-height:1.75;flex:1;}
+.source-tag{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);opacity:0.5;margin-top:8px;text-transform:uppercase;}
+
+/* SIDEBAR NEWS ITEMS */
+.news-item{background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.12);border-radius:3px;padding:14px;}
+.news-item-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--red);opacity:0.7;text-transform:uppercase;margin-bottom:5px;}
+.news-item-hed{font-size:13px;font-weight:600;color:var(--white);line-height:1.3;margin-bottom:5px;}
+.news-item-sub{font-size:11px;color:var(--mid);line-height:1.4;}
+
+/* RATE ALERT */
+.rate-alert{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:3px;padding:14px;}
+.rate-alert-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:6px;}
+.rate-alert-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);}
+.rate-alert-sub{font-size:11px;color:var(--mid);margin-top:3px;}
+
+.ad-bg{width:100%;height:100%;background:#040A12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.outro-bg{width:100%;height:100%;background:radial-gradient(ellipse at 30% 60%,#0D1E35,#060E1A);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:48px;}
+
+.nav-panel{background:#040A12;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;}
+.nav-btn{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:8px 18px;cursor:pointer;}
+.nav-btn:hover{background:rgba(201,168,76,0.15);}
+.dots{display:flex;gap:6px;}
+.seg-dot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);cursor:pointer;transition:all 0.2s;}
+.seg-dot.active{background:var(--gold);width:9px;height:9px;}
+.seg-dot.done{background:rgba(201,168,76,0.5);}
+.seg-counter{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--mid);}
+.ep-tabs{display:flex;gap:6px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:8px 24px;background:#030810;border-top:1px solid rgba(201,168,76,0.08);}
+.ep-tab{font-family:'Roboto Mono',monospace;font-size:9px;color:var(--mid);background:transparent;border:1px solid rgba(255,255,255,0.08);padding:5px 10px;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.ep-tab:hover{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.ep-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.script-panel{background:#020608;border-top:1px solid rgba(201,168,76,0.1);max-width:1280px;margin:0 auto;padding:20px 28px;}
+.script-label{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);opacity:0.5;text-transform:uppercase;margin-bottom:10px;}
+.script-text{font-size:13px;color:var(--mid);line-height:1.8;max-height:90px;overflow-y:auto;}
+.script-text em{color:var(--white);font-style:normal;}
+.voiceover-direction{color:rgba(201,168,76,0.5);font-size:11px;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="broadcast">
+  <div class="scanlines"></div>
+  <div class="progress-bar-track"><div class="progress-bar" id="progress-bar"></div></div>
+  <div class="top-bar">
+    <div class="clock" id="clock">00:00</div>
+    <div class="breaking-bug">● BREAKING</div>
+    <div id="live-badge">⟳ LOADING...</div>
+  </div>
+  <div class="en-bug">EN</div>
+  <div class="ticker-bar" id="ticker-bar" style="display:none;">
+    <div class="ticker-label">MORTGAGE NEWS</div>
+    <div class="ticker-scroll"><div class="ticker-content" id="ticker-content">Loading...</div></div>
+  </div>
+  <div class="lower-third" id="lower-third">
+    <div class="lt-name" id="lt-name"></div>
+    <div class="lt-title" id="lt-title"></div>
+  </div>
+
+  <!-- IDENT -->
+  <div class="segment active" id="seg-ident">
+    <div class="ident-bg">
+      <div class="ident-center">
+        <div class="ident-ring2"></div>
+        <div class="ident-ring"><div class="ident-letters">EN</div></div>
+      </div>
+      <div class="ident-sub" style="margin-top:90px;">The Equity Network</div>
+      <div class="ident-tagline">Build Wealth · Build Knowledge · Build Home</div>
+    </div>
+  </div>
+
+  <!-- OPEN -->
+  <div class="segment" id="seg-open">
+    <div class="open-bg">
+      <div class="open-ep-label" id="open-ep-label">Season 1 · Episode 1 · Breaking Coverage</div>
+      <div class="open-title">Mortgage<br/><span>News Now</span></div>
+      <div class="open-rule"></div>
+      <div class="open-sub" id="open-sub">The mortgage industry headlines you need — explained clearly, without the noise.</div>
+      <div class="open-meta">TheEquityNetwork.tv · A Huit.ai Media Property</div>
+    </div>
+  </div>
+
+  <!-- STORY 1 -->
+  <div class="segment" id="seg-story1">
+    <div class="news-layout">
+      <div class="news-main">
+        <div class="story-label" id="s1-label">Lead Story</div>
+        <div class="story-hed" id="s1-hed">Loading headline...</div>
+        <div class="story-body" id="s1-body">Loading story...</div>
+        <div class="source-tag" id="s1-source">Source: CFPB · FHFA · HUD</div>
+      </div>
+      <div class="news-sidebar">
+        <div class="rate-alert">
+          <div class="rate-alert-label">📊 30-Yr Fixed Rate</div>
+          <div class="rate-alert-val" id="sidebar-rate">—</div>
+          <div class="rate-alert-sub" id="sidebar-rate-chg">Loading...</div>
+        </div>
+        <div class="news-item" id="sidebar-news1">
+          <div class="news-item-label">Also in Mortgage News</div>
+          <div class="news-item-hed" id="sidebar-n1-hed">—</div>
+          <div class="news-item-sub" id="sidebar-n1-sub">—</div>
+        </div>
+        <div class="news-item" id="sidebar-news2">
+          <div class="news-item-label">Industry Update</div>
+          <div class="news-item-hed" id="sidebar-n2-hed">—</div>
+          <div class="news-item-sub" id="sidebar-n2-sub">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORY 2 -->
+  <div class="segment" id="seg-story2">
+    <div class="news-layout">
+      <div class="news-main">
+        <div class="story-label" id="s2-label">Deep Dive</div>
+        <div class="story-hed" id="s2-hed">Loading...</div>
+        <div class="story-body" id="s2-body">Loading story...</div>
+        <div class="source-tag" id="s2-source">Source: FRED · Freddie Mac · FHFA</div>
+      </div>
+      <div class="news-sidebar">
+        <div class="news-item">
+          <div class="news-item-label">Current Rate Environment</div>
+          <div class="news-item-hed">30-Yr: <span id="s2-rate">—</span></div>
+          <div class="news-item-sub">15-Yr: <span id="s2-rate15">—</span> · FHA: <span id="s2-fha">—</span></div>
+        </div>
+        <div class="news-item">
+          <div class="news-item-label">FHA Loan Limits 2025</div>
+          <div class="news-item-hed">$524,225 Floor</div>
+          <div class="news-item-sub">High-cost ceiling: $1,209,750 · National increase from prior year</div>
+        </div>
+        <div class="news-item">
+          <div class="news-item-label">VA Funding Fee</div>
+          <div class="news-item-hed">1.25% – 3.30%</div>
+          <div class="news-item-sub">Varies by down payment, usage, and service status · Disability exempt</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD BREAK -->
+  <div class="segment" id="seg-break">
+    <div class="ad-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:7px;color:var(--gold);text-transform:uppercase;opacity:0.7;">The Equity Network</div>
+      <div style="width:50px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-size:13px;color:var(--mid);">More coverage after this</div>
+      <div style="height:20px;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);">Huit.ai</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--mid);text-transform:uppercase;">Mortgage Intelligence Platform</div>
+      <div style="font-size:13px;color:var(--mid);margin-top:12px;text-align:center;max-width:420px;line-height:1.6;">HMDA data · AI-powered recruiting · Mortgage CRM built for professionals.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-top:14px;opacity:0.7;">Huit.ai · H-U-I-T dot A-I</div>
+    </div>
+  </div>
+
+  <!-- STORY 3 -->
+  <div class="segment" id="seg-story3">
+    <div class="news-layout">
+      <div class="news-main">
+        <div class="story-label" id="s3-label">Market Impact</div>
+        <div class="story-hed" id="s3-hed">Loading...</div>
+        <div class="story-body" id="s3-body">Loading...</div>
+        <div class="source-tag" id="s3-source">Source: FRED · Fannie Mae · Freddie Mac</div>
+      </div>
+      <div class="news-sidebar">
+        <div class="news-item">
+          <div class="news-item-label">Market Context</div>
+          <div class="news-item-hed" id="s3-ctx-hed">—</div>
+          <div class="news-item-sub" id="s3-ctx-sub">—</div>
+        </div>
+        <div class="news-item">
+          <div class="news-item-label">What This Means for LOs</div>
+          <div class="news-item-hed" id="s3-lo-hed">—</div>
+          <div class="news-item-sub" id="s3-lo-sub">—</div>
+        </div>
+        <div class="rate-alert" style="margin-top:auto;">
+          <div class="rate-alert-label">10-Yr Treasury</div>
+          <div class="rate-alert-val" id="s3-treasury">—</div>
+          <div class="rate-alert-sub">The benchmark mortgage rates follow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTRO -->
+  <div class="segment" id="seg-outro">
+    <div class="outro-bg">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:6px;color:var(--gold);text-transform:uppercase;opacity:0.8;">The Equity Network</div>
+      <div style="width:60px;height:1px;background:var(--gold);opacity:0.3;"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--white);" id="outro-next">Next on Mortgage News Now</div>
+      <div style="font-size:14px;color:var(--mid);max-width:480px;line-height:1.7;" id="outro-next-body">Stay with The Equity Network for the mortgage industry coverage that matters.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);opacity:0.7;margin-top:8px;">TheEquityNetwork.tv · Huit.ai</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--gold);opacity:0.6;margin-top:8px;">"Build Wealth · Build Knowledge · Build Home"</div>
+    </div>
+  </div>
+</div>
+
+<!-- EPISODE TABS -->
+<div class="ep-tabs" id="ep-tabs"></div>
+
+<div class="nav-panel">
+  <button class="nav-btn" onclick="prevSeg()">◀ PREV</button>
+  <div class="dots" id="dots"></div>
+  <div class="seg-counter" id="seg-counter">Scene 1 of 6</div>
+  <button class="nav-btn" id="next-btn" onclick="nextSeg()">NEXT ▶</button>
+</div>
+<div class="script-panel">
+  <div class="script-label" id="script-seg-label">Scene 1 of 6 · Channel Ident</div>
+  <div class="script-text" id="voiceover-text"></div>
+</div>
+
+<script>
+const FRED='https://fred.stlouisfed.org/graph/fredgraph.csv';
+const PROXY='https://corsproxy.io/?';
+let R={rate30:5.98,rate30Prev:6.01,rate15:5.44,fha:5.88,treasury:4.05,isLive:false};
+
+function parseFred(csv){
+  const rows=csv.trim().split('\n').filter(r=>!r.startsWith('DATE'));
+  const last=rows[rows.length-1].split(',');
+  const prev=rows.length>1?rows[rows.length-2].split(','):last;
+  return{value:parseFloat(last[1]),prev:parseFloat(prev[1]),date:last[0]};
+}
+async function fetch1(id){return await(await fetch(PROXY+encodeURIComponent(FRED+'?id='+id))).text();}
+async function fetchAll(){
+  setLoading(true);
+  try{
+    const [c30,c15,ct,cfha]=await Promise.all([fetch1('MORTGAGE30US'),fetch1('MORTGAGE15US'),fetch1('DGS10'),fetch1('OBMMIFHA30YF')]);
+    const p30=parseFred(c30),p15=parseFred(c15),pt=parseFred(ct),pf=parseFred(cfha);
+    R.rate30=p30.value;R.rate30Prev=p30.prev;
+    R.rate15=p15.value;R.fha=pf.value;R.treasury=pt.value;
+    R.isLive=true;
+  }catch(e){console.warn('FRED failed:',e.message);}
+  applyAll();setLoading(false);
+}
+function setLoading(l){const b=document.getElementById('live-badge');if(b){b.textContent=l?'⟳ LOADING...':(R.isLive?'● LIVE':'● FALLBACK');b.style.color=R.isLive?'var(--green)':'var(--gold)';}}
+function fmt(n,d=2){return n.toFixed(d);}
+function safeSet(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function safeHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v;}
+function chgLabel(now,prev){const d=(now-prev).toFixed(2);const dir=d>0?'up':d<0?'dn':'flat';return{text:(d>0?'▲ Up +':d<0?'▼ Down ':'— Unchanged ')+Math.abs(d)+'%',cls:dir};}
+
+const EPISODES=[
+  {num:1,label:'The CFPB',hed:'The CFPB — What It Does and Why Mortgage Pros Should Care',body:'The Consumer Financial Protection Bureau was created in 2011 following the 2008 financial crisis. Its mandate: protect consumers from unfair, deceptive, and abusive practices in financial products. For mortgage professionals, the CFPB is the most important regulatory body in the industry.',sub1:'TRID rules (Truth in Lending + RESPA)',sub2:'Fair lending oversight and HMDA enforcement',ctx:'CFPB oversees the largest mortgage lenders, banks, and non-bank servicers',lo:'Know your disclosure timelines — TRID violations carry civil penalties',next:'Fannie Mae & Freddie Mac Explained'},
+  {num:2,label:'GSEs',hed:'Fannie Mae and Freddie Mac — A Quick Explainer',body:'Fannie Mae and Freddie Mac are government-sponsored enterprises that don\'t lend money directly — they buy conforming mortgages from lenders, package them into mortgage-backed securities, and sell them to investors. This keeps capital flowing into the mortgage market.',sub1:'2025 conforming loan limit: $806,500',sub2:'High-cost areas: up to $1,209,750',ctx:'GSEs own or guarantee ~70% of US mortgages',lo:'Conforming loan limits determine your product menu',next:'What Happens When a Lender Fails'},
+  {num:3,label:'Lender Failure',hed:'What Happens When a Lender Goes Out of Business',body:'When a mortgage lender fails — as First Guaranty and Sprout Mortgage did in 2022 — loans in process can stall and closings can be delayed. Servicing rights are sold, and your borrower\'s loan gets transferred. Here\'s what loan officers need to know to protect their clients.',sub1:'Your loan in process may need to be re-disclosed',sub2:'Servicing transfers don\'t change loan terms',ctx:'FDIC insures deposits — not mortgages in process',lo:'Always have a backup lender relationship. This is not optional.',next:'The NAR Settlement — What It Means'},
+  {num:4,label:'NAR Settlement',hed:'The NAR Settlement — What It Means for Homebuyers',body:'The National Association of Realtors settled a landmark antitrust lawsuit, fundamentally changing how buyer\'s agent commissions are paid. Starting August 2024, buyer agents must have signed agreements before showing homes, and seller concessions for buyer agent commissions changed significantly.',sub1:'Buyers must sign representation agreements upfront',sub2:'Lenders now allow seller concessions for buyer agent commissions',ctx:'Historic shift: first major commission structure change in decades',lo:'New financing structures: seller concessions for buyer agent fees are now lender-approved',next:'FHA Loan Limit Changes'},
+  {num:5,label:'FHA Limits',hed:'FHA Loan Limits for 2025 — What Changed',body:'The Federal Housing Administration increased loan limits for 2025, making FHA financing available for higher-priced homes across the country. The floor — the minimum loan limit in low-cost areas — rose to $524,225. In high-cost areas like San Francisco and New York, the ceiling hit $1,209,750.',sub1:'Floor: $524,225 (most US counties)',sub2:'Ceiling: $1,209,750 (designated high-cost areas)',ctx:'FHA serves buyers with down payments as low as 3.5%',lo:'Review updated limits county-by-county — impacts your product conversations',next:'VA Funding Fee Updates'},
+  {num:6,label:'VA Funding',hed:'VA Funding Fee Updates — What Veterans Need to Know',body:'The VA funding fee changed for 2024 and 2025. This one-time fee — paid upfront or rolled into the loan — helps sustain the VA loan program. Rates vary by down payment amount, whether it\'s a first or subsequent use, and service category.',sub1:'First use, 0% down: 2.15% (regular military)',sub2:'Subsequent use: 3.30% · 10%+ down: 1.25%',ctx:'Veterans with service-connected disabilities are EXEMPT from the funding fee',lo:'Always verify disability status — an exempt borrower saves thousands',next:'New Down Payment Assistance Programs'},
+  {num:7,label:'DPA Programs',hed:'New Down Payment Assistance Programs Launching Nationwide',body:'Down payment assistance programs have expanded significantly in 2024-2025. State housing finance agencies, nonprofits, and employer-sponsored programs are making it easier than ever for first-time buyers to get into a home with minimal cash.',sub1:'State HFA programs: forgivable grants in most states',sub2:'Employer-Assisted Housing (EAH) growing in corporate sector',ctx:'The national homeownership rate sits near historic lows for sub-35 buyers',lo:'DPA programs vary by county, income, and property type — build your local reference sheet now',next:'Mortgage Servicing Transfers'},
+  {num:8,label:'Servicing',hed:'Mortgage Servicing Transfers — What Happens to Your Loan',body:'When your lender sells the servicing rights to your mortgage, your loan payment goes to a new company — but your loan terms don\'t change. Servicing transfers are common. Understanding them protects your clients from confusion at critical moments.',sub1:'New servicer must send Notice of Transfer 15 days before effective date',sub2:'60-day grace period on late fees after transfer',ctx:'~$11 trillion in US mortgage servicing rights outstanding',lo:'Always tell clients upfront that servicing may transfer — prevents panicked calls',next:'Episode 1 — next season'},
+];
+let currentEp=0;
+
+function loadEpisode(idx){
+  currentEp=idx;
+  const ep=EPISODES[idx];
+  safeSet('open-ep-label',`Season 1 · Episode ${ep.num} · Breaking Coverage`);
+  safeSet('open-sub',ep.hed);
+  safeSet('s1-label',ep.label+' — Lead Story');
+  safeSet('s1-hed',ep.hed);
+  safeSet('s1-body',ep.body);
+  safeSet('sidebar-n1-hed',ep.sub1);
+  safeSet('sidebar-n1-sub','Key detail for LOs and buyers');
+  safeSet('sidebar-n2-hed',ep.sub2);
+  safeSet('sidebar-n2-sub','What this means in practice');
+  safeSet('s2-hed',ep.hed+' — Deep Dive');
+  safeSet('s2-body','Going deeper: '+ep.body+' The implications for loan officers and their clients are significant, particularly as regulatory and market conditions continue to evolve.');
+  safeSet('s3-hed','Market Impact: '+ep.label);
+  safeSet('s3-body','What this story means for your business: '+ep.lo+' Understanding the full context — '+ep.ctx+' — helps you have better conversations with clients and referral partners.');
+  safeSet('s3-ctx-hed',ep.ctx);
+  safeSet('s3-lo-hed','LO Action Item');
+  safeSet('s3-lo-sub',ep.lo);
+  safeSet('outro-next',`Next: ${ep.next}`);
+  safeSet('outro-next-body',`Next episode of Mortgage News Now: "${ep.next}" — the mortgage industry coverage that matters, only on The Equity Network.`);
+  applyRates();
+  buildScripts(ep);
+  document.querySelectorAll('.ep-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  goTo(0);
+}
+
+function applyRates(){
+  safeSet('sidebar-rate',R.rate30.toFixed(2)+'%');
+  const c=chgLabel(R.rate30,R.rate30Prev);
+  safeHTML('sidebar-rate-chg',`<span class="${c.cls==='up'?'':'c.cls==='dn'?'':''}">${c.text} from last week</span>`);
+  safeSet('s2-rate',R.rate30.toFixed(2)+'%');
+  safeSet('s2-rate15',R.rate15.toFixed(2)+'%');
+  safeSet('s2-fha',R.fha.toFixed(2)+'%');
+  safeSet('s3-treasury',R.treasury.toFixed(2)+'%');
+  buildTicker();
+}
+
+function buildTicker(){
+  const items=[
+    {n:'30YR FIXED',v:R.rate30.toFixed(2)+'%'},{n:'15YR FIXED',v:R.rate15.toFixed(2)+'%'},
+    {n:'FHA 30YR',v:R.fha.toFixed(2)+'%'},{n:'10YR TREASURY',v:R.treasury.toFixed(2)+'%'},
+    {n:'FHA LIMIT',v:'$524,225'},{n:'CONFORMING',v:'$806,500'},{n:'VA CEILING',v:'$1,209,750'},
+  ];
+  const html=items.map(it=>`<span class="ticker-item"><span class="t-name">${it.n}</span> ${it.v}</span><span class="ticker-sep">|</span>`).join('');
+  safeHTML('ticker-content',html+html);
+}
+
+function buildScripts(ep){
+  const ep2=EPISODES[currentEp];
+  SEGMENTS[2].script=`<em>Breaking news in the mortgage industry:</em> ${ep2.hed}.<br/><br/>${ep2.body}<br/><br/>The context every professional needs to understand: <em>${ep2.ctx}.</em>`;
+  SEGMENTS[3].script=`Going deeper on <em>${ep2.label}:</em><br/><br/>Key detail number one: <em>${ep2.sub1}.</em><br/>Key detail number two: <em>${ep2.sub2}.</em><br/><br/>Current rate environment: 30-year fixed at <em>${R.rate30.toFixed(2)}%</em>. 15-year at <em>${R.rate15.toFixed(2)}%</em>. FHA at <em>${R.fha.toFixed(2)}%</em>.`;
+  SEGMENTS[5].script=`The market impact of this story and what it means for your business:<br/><br/><em>Context:</em> ${ep2.ctx}.<br/><br/><em>LO action item:</em> ${ep2.lo}.<br/><br/>The 10-year Treasury is at <em>${R.treasury.toFixed(2)}%</em> — the benchmark mortgage rates follow. Keep watching that number.`;
+  const seg=SEGMENTS[current];
+  safeHTML('voiceover-text',seg.script);
+}
+
+function applyAll(){applyRates();}
+
+const SEGMENTS=[
+  {id:'seg-ident',label:'Channel Ident',lt:null,ticker:false,script:`<span class="voiceover-direction">Music: orchestral swell. Network animation only.</span>`},
+  {id:'seg-open',label:'Show Open',lt:null,ticker:false,script:`<span class="voiceover-direction">Music: urgent news theme, fade under VO</span><br/><br/>From <em>The Equity Network</em>... this is <strong>Mortgage News Now.</strong><br/><br/>The mortgage industry moves fast. Regulations change. Programs launch. Market conditions shift overnight. This show covers what matters, explains why it matters, and tells you what to do about it. Let's get into the news.`},
+  {id:'seg-story1',label:'Lead Story',lt:{name:'Alex Rivera',title:'Mortgage News Now · The Equity Network'},ticker:true,script:''},
+  {id:'seg-story2',label:'Deep Dive',lt:{name:'Alex Rivera',title:'Mortgage News Now · The Equity Network'},ticker:true,script:''},
+  {id:'seg-break',label:'Ad Break',lt:null,ticker:false,script:`<span class="voiceover-direction">Music: brand sting</span><br/><br/>Mortgage News Now continues in a moment on <em>The Equity Network.</em><br/><br/><em>[HUIT.AI SPOT]</em><br/><br/>The mortgage industry is data-driven. <em>Huit dot A-I</em> gives you 7 years of HMDA federal mortgage data, AI-powered recruiting intelligence, and the only CRM built from the ground up for loan officers. Visit <em>Huit dot A-I</em> — H-U-I-T dot A-I.`},
+  {id:'seg-story3',label:'Market Impact',lt:{name:'Alex Rivera',title:'Mortgage News Now · The Equity Network'},ticker:true,script:''},
+  {id:'seg-outro',label:'Outro',lt:null,ticker:false,script:`<span class="voiceover-direction">Music: theme returns softly</span><br/><br/>That's Mortgage News Now on <em>The Equity Network.</em><br/><br/>Every episode brings you the regulatory updates, program changes, and market developments that shape the mortgage industry. Because knowing the news isn't enough — you have to understand what it means.<br/><br/>Build wealth. Build knowledge. Build home. <em>Until next time.</em>`},
+];
+let current=0;
+
+function updateClock(){const n=new Date();safeSet('clock',String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));}
+updateClock();setInterval(updateClock,30000);
+
+function goTo(idx){
+  if(idx<0||idx>=SEGMENTS.length)return;
+  document.getElementById(SEGMENTS[current].id).classList.remove('active');
+  current=idx;
+  const seg=SEGMENTS[current];
+  document.getElementById(seg.id).classList.add('active');
+  document.getElementById('progress-bar').style.width=(current/(SEGMENTS.length-1)*100)+'%';
+  document.getElementById('ticker-bar').style.display=seg.ticker?'flex':'none';
+  const lt=document.getElementById('lower-third');
+  if(seg.lt){safeSet('lt-name',seg.lt.name);safeSet('lt-title',seg.lt.title);lt.classList.add('visible');}
+  else lt.classList.remove('visible');
+  document.querySelectorAll('.seg-dot').forEach((d,i)=>{d.classList.remove('active','done');if(i===current)d.classList.add('active');else if(i<current)d.classList.add('done');});
+  safeHTML('voiceover-text',seg.script);
+  safeSet('script-seg-label',`Scene ${current+1} of ${SEGMENTS.length} · ${seg.label}`);
+  safeSet('seg-counter',`Scene ${current+1} of ${SEGMENTS.length}`);
+  const btn=document.getElementById('next-btn');
+  if(current===SEGMENTS.length-1){btn.textContent='↺ RESTART';btn.onclick=()=>goTo(0);}
+  else{btn.textContent='NEXT ▶';btn.onclick=nextSeg;}
+}
+function nextSeg(){goTo(current<SEGMENTS.length-1?current+1:0);}
+function prevSeg(){goTo(current>0?current-1:0);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextSeg();if(e.key==='ArrowLeft')prevSeg();});
+
+const dotsEl=document.getElementById('dots');
+SEGMENTS.forEach((_,i)=>{const d=document.createElement('div');d.className='seg-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);dotsEl.appendChild(d);});
+
+const tabsEl=document.getElementById('ep-tabs');
+EPISODES.forEach((ep,i)=>{const t=document.createElement('button');t.className='ep-tab'+(i===0?' active':'');t.textContent=`EP ${ep.num}: ${ep.label}`;t.onclick=()=>loadEpisode(i);tabsEl.appendChild(t);});
+
+window.addEventListener('DOMContentLoaded',()=>{applyAll();fetchAll();loadEpisode(0);});
+</script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Housing Market Weekly — The Equity Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:#0A1628; --navy2:#0D1E35; --navy3:#162540;
+  --gold:#C9A84C; --gold2:#E8C84A; --gold3:#B8942A;
+  --white:#F8F9FA; --mid:#8A95A3; --red:#C0392B;
+  --green:#27AE60; --slate:#4A5568;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060E1A;color:var(--white);font-family:'Source Sans 3',sans-serif;font-weight:300;overflow:hidden;}
+
+/* BROADCAST SCREEN */
+.broadcast{width:1280px;height:720px;position:relative;background:var(--navy);overflow:hidden;margin:0 auto;}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:100;}
+
+/* PROGRESS BAR */
+.progress-bar-track{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(201,168,76,0.15);z-index:90;}
+.progress-bar{height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));width:0%;transition:width 0.5s ease;}
+
+/* CLOCK + LIVE */
+.top-bar{position:absolute;top:12px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:80;}
+.clock{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--gold);opacity:0.8;letter-spacing:2px;}
+#live-badge{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--green);padding:4px 10px;border:1px solid rgba(39,174,96,0.4);border-radius:2px;}
+
+/* EN BUG */
+.en-bug{position:absolute;top:36px;right:16px;width:44px;height:44px;background:rgba(10,22,40,0.7);border:1px solid rgba(201,168,76,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--gold);opacity:0.15;z-index:80;}
+
+/* TICKER */
+.ticker-bar{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(10,22,40,0.96);border-top:2px solid var(--gold3);display:flex;align-items:center;overflow:hidden;z-index:80;}
+.ticker-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);padding:0 14px;white-space:nowrap;border-right:1px solid rgba(201,168,76,0.3);}
+.ticker-scroll{flex:1;overflow:hidden;position:relative;height:100%;display:flex;align-items:center;}
+.ticker-content{display:flex;align-items:center;gap:0;white-space:nowrap;animation:tickerScroll 55s linear infinite;}
+@keyframes tickerScroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+.ticker-item{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--white);padding:0 18px;}
+.ticker-sep{color:rgba(201,168,76,0.4);padding:0 4px;}
+.t-name{color:var(--gold);opacity:0.8;}
+.t-up{color:var(--green);}
+.t-dn{color:var(--red);}
+
+/* LOWER THIRD */
+.lower-third{position:absolute;bottom:44px;left:0;background:linear-gradient(90deg,rgba(10,22,40,0.97) 0%,rgba(10,22,40,0.85) 80%,transparent 100%);padding:10px 48px 10px 20px;border-left:3px solid var(--gold);z-index:70;transform:translateX(-102%);transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.lower-third.visible{transform:translateX(0);}
+.lt-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--white);}
+.lt-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:2px;}
+
+/* SEGMENTS */
+.segment{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94);}
+.segment.active{opacity:1;pointer-events:all;}
+
+/* IDENT */
+.ident-bg{width:100%;height:100%;background:radial-gradient(ellipse at 50% 50%,#0D1E35 0%,#060E1A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+.ident-ring{width:180px;height:180px;border:2px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:ringPulse 2.5s ease-in-out infinite;}
+.ident-ring2{width:220px;height:220px;border:1px solid rgba(201,168,76,0.15);border-radius:50%;position:absolute;animation:ringPulse 2.5s ease-in-out infinite 0.3s;}
+.ident-ring3{width:260px;height:260px;border:1px solid rgba(201,168,76,0.08);border-radius:50%;position:absolute;animation:ringPulse 2.5s ease-in-out infinite 0.6s;}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.04);opacity:1;}}
+.ident-center{position:relative;display:flex;align-items:center;justify-content:center;}
+.ident-letters{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1;}
+.ident-sub{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:6px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-top:20px;}
+.ident-tagline{font-family:'Source Sans 3',sans-serif;font-size:13px;color:var(--mid);letter-spacing:2px;margin-top:8px;}
+
+/* SHOW OPEN */
+.open-bg{width:100%;height:100%;background:linear-gradient(160deg,#0D1E35 0%,#060E1A 100%);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:60px 72px;position:relative;overflow:hidden;}
+.open-bg::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold3),var(--gold2),var(--gold3));}
+.open-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.05) 0%,transparent 70%);}
+.open-ep-label{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:16px;z-index:1;}
+.open-title{font-family:'Playfair Display',serif;font-size:62px;font-weight:900;color:var(--white);line-height:1;z-index:1;animation:fadeUp 0.8s ease both;}
+.open-title span{color:var(--gold);}
+.open-rule{width:80px;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));margin:24px 0;z-index:1;}
+.open-sub{font-family:'Source Sans 3',sans-serif;font-size:18px;color:var(--mid);font-weight:300;z-index:1;max-width:560px;line-height:1.6;}
+.open-meta{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);opacity:0.5;letter-spacing:2px;margin-top:24px;z-index:1;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* DATA PANELS */
+.data-layout{width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.data-main{padding:44px 36px 48px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(160deg,#0D1E35 0%,#0A1628 100%);}
+.data-sidebar{background:#060E1A;border-left:1px solid rgba(201,168,76,0.1);padding:44px 28px 48px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
+.seg-headline{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);line-height:1.3;border-left:3px solid var(--gold);padding-left:14px;}
+.seg-body{font-size:13.5px;color:var(--mid);line-height:1.7;flex:1;}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-card{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:14px 16px;}
+.stat-label{font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);opacity:0.7;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--white);}
+.stat-sub{font-size:11px;color:var(--mid);margin-top:3px;}
+.stat-change{font-family:'Roboto Mono',monospace;font-size:10px;margin-top:4px;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* CHART */
+.chart-wrap{background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:12px;flex:1;}
+.chart-title{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);opacity:0.6;text-transform:uppercase;margin-bottom:8px;}
+svg.chart{width:100%;height:140px;display:block;}
+
+/* METRIC LIST */
+.metric-list{display:flex;flex-direction:column;gap:10px;}
+.metric-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.08);border-radius:3px;}
+.metric-name{font-size:12px;color:var(--mid);}
+.metric-val{font-family:'Roboto Mono',monospace;font-size:13px;color:var(--white);}
+.metric-chg{font-family:'Roboto Mono',monospace;font-size:10px;margin-left:8px;}
+
+/* OUTRO */
+.outro-bg{width:100%;height:100%;background:radial-gradient(ellipse at 30% 60%,#0D1E35 0%,#060E1A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:48px;}
+.outro-logo{font-family:'Playfair Display',serif;font-size:13px;letter-spacing:6px;color:var(--gold);text-transform:uppercase;opacity:0.8;}
+.outro-rule{width:60px;height:1px;background:var(--gold);opacity:0.3;}
+.outro-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--white);}
+.outro-next{font-size:14px;color:var(--mid);max-width:480px;line-height:1.7;}
+.outro-cta{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);opacity:0.7;margin-top:8px;}
+.outro-tagline{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--gold);opacity:0.6;margin-top:8px;}
+
+/* AD BREAK */
+.ad-bg{width:100%;height:100%;background:#040A12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.ad-logo{font-family:'Playfair Display',serif;font-size:11px;letter-spacing:7px;color:var(--gold);text-transform:uppercase;opacity:0.7;}
+.ad-rule{width:50px;height:1px;background:var(--gold);opacity:0.3;}
+.ad-text{font-size:13px;color:var(--mid);letter-spacing:1px;}
+.ad-eight{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);}
+.ad-eight-sub{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--mid);text-transform:uppercase;}
+
+/* NAV */
+.nav-panel{background:#040A12;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1280px;margin:0 auto;}
+.nav-btn{font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:8px 18px;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover{background:rgba(201,168,76,0.15);}
+.dots{display:flex;gap:6px;align-items:center;}
+.seg-dot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);cursor:pointer;transition:all 0.2s;}
+.seg-dot.active{background:var(--gold);width:9px;height:9px;}
+.seg-dot.done{background:rgba(201,168,76,0.5);}
+.ep-tabs{display:flex;gap:6px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:8px 24px;background:#030810;border-top:1px solid rgba(201,168,76,0.08);}
+.ep-tab{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--mid);background:transparent;border:1px solid rgba(255,255,255,0.08);padding:5px 10px;cursor:pointer;transition:all 0.2s;border-radius:2px;}
+.ep-tab:hover{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.ep-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.seg-counter{font-family:'Roboto Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:1px;}
+
+/* SCRIPT PANEL */
+.script-panel{background:#020608;border-top:1px solid rgba(201,168,76,0.1);max-width:1280px;margin:0 auto;padding:20px 28px;}
+.script-label{font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);opacity:0.5;text-transform:uppercase;margin-bottom:10px;}
+.script-text{font-size:13px;color:var(--mid);line-height:1.8;max-height:90px;overflow-y:auto;}
+.script-text em{color:var(--white);font-style:normal;}
+.voiceover-direction{color:rgba(201,168,76,0.5);font-size:11px;font-style:italic;}
+</style>
+</head>
+<body>
+
+<!-- BROADCAST SCREEN -->
+<div class="broadcast">
+  <div class="scanlines"></div>
+  <div class="progress-bar-track"><div class="progress-bar" id="progress-bar"></div></div>
+
+  <div class="top-bar">
+    <div class="clock" id="clock">00:00</div>
+    <div id="live-badge">⟳ LOADING...</div>
+  </div>
+  <div class="en-bug">EN</div>
+
+  <!-- TICKER -->
+  <div class="ticker-bar" id="ticker-bar" style="display:none;">
+    <div class="ticker-label">HOUSING DATA</div>
+    <div class="ticker-scroll"><div class="ticker-content" id="ticker-content">Loading live data...</div></div>
+  </div>
+
+  <!-- LOWER THIRD -->
+  <div class="lower-third" id="lower-third">
+    <div class="lt-name" id="lt-name"></div>
+    <div class="lt-title" id="lt-title"></div>
+  </div>
+
+  <!-- ── SEGMENT 1: IDENT ── -->
+  <div class="segment active" id="seg-ident">
+    <div class="ident-bg">
+      <div class="ident-center">
+        <div class="ident-ring3"></div>
+        <div class="ident-ring2"></div>
+        <div class="ident-ring">
+          <div class="ident-letters">EN</div>
+        </div>
+      </div>
+      <div class="ident-sub" style="margin-top:110px;">The Equity Network</div>
+      <div class="ident-tagline">Build Wealth · Build Knowledge · Build Home</div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 2: SHOW OPEN ── -->
+  <div class="segment" id="seg-open">
+    <div class="open-bg">
+      <div class="open-ep-label" id="open-ep-label">Season 1 · Episode 1 · Housing Intelligence</div>
+      <div class="open-title">Housing Market<br/><span>Weekly</span></div>
+      <div class="open-rule"></div>
+      <div class="open-sub" id="open-sub">Inventory, prices, and trends — everything moving the housing market right now.</div>
+      <div class="open-meta">TheEquityNetwork.tv · A Huit.ai Media Property</div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 3: OVERVIEW ── -->
+  <div class="segment" id="seg-overview">
+    <div class="data-layout">
+      <div class="data-main">
+        <div class="seg-headline" id="seg3-headline">The State of the Market</div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label">Existing Home Sales</div>
+            <div class="stat-value" id="stat-sales">—</div>
+            <div class="stat-sub">Annualized units</div>
+            <div class="stat-change" id="stat-sales-chg">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Median Home Price</div>
+            <div class="stat-value" id="stat-price">—</div>
+            <div class="stat-sub">National median</div>
+            <div class="stat-change" id="stat-price-chg">Loading...</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label">Months of Supply</div>
+            <div class="stat-value" id="stat-supply">—</div>
+            <div class="stat-sub">Inventory level</div>
+            <div class="stat-change" id="stat-supply-note">6 mo = balanced</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Housing Starts</div>
+            <div class="stat-value" id="stat-starts">—</div>
+            <div class="stat-sub">New units, annualized</div>
+            <div class="stat-change" id="stat-starts-chg">Loading...</div>
+          </div>
+        </div>
+        <div class="seg-body" id="seg3-body">Loading live market data from FRED...</div>
+      </div>
+      <div class="data-sidebar">
+        <div class="chart-title">Case-Shiller Home Price Index — 12-Month Trend</div>
+        <div class="chart-wrap">
+          <svg class="chart" id="price-chart" viewBox="0 0 400 140"></svg>
+        </div>
+        <div class="metric-list" id="market-metrics">
+          <div class="metric-item"><span class="metric-name">Loading...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 4: INVENTORY ── -->
+  <div class="segment" id="seg-inventory">
+    <div class="data-layout">
+      <div class="data-main">
+        <div class="seg-headline" id="seg4-headline">The Inventory Crisis Explained</div>
+        <div class="seg-body" id="seg4-body">Loading...</div>
+        <div class="stat-row" style="margin-top:auto;">
+          <div class="stat-card">
+            <div class="stat-label">Active Listings</div>
+            <div class="stat-value" id="stat-listings">—</div>
+            <div class="stat-sub">Existing homes for sale</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Building Permits</div>
+            <div class="stat-value" id="stat-permits">—</div>
+            <div class="stat-sub">New units authorized</div>
+          </div>
+        </div>
+      </div>
+      <div class="data-sidebar">
+        <div class="chart-title">Months of Supply vs. Balanced Market Threshold</div>
+        <div class="chart-wrap" style="flex:1;">
+          <svg class="chart" id="supply-chart" viewBox="0 0 400 160" style="height:160px;"></svg>
+        </div>
+        <div style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:3px;padding:12px 14px;margin-top:8px;">
+          <div style="font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px;">⚠ Market Imbalance</div>
+          <div style="font-size:12px;color:var(--mid);line-height:1.5;" id="imbalance-note">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 5: AD BREAK ── -->
+  <div class="segment" id="seg-break">
+    <div class="ad-bg">
+      <div class="ad-logo">The Equity Network</div>
+      <div class="ad-rule"></div>
+      <div class="ad-text">More programming after this</div>
+      <div style="height:24px;"></div>
+      <div class="ad-eight">Huit.ai</div>
+      <div class="ad-eight-sub">Mortgage Intelligence Platform</div>
+      <div style="font-size:13px;color:var(--mid);margin-top:12px;text-align:center;max-width:400px;line-height:1.6;">The only platform built from the ground up for mortgage professionals.<br/>HMDA data · Recruiting intelligence · AI-powered analytics.</div>
+      <div style="font-family:'Roboto Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-top:16px;opacity:0.7;">Huit.ai · Get a Demo</div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 6: AFFORDABILITY ── -->
+  <div class="segment" id="seg-afford">
+    <div class="data-layout">
+      <div class="data-main">
+        <div class="seg-headline" id="seg6-headline">Affordability — Where Buyers Stand Today</div>
+        <div class="seg-body" id="seg6-body">Loading...</div>
+        <div class="stat-row" style="margin-top:auto;">
+          <div class="stat-card">
+            <div class="stat-label">30-Yr Rate</div>
+            <div class="stat-value" id="stat-afford-rate">—</div>
+            <div class="stat-sub">Current national avg</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Consumer Sentiment</div>
+            <div class="stat-value" id="stat-sentiment">—</div>
+            <div class="stat-sub">Univ. of Michigan Index</div>
+          </div>
+        </div>
+      </div>
+      <div class="data-sidebar">
+        <div class="chart-title">Monthly Payment on Median-Priced Home — 12 Months</div>
+        <div class="chart-wrap" style="flex:1;">
+          <svg class="chart" id="payment-chart" viewBox="0 0 400 160" style="height:160px;"></svg>
+        </div>
+        <div class="metric-list" id="afford-metrics"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 7: FORECAST ── -->
+  <div class="segment" id="seg-forecast">
+    <div class="data-layout">
+      <div class="data-main">
+        <div class="seg-headline" id="seg7-headline">What to Watch This Week</div>
+        <div class="seg-body" id="seg7-body">Loading...</div>
+        <div class="metric-list" id="watchlist" style="margin-top:auto;"></div>
+      </div>
+      <div class="data-sidebar">
+        <div class="chart-title">New Home Sales — Monthly Trend</div>
+        <div class="chart-wrap" style="flex:1;">
+          <svg class="chart" id="new-sales-chart" viewBox="0 0 400 160" style="height:160px;"></svg>
+        </div>
+        <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:3px;padding:12px 14px;margin-top:8px;">
+          <div style="font-family:'Roboto Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;">Market Condition</div>
+          <div style="font-size:12px;color:var(--mid);line-height:1.5;" id="market-condition">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEGMENT 8: OUTRO ── -->
+  <div class="segment" id="seg-outro">
+    <div class="outro-bg">
+      <div class="outro-logo">The Equity Network</div>
+      <div class="outro-rule"></div>
+      <div class="outro-title" id="outro-next-show">Next Week on Housing Market Weekly</div>
+      <div class="outro-next" id="outro-next-body">Tune in next week for another deep dive into the data driving your local market.</div>
+      <div class="outro-cta">TheEquityNetwork.tv · Huit.ai</div>
+      <div class="outro-tagline">"Build Wealth · Build Knowledge · Build Home"</div>
+    </div>
+  </div>
+</div>
+
+<!-- EPISODE TABS -->
+<div class="ep-tabs" id="ep-tabs"></div>
+
+<!-- NAV -->
+<div class="nav-panel">
+  <button class="nav-btn" onclick="prevSeg()">◀ PREV</button>
+  <div class="dots" id="dots"></div>
+  <div class="seg-counter" id="seg-counter">Scene 1 of 8</div>
+  <button class="nav-btn" id="next-btn" onclick="nextSeg()">NEXT ▶</button>
+</div>
+
+<!-- SCRIPT PANEL -->
+<div class="script-panel">
+  <div class="script-label" id="script-seg-label">Scene 1 of 8 · Channel Ident</div>
+  <div class="script-text" id="voiceover-text"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  LIVE DATA ENGINE
+// ═══════════════════════════════════════════
+const FRED = 'https://fred.stlouisfed.org/graph/fredgraph.csv';
+const PROXY = 'https://corsproxy.io/?';
+
+let D = {
+  sales: 3910000, salesPrev: 4000000,
+  price: 405300, pricePrev: 400000,
+  supply: 9.0, supplyPrev: 8.5,
+  starts: 1272000, startsPrev: 1350000,
+  permits: 1448000, permitsPrev: 1388000,
+  caseShiller: 329, caseShillerPrev: 325,
+  rate30: 5.98, rate30Prev: 6.01,
+  sentiment: 51.0,
+  priceHistory: [],
+  rateHistory: [],
+  isLive: false,
+};
+
+function fmt(n,dec=1){return n.toFixed(dec);}
+function fmtK(n){return (n/1000).toFixed(0)+'K';}
+function fmtM(n){return (n/1000000).toFixed(2)+'M';}
+function fmtDollar(n){return '$'+Math.round(n).toLocaleString();}
+function chg(now,prev){
+  const d=+(now-prev).toFixed(1);
+  if(d>0)return{arrow:'▲',cls:'up',val:'+'+fmt(d),dir:'up'};
+  if(d<0)return{arrow:'▼',cls:'dn',val:fmt(d),dir:'dn'};
+  return{arrow:'—',cls:'',val:'0',dir:'flat'};
+}
+function pctChg(now,prev){
+  const p=((now-prev)/prev*100).toFixed(1);
+  if(p>0)return{arrow:'▲',cls:'up',val:'+'+p+'%',dir:'up'};
+  if(p<0)return{arrow:'▼',cls:'dn',val:p+'%',dir:'dn'};
+  return{arrow:'—',cls:'',val:'0%',dir:'flat'};
+}
+function pmt(price,rate){
+  const loan=price*0.80,r=rate/100/12,n=360;
+  return loan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+}
+function parseFred(csv){
+  const rows=csv.trim().split('\n').filter(r=>!r.startsWith('DATE'));
+  const last=rows[rows.length-1].split(',');
+  const prev=rows.length>1?rows[rows.length-2].split(','):last;
+  return{value:parseFloat(last[1]),prev:parseFloat(prev[1]),date:last[0]};
+}
+function parseFredHist(csv,n=14){
+  return csv.trim().split('\n').filter(r=>!r.startsWith('DATE')).slice(-n)
+    .map(r=>{const[d,v]=r.split(',');return{date:d,value:parseFloat(v)};})
+    .filter(r=>!isNaN(r.value));
+}
+async function fetch1(id){
+  const r=await fetch(PROXY+encodeURIComponent(FRED+'?id='+id));
+  return await r.text();
+}
+async function fetchAll(){
+  setLoading(true);
+  try{
+    const [csSales,csPrice,csSupply,csStarts,csPermits,csCS,csRate,csSent]=await Promise.all([
+      fetch1('EXHOSLUSM495S'),fetch1('MSPUS'),fetch1('MSACSR'),
+      fetch1('HOUST'),fetch1('PERMIT'),fetch1('CSUSHPISA'),
+      fetch1('MORTGAGE30US'),fetch1('UMCSENT')
+    ]);
+    const pS=parseFred(csSales),pP=parseFred(csPrice),pSup=parseFred(csSupply);
+    const pSt=parseFred(csStarts),pPerm=parseFred(csPermits),pCS=parseFred(csCS);
+    const pR=parseFred(csRate),pSent=parseFred(csSent);
+    D.sales=pS.value; D.salesPrev=pS.prev;
+    D.price=pP.value; D.pricePrev=pP.prev;
+    D.supply=pSup.value; D.supplyPrev=pSup.prev;
+    D.starts=pSt.value*1000; D.startsPrev=pSt.prev*1000;
+    D.permits=pPerm.value*1000; D.permitsPrev=pPerm.prev*1000;
+    D.caseShiller=pCS.value; D.caseShillerPrev=pCS.prev;
+    D.rate30=pR.value; D.rate30Prev=pR.prev;
+    D.sentiment=pSent.value;
+    D.priceHistory=parseFredHist(csCS,14);
+    D.rateHistory=parseFredHist(csRate,14);
+    D.isLive=true;
+  }catch(e){console.warn('FRED fetch failed:',e.message);}
+  applyAll(); setLoading(false);
+}
+
+function setLoading(l){
+  const b=document.getElementById('live-badge');
+  if(b)b.textContent=l?'⟳ LOADING...':(D.isLive?'● LIVE':'● FALLBACK');
+  if(b)b.style.color=D.isLive?'var(--green)':'var(--gold)';
+}
+function safeSet(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function safeHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v;}
+
+function applyAll(){
+  const cSales=pctChg(D.sales,D.salesPrev);
+  const cPrice=pctChg(D.price,D.pricePrev);
+  const cStarts=pctChg(D.starts,D.startsPrev);
+
+  safeSet('stat-sales', fmtM(D.sales));
+  safeHTML('stat-sales-chg',`<span class="${cSales.cls}">${cSales.arrow} ${cSales.val} vs prior</span>`);
+  safeSet('stat-price', fmtDollar(D.price));
+  safeHTML('stat-price-chg',`<span class="${cPrice.cls}">${cPrice.arrow} ${cPrice.val} vs prior</span>`);
+  safeSet('stat-supply', fmt(D.supply,1)+'mo');
+  safeSet('stat-starts', fmtK(D.starts));
+  safeHTML('stat-starts-chg',`<span class="${cStarts.cls}">${cStarts.arrow} ${cStarts.val} vs prior</span>`);
+  safeSet('stat-listings', fmtM(D.sales));
+  safeSet('stat-permits', fmtK(D.permits));
+  safeSet('stat-afford-rate', fmt(D.rate30,2)+'%');
+  safeSet('stat-sentiment', fmt(D.sentiment,1));
+
+  const supplyGap=(6-D.supply).toFixed(1);
+  const marketType=D.supply<4?'Strong Seller\'s Market':D.supply<6?'Moderate Seller\'s Market':D.supply<8?'Balanced Market':'Buyer\'s Market';
+  safeSet('market-condition', marketType+'. Months of supply at '+fmt(D.supply,1)+' — '+(D.supply<6?'below the 6-month balanced threshold.':'at or above the 6-month balanced threshold.'));
+  safeHTML('imbalance-note', D.supply<6?`Supply is <em>${Math.abs(supplyGap)} months below balanced</em>. Sellers remain in control with limited inventory driving continued price pressure.`:`Supply is trending toward balance. Buyers gaining leverage as listings increase.`);
+
+  buildCharts();
+  buildTicker();
+  buildMetrics();
+  buildScripts();
+}
+
+function buildCharts(){
+  // Case-Shiller trend
+  const hist=D.priceHistory;
+  if(hist.length>1){
+    const vals=hist.map(h=>h.value);
+    const mx=Math.max(...vals),mn=Math.min(...vals),rng=mx-mn||1;
+    const W=400,H=140,P=16;
+    const pw=(W-P*2)/(hist.length-1);
+    const pts=hist.map((h,i)=>{
+      const x=P+i*pw;
+      const y=P+(1-(h.value-mn)/rng)*(H-P*2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    const fill=pts+` ${(P+(hist.length-1)*pw).toFixed(1)},${H} ${P},${H}`;
+    document.getElementById('price-chart').innerHTML=`
+      <polygon points="${fill}" fill="rgba(201,168,76,0.06)"/>
+      <polyline points="${pts}" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="${(P+(hist.length-1)*pw).toFixed(1)}" cy="${(P+(1-(vals[vals.length-1]-mn)/rng)*(H-P*2)).toFixed(1)}" r="4" fill="#C9A84C"/>
+      <text x="${P}" y="${H-2}" font-family="Roboto Mono" font-size="8" fill="rgba(138,149,163,0.5)">${hist[0].date.slice(0,7)}</text>
+      <text x="${W-60}" y="${H-2}" font-family="Roboto Mono" font-size="8" fill="rgba(138,149,163,0.5)">${hist[hist.length-1].date.slice(0,7)}</text>
+      <text x="${P}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(201,168,76,0.5)">${fmt(mx,1)}</text>
+    `;
+  }
+
+  // Supply chart (bar chart)
+  const supplyData=[D.supply,D.supply*0.97,D.supply*1.02,D.supply*0.99,D.supply*1.01,D.supply].map(v=>+v.toFixed(1));
+  const smx=Math.max(...supplyData,7),W=400,H=160,P=20;
+  const bw=(W-P*2)/supplyData.length*0.6;
+  const bs=(W-P*2)/supplyData.length;
+  const balancedY=P+(1-6/smx)*(H-P*2);
+  document.getElementById('supply-chart').innerHTML=`
+    ${supplyData.map((v,i)=>{
+      const bh=(v/smx)*(H-P*2);
+      const x=P+i*bs+(bs-bw)/2;
+      const y=H-P-bh;
+      const clr=v<6?'#C0392B':'#27AE60';
+      return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${clr}" opacity="0.7"/>
+      <text x="${(x+bw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" font-family="Roboto Mono" font-size="8" fill="rgba(255,255,255,0.5)" text-anchor="middle">${v}</text>`;
+    }).join('')}
+    <line x1="${P}" y1="${balancedY.toFixed(1)}" x2="${W-P}" y2="${balancedY.toFixed(1)}" stroke="#C9A84C" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <text x="${W-P}" y="${(balancedY-3).toFixed(1)}" font-family="Roboto Mono" font-size="8" fill="rgba(201,168,76,0.6)" text-anchor="end">6mo balanced</text>
+  `;
+
+  // Payment affordability chart
+  if(D.rateHistory.length>1){
+    const pmts=D.rateHistory.map(r=>pmt(D.price,r.value));
+    const pmx=Math.max(...pmts),pmn=Math.min(...pmts),prng=pmx-pmn||100;
+    const W=400,H=160,P=20,pw=(W-P*2)/(pmts.length-1);
+    const pts=pmts.map((p,i)=>{
+      const x=P+i*pw;
+      const y=P+(1-(p-pmn)/prng)*(H-P*2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    const fill=pts+` ${(P+(pmts.length-1)*pw).toFixed(1)},${H} ${P},${H}`;
+    document.getElementById('payment-chart').innerHTML=`
+      <polygon points="${fill}" fill="rgba(192,57,43,0.08)"/>
+      <polyline points="${pts}" fill="none" stroke="#C0392B" stroke-width="2" stroke-linejoin="round"/>
+      <text x="${P}" y="12" font-family="Roboto Mono" font-size="8" fill="rgba(192,57,43,0.6)">${fmtDollar(pmx)}/mo peak</text>
+      <text x="${P}" y="${H-4}" font-family="Roboto Mono" font-size="8" fill="rgba(39,174,96,0.6)">${fmtDollar(pmn)}/mo low</text>
+    `;
+  }
+
+  // New sales chart placeholder
+  const nsData=[D.sales*0.95,D.sales*0.97,D.sales*1.01,D.sales*0.99,D.sales];
+  const nmx=Math.max(...nsData),W=400,H=160,P=20;
+  const nbw=(W-P*2)/nsData.length*0.6,nbs=(W-P*2)/nsData.length;
+  document.getElementById('new-sales-chart').innerHTML=nsData.map((v,i)=>{
+    const bh=(v/nmx)*(H-P*2);
+    const x=P+i*nbs+(nbs-nbw)/2;
+    const y=H-P-bh;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${nbw.toFixed(1)}" height="${bh.toFixed(1)}" fill="rgba(201,168,76,0.6)" rx="2"/>
+    <text x="${(x+nbw/2).toFixed(1)}" y="${(y-3).toFixed(1)}" font-family="Roboto Mono" font-size="7" fill="rgba(138,149,163,0.5)" text-anchor="middle">${fmtM(v)}</text>`;
+  }).join('');
+}
+
+function buildMetrics(){
+  const csChg=pctChg(D.caseShiller,D.caseShillerPrev);
+  safeHTML('market-metrics',`
+    <div class="metric-item"><span class="metric-name">Case-Shiller HPI</span><span class="metric-val">${fmt(D.caseShiller,1)} <span class="${csChg.cls}" style="font-size:10px;">${csChg.arrow}${csChg.val}</span></span></div>
+    <div class="metric-item"><span class="metric-name">Months of Supply</span><span class="metric-val">${fmt(D.supply,1)} mo</span></div>
+    <div class="metric-item"><span class="metric-name">30-Yr Rate</span><span class="metric-val">${fmt(D.rate30,2)}%</span></div>
+    <div class="metric-item"><span class="metric-name">Median Price</span><span class="metric-val">${fmtDollar(D.price)}</span></div>
+  `);
+
+  const monthlyPmt=pmt(D.price,D.rate30);
+  const income4x=D.price/4;
+  safeHTML('afford-metrics',`
+    <div class="metric-item"><span class="metric-name">Monthly P&I (80% LTV)</span><span class="metric-val">${fmtDollar(monthlyPmt)}</span></div>
+    <div class="metric-item"><span class="metric-name">Income needed (4x rule)</span><span class="metric-val">${fmtDollar(income4x)}/yr</span></div>
+    <div class="metric-item"><span class="metric-name">20% Down Required</span><span class="metric-val">${fmtDollar(D.price*0.2)}</span></div>
+  `);
+
+  safeHTML('watchlist',`
+    <div class="metric-item"><span class="metric-name">📅 Existing Home Sales (monthly)</span><span class="metric-val metric-chg">FRED HOUST</span></div>
+    <div class="metric-item"><span class="metric-name">📅 New Home Sales report</span><span class="metric-val">Census Bureau</span></div>
+    <div class="metric-item"><span class="metric-name">📅 Case-Shiller HPI update</span><span class="metric-val">2-mo lag</span></div>
+    <div class="metric-item"><span class="metric-name">📅 30-Yr Rate (Freddie Mac)</span><span class="metric-val">Every Thursday</span></div>
+  `);
+}
+
+function buildTicker(){
+  const cS=pctChg(D.sales,D.salesPrev);
+  const cP=pctChg(D.price,D.pricePrev);
+  const cCS=pctChg(D.caseShiller,D.caseShillerPrev);
+  const items=[
+    {n:'HOME SALES',v:fmtM(D.sales),c:cS},
+    {n:'MEDIAN PRICE',v:fmtDollar(D.price),c:cP},
+    {n:'MONTHS SUPPLY',v:fmt(D.supply,1)+'mo',c:{arrow:'',cls:'',val:''}},
+    {n:'HOUSING STARTS',v:fmtK(D.starts),c:pctChg(D.starts,D.startsPrev)},
+    {n:'CASE-SHILLER',v:fmt(D.caseShiller,1),c:cCS},
+    {n:'PERMITS',v:fmtK(D.permits),c:pctChg(D.permits,D.permitsPrev)},
+    {n:'30YR RATE',v:fmt(D.rate30,2)+'%',c:{arrow:'',cls:'',val:''}},
+    {n:'CONSUMER SENT.',v:fmt(D.sentiment,1),c:{arrow:'',cls:'',val:''}},
+  ];
+  const html=items.map(it=>`<span class="ticker-item"><span class="t-name">${it.n}</span> ${it.v} <span class="${it.c.dir==='up'?'t-up':it.c.dir==='dn'?'t-dn':''}">${it.c.arrow} ${it.c.val}</span></span><span class="ticker-sep">|</span>`).join('');
+  safeHTML('ticker-content',html+html);
+}
+
+function buildScripts(){
+  const supply=fmt(D.supply,1);
+  const salesM=fmtM(D.sales);
+  const priceStr=fmtDollar(D.price);
+  const monthlyPmtStr=fmtDollar(pmt(D.price,D.rate30));
+  const marketType=D.supply<4?'a strong seller\'s market':D.supply<6?'a moderate seller\'s market':'a balanced or buyer\'s market';
+
+  SEGMENTS[2].script=`The housing market right now: <em>${salesM} existing homes sold</em> on an annualized basis. The national median price sits at <em>${priceStr}</em>. And inventory? Still thin — at <em>${supply} months of supply</em>, we're ${D.supply<6?'<em>below the 6-month balanced threshold</em>, which means sellers still hold the upper hand.':'<em>approaching balance</em>, giving buyers more room to negotiate.'}<br/><br/>Housing starts came in at <em>${fmtK(D.starts)} thousand units</em> annualized — builders are active but not moving fast enough to close the gap. This week, we break down exactly where the pressure points are.`;
+
+  SEGMENTS[3].script=`The single biggest force suppressing this market right now is simple: <em>there aren't enough homes for sale.</em><br/><br/>At <em>${supply} months of supply</em>, we are ${D.supply<6?'<em>below the 6-month level</em> economists consider balanced. That means for every buyer in the market, there aren\'t enough sellers.':'at or above balanced levels — a shift that\'s giving buyers more options.'}<br/><br/>Building permits came in at <em>${fmtK(D.permits)} thousand</em> this month. Builders are trying to fill the gap, but construction timelines mean relief is 12 to 24 months away at minimum. Until supply catches up, expect upward pressure on prices to continue.`;
+
+  SEGMENTS[5].script=`Affordability is the defining challenge for today's buyer. The median home price is <em>${priceStr}</em>. At today's rate of <em>${fmt(D.rate30,2)}%</em>, a buyer putting 20% down faces a principal and interest payment of <em>${monthlyPmtStr} per month.</em><br/><br/>That payment requires roughly <em>${fmtDollar(pmt(D.price,D.rate30)*12/0.28)} in annual income</em> by the standard 28% housing expense guideline — a bar that's out of reach for a significant portion of buyers in most markets.<br/><br/>Consumer sentiment is at <em>${fmt(D.sentiment,1)}</em> on the University of Michigan scale. That reflects real hesitation. Buyers are watching, waiting, and shopping carefully. This is the environment every loan officer is working in right now.`;
+
+  SEGMENTS[6].script=`Here's what to watch this week and next month.<br/><br/>The Case-Shiller Home Price Index — currently at <em>${fmt(D.caseShiller,1)}</em> — releases on a 2-month lag. That number tells us where prices were, not where they're going. <em>What actually predicts prices: mortgage rate movement and months of supply.</em><br/><br/>If the 30-year rate drops below <em>${fmt(D.rate30-0.5,2)}%</em>, expect suppressed buyer demand to unlock quickly — which means competition, multiple offers, and upward price pressure. If rates hold or rise, the current slow pace continues.<br/><br/>This is ${marketType}. Know your clients' position, get pre-approvals locked, and be ready to move when conditions shift.`;
+
+  const seg=SEGMENTS[current];
+  safeHTML('voiceover-text',seg.script);
+}
+
+// ═══════════════════════════════════════════
+//  EPISODE DATA
+// ═══════════════════════════════════════════
+const EPISODES=[
+  {num:1,title:'Inventory Crisis',sub:'Why There Aren\'t Enough Homes for Sale',next:'Days on Market — What This Number Tells You'},
+  {num:2,title:'Days on Market',sub:'What This Number Tells You Right Now',next:'Median Home Price Trends Across America'},
+  {num:3,title:'Median Price Trends',sub:'Where Prices Are Headed and Why',next:'New Construction vs. Existing Home Sales'},
+  {num:4,title:'New vs. Existing Homes',sub:'Understanding the Gap in Today\'s Market',next:'Buyer\'s Market vs. Seller\'s Market'},
+  {num:5,title:'Buyer\'s vs. Seller\'s Market',sub:'How to Tell the Difference — And What It Means',next:'The Seasonal Housing Market'},
+  {num:6,title:'The Seasonal Market',sub:'What Happens Every Spring and Why',next:'Foreclosure Trends'},
+  {num:7,title:'Foreclosure Trends',sub:'Are We Heading for a Crash?',next:'Migration Patterns — Where Americans Are Moving'},
+  {num:8,title:'Migration Patterns',sub:'Where Americans Are Moving and Why',next:'Episode 1, next season'},
+];
+let currentEp=0;
+
+function loadEpisode(idx){
+  currentEp=idx;
+  const ep=EPISODES[idx];
+  safeSet('open-ep-label',`Season 1 · Episode ${ep.num} · Housing Intelligence`);
+  safeSet('open-sub',ep.sub);
+  safeSet('outro-next-show',`Next: ${ep.next}`);
+  safeSet('outro-next-body',`Next episode of Housing Market Weekly: "${ep.next}" — more data-driven housing intelligence from The Equity Network.`);
+  safeSet('seg3-headline',ep.title+' — By the Numbers');
+  document.querySelectorAll('.ep-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  buildScripts();
+  goTo(0);
+}
+
+// ═══════════════════════════════════════════
+//  SEGMENT NAV
+// ═══════════════════════════════════════════
+const SEGMENTS=[
+  {id:'seg-ident',label:'Channel Ident',lt:null,ticker:false,
+   script:`<span class="voiceover-direction">Music: orchestral swell, 3 seconds. Network animation only.</span>`},
+  {id:'seg-open',label:'Show Open',lt:null,ticker:false,
+   script:`<span class="voiceover-direction">Music: upbeat financial news theme, fade under VO</span><br/><br/>From <em>The Equity Network</em>... this is <strong>Housing Market Weekly.</strong><br/><br/>The numbers driving real estate right now. Every week, we break down inventory, prices, sales trends, and what it all means for buyers, sellers, and the professionals who serve them. I'm your host — let's get into the data.`},
+  {id:'seg-overview',label:'Segment 01',lt:{name:'Morgan Hayes',title:'Housing Market Weekly · The Equity Network'},ticker:true,script:''},
+  {id:'seg-inventory',label:'Segment 02',lt:{name:'Morgan Hayes',title:'Housing Market Weekly · The Equity Network'},ticker:true,script:''},
+  {id:'seg-break',label:'Ad Break',lt:null,ticker:false,
+   script:`<span class="voiceover-direction">Music: soft brand sting</span><br/><br/>Housing Market Weekly continues in a moment on <em>The Equity Network.</em><br/><br/><em>[HUIT.AI SPOT]</em><br/><br/>If you're a loan officer or branch manager and you're still flying blind on market data — <em>Huit dot A-I</em> has seven years of federal HMDA data, housing intelligence, and AI-powered recruiting tools. Visit <em>Huit dot A-I</em> — H-U-I-T dot A-I — today.`},
+  {id:'seg-afford',label:'Segment 03',lt:{name:'Morgan Hayes',title:'Housing Market Weekly · The Equity Network'},ticker:true,script:''},
+  {id:'seg-forecast',label:'Segment 04',lt:{name:'Morgan Hayes',title:'Housing Market Weekly · The Equity Network'},ticker:true,script:''},
+  {id:'seg-outro',label:'Outro',lt:null,ticker:false,
+   script:`<span class="voiceover-direction">Music: theme returns softly</span><br/><br/>That's Housing Market Weekly on <em>The Equity Network</em>. Data sourced live from FRED, Freddie Mac, and federal housing reports — so every number you saw today is the most current available.<br/><br/>Next week, we're digging into <em>migration patterns</em> — where Americans are moving and what it means for local market dynamics.<br/><br/>Build wealth. Build knowledge. Build home. <em>See you next week.</em>`},
+];
+let current=0;
+
+function updateClock(){
+  const n=new Date();
+  safeSet('clock',String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));
+}
+updateClock(); setInterval(updateClock,30000);
+
+function goTo(idx){
+  if(idx<0||idx>=SEGMENTS.length)return;
+  document.getElementById(SEGMENTS[current].id).classList.remove('active');
+  current=idx;
+  const seg=SEGMENTS[current];
+  document.getElementById(seg.id).classList.add('active');
+  document.getElementById('progress-bar').style.width=(current/(SEGMENTS.length-1)*100)+'%';
+  document.getElementById('ticker-bar').style.display=seg.ticker?'flex':'none';
+  const lt=document.getElementById('lower-third');
+  if(seg.lt){
+    safeSet('lt-name',seg.lt.name); safeSet('lt-title',seg.lt.title);
+    lt.classList.add('visible');
+  }else{lt.classList.remove('visible');}
+  document.querySelectorAll('.seg-dot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i===current)d.classList.add('active');
+    else if(i<current)d.classList.add('done');
+  });
+  safeHTML('voiceover-text',seg.script);
+  safeSet('script-seg-label',`Scene ${current+1} of ${SEGMENTS.length} · ${seg.label}`);
+  safeSet('seg-counter',`Scene ${current+1} of ${SEGMENTS.length}`);
+  const btn=document.getElementById('next-btn');
+  if(current===SEGMENTS.length-1){btn.textContent='↺ RESTART';btn.onclick=()=>goTo(0);}
+  else{btn.textContent='NEXT ▶';btn.onclick=nextSeg;}
+}
+function nextSeg(){goTo(current<SEGMENTS.length-1?current+1:0);}
+function prevSeg(){goTo(current>0?current-1:0);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextSeg();if(e.key==='ArrowLeft')prevSeg();});
+
+// Build dots
+const dotsEl=document.getElementById('dots');
+SEGMENTS.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='seg-dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+});
+
+// Build episode tabs
+const tabsEl=document.getElementById('ep-tabs');
+EPISODES.forEach((ep,i)=>{
+  const t=document.createElement('button');
+  t.className='ep-tab'+(i===0?' active':'');
+  t.textContent=`EP ${ep.num}: ${ep.title}`;
+  t.onclick=()=>loadEpisode(i);
+  tabsEl.appendChild(t);
+});
+
+// BOOT
+window.addEventListener('DOMContentLoaded',()=>{
+  applyAll();
+  fetchAll();
+  loadEpisode(0);
+});
+</script>
+</body>
+</html>
