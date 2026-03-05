@@ -1165,21 +1165,16 @@ footer {
 </footer>
 
 <script>
-// ── LIVE FRED DATA ──
-const FRED = 'https://fred.stlouisfed.org/graph/fredgraph.csv';
-const PROXY = 'https://corsproxy.io/?';
-let R = { r30:5.98, r30p:6.01, r15:5.44, t10:4.05, t10p:4.12, t2:4.35, ff:3.64, hist30:[], isLive:false };
-
-function parseFred(csv){ const rows=csv.trim().split('\n').filter(r=>!r.startsWith('DATE')); const l=rows[rows.length-1].split(','); const p=rows.length>1?rows[rows.length-2].split(','):l; return{v:parseFloat(l[1]),prev:parseFloat(p[1]),date:l[0]}; }
-function parseFredHist(csv,n=16){ return csv.trim().split('\n').filter(r=>!r.startsWith('DATE')).slice(-n).map(r=>{const[d,v]=r.split(',');return parseFloat(v);}).filter(v=>!isNaN(v)); }
-async function f1(id){ return await(await fetch(PROXY+encodeURIComponent(FRED+'?id='+id))).text(); }
+// ── LIVE FRED DATA via /api/fred ──
+let R = { r30:5.98, r30p:6.01, r15:5.21, t10:4.28, t10p:4.31, t2:4.01, ff:4.33, spread:1.70, hist30:[], yieldCurve:'Normal', t10t2spread:0.27, isLive:false };
 
 async function loadData(){
   try{
-    const[c30,c15,ct10,ct2,cff]=await Promise.all([f1('MORTGAGE30US'),f1('MORTGAGE15US'),f1('DGS10'),f1('DGS2'),f1('FEDFUNDS')]);
-    const p30=parseFred(c30),p15=parseFred(c15),pt10=parseFred(ct10),pt2=parseFred(ct2),pff=parseFred(cff);
-    R.r30=p30.v;R.r30p=p30.prev;R.r15=p15.v;R.t10=pt10.v;R.t10p=pt10.prev;R.t2=pt2.v;R.ff=pff.v;
-    R.hist30=parseFredHist(c30,16);R.isLive=true;
+    const d = await (await fetch('/api/fred')).json();
+    R.r30=d.r30; R.r30p=d.r30p; R.r15=d.r15;
+    R.t10=d.t10; R.t10p=d.t10p; R.t2=d.t2; R.ff=d.ff;
+    R.spread=d.spread; R.yieldCurve=d.yieldCurve; R.t10t2spread=d.t10t2spread;
+    R.hist30=d.hist30||[]; R.isLive=d.live;
   }catch(e){console.warn('FRED fallback:',e.message);}
   render();
 }
@@ -1190,8 +1185,8 @@ function set(id,v){ const e=document.getElementById(id); if(e)e.textContent=v; }
 function html(id,v){ const e=document.getElementById(id); if(e)e.innerHTML=v; }
 
 function render(){
-  const spread=fmt(R.r30-R.t10);
-  const curve=R.t10>R.t2?'Normal':'Inverted';
+  const spread=R.spread!=null?fmt(R.spread):fmt(R.r30-R.t10);
+  const curve=R.yieldCurve||'Normal';
 
   // Hero card
   set('hero-r30',fmt(R.r30)+'%'); html('hero-r30-chg',chg(R.r30,R.r30p,true));
