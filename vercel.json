@@ -2,11 +2,11 @@
   "routes": [
     {
       "src": "/api/fred",
-      "dest": "/api/fred.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "s-maxage=3600, stale-while-revalidate=7200"
-      }
+      "dest": "/api/fred.js"
+    },
+    {
+      "src": "/api/news",
+      "dest": "/api/news.js"
     },
     {
       "src": "/shows/rate-watch-daily",
