@@ -186,6 +186,50 @@ footer{background:rgba(10,22,40,0.8);border-top:1px solid rgba(201,168,76,0.1);p
   </div>
 </div>
 
+
+<!-- LIVE FRED DATA BAR -->
+<div class="fred-bar" id="fredBar">
+  <div class="fred-bar-inner">
+    <div class="fred-item">
+      <span class="fred-label">30YR FIXED</span>
+      <span class="fred-val" id="fd-r30">—</span>
+      <span class="fred-chg" id="fd-r30-chg"></span>
+    </div>
+    <div class="fred-item">
+      <span class="fred-label">15YR FIXED</span>
+      <span class="fred-val" id="fd-r15">—</span>
+    </div>
+    <div class="fred-item">
+      <span class="fred-label">10YR TREASURY</span>
+      <span class="fred-val" id="fd-t10">—</span>
+      <span class="fred-chg" id="fd-t10-chg"></span>
+    </div>
+    <div class="fred-item">
+      <span class="fred-label">FED FUNDS</span>
+      <span class="fred-val" id="fd-ff">—</span>
+    </div>
+    <div class="fred-item">
+      <span class="fred-label">MTG SPREAD</span>
+      <span class="fred-val" id="fd-spread">—</span>
+    </div>
+    <div class="fred-item">
+      <span class="fred-label">YIELD CURVE</span>
+      <span class="fred-val" id="fd-curve">—</span>
+    </div>
+  </div>
+  <div class="fred-source" id="fd-src">Source: FRED</div>
+</div>
+<style>
+.fred-bar{background:rgba(10,22,40,0.8);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:16px 24px 12px;margin-bottom:32px;}
+.fred-bar-inner{display:flex;flex-wrap:wrap;gap:24px 32px;}
+.fred-item{display:flex;flex-direction:column;gap:3px;}
+.fred-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(138,149,163,0.55);text-transform:uppercase;}
+.fred-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#F4F1EB;}
+.fred-chg{font-family:'DM Mono',monospace;font-size:10px;}
+.fred-source{font-family:'DM Mono',monospace;font-size:9px;color:rgba(138,149,163,0.35);letter-spacing:1px;margin-top:12px;}
+@media(max-width:600px){.fred-bar-inner{gap:16px 20px;}.fred-val{font-size:14px;}}
+</style>
+
 <!-- EPISODES -->
 <section class="episodes" id="episodes">
   <div class="section-label">Season 1</div>
@@ -525,6 +569,36 @@ footer{background:rgba(10,22,40,0.8);border-top:1px solid rgba(201,168,76,0.1);p
 
   animLoop();
   loadVoice();
+})();
+</script>
+
+
+<script>
+// ── LIVE FRED DATA ──
+(function(){
+  var R = {r30:5.98,r15:5.21,t10:4.28,t2:4.01,ff:4.33,spread:1.70,yieldCurve:'Normal',isLive:false};
+  function fmt(n){ return typeof n==='number'&&!isNaN(n)?n.toFixed(2)+'%':'—'; }
+  function setEl(id,v){ var e=document.getElementById(id); if(e)e.textContent=v; }
+  function chgEl(id,now,prev){
+    var e=document.getElementById(id); if(!e)return;
+    var d=now-prev; var abs=Math.abs(d).toFixed(2);
+    e.innerHTML=d>0?'<span style="color:#C0392B">▲ +'+abs+'%</span>':d<0?'<span style="color:#27AE60">▼ '+abs+'%</span>':'<span style="color:#8A95A3">— 0.00%</span>';
+  }
+  function render(){
+    setEl('fd-r30',fmt(R.r30)); setEl('fd-r15',fmt(R.r15));
+    setEl('fd-t10',fmt(R.t10)); setEl('fd-t2',fmt(R.t2));
+    setEl('fd-ff',fmt(R.ff));   setEl('fd-spread','+'+(R.spread||0).toFixed(2)+'%');
+    setEl('fd-curve',R.yieldCurve);
+    setEl('fd-src','Source: FRED · Federal Reserve Bank of St. Louis · '+(R.isLive?'Live':'Fallback'));
+    if(R.r30p) chgEl('fd-r30-chg',R.r30,R.r30p);
+    if(R.t10p) chgEl('fd-t10-chg',R.t10,R.t10p);
+  }
+  render();
+  fetch('/api/fred').then(function(r){return r.json();}).then(function(d){
+    R.r30=d.r30;R.r30p=d.r30p;R.r15=d.r15;R.t10=d.t10;R.t10p=d.t10p;
+    R.t2=d.t2;R.ff=d.ff;R.spread=d.spread;R.yieldCurve=d.yieldCurve;R.isLive=d.live;
+    render();
+  }).catch(function(){render();});
 })();
 </script>
 
