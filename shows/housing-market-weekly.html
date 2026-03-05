@@ -358,8 +358,22 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
   window.voToggle = function(){
     if(state==='loading')return;
     if(state==='playing'){ audio&&audio.pause(); return; }
-    if(state==='paused' && audio){ audio.play(); return; }
-    // idle → fetch & play
+    if(state==='paused' && audio){
+      if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+      audio.play(); return;
+    }
+
+    // ── Create AudioContext NOW, synchronously in click handler ──
+    // Browsers require user gesture to unlock AudioContext
+    if(!audioCtx){
+      try{
+        audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      }catch(e){ console.warn('AudioContext create:',e); }
+    }
+    if(audioCtx && audioCtx.state==='suspended'){
+      audioCtx.resume().catch(function(e){ console.warn('resume:',e); });
+    }
+
     state='loading';
     setBtn('◌','GENERATING…','loading');
     setSub('Claude is writing your briefing…');
@@ -369,7 +383,6 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
       .then(function(r){
         var ct = r.headers.get('content-type')||'';
         if(ct.indexOf('audio')!==-1||ct.indexOf('octet')!==-1){
-          // API returned binary MP3 directly (Supabase unavailable)
           return r.blob().then(function(blob){
             return { audioUrl: URL.createObjectURL(blob), _blob: true };
           });
@@ -378,7 +391,6 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
       })
       .then(function(d){
         if(!d._blob && d.error && !d.audioUrl) throw new Error(d.error);
-        // Show script if available
         var scriptEl=document.getElementById('voScript');
         if(scriptEl&&d.script){scriptEl.textContent=d.script;scriptEl.style.display='block';}
         setSub(d.cached?'Cached briefing · '+'River':'Live briefing · '+'River'+' · Huit.AI');
@@ -395,28 +407,24 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
 
   function playAudio(url){
     audio = new Audio(url);
-    audio.crossOrigin='anonymous';
 
-    // Web Audio for waveform
-    try{
-      audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-      var src = audioCtx.createMediaElementSource(audio);
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 128;
-      dataArr = new Uint8Array(analyser.frequencyBinCount);
-      src.connect(analyser);
-      analyser.connect(audioCtx.destination);
-    }catch(e){console.warn('AudioContext:',e);}
-
-    audio.addEventListener('canplay',function(){
-      // Audio is ready to play — update button now, before sound starts
-      if(state==='loading'){
-        state='buffering';
-        setBtn('▶','PLAY BRIEFING',''); // keep idle-looking until sound actually starts
+    // Connect to AudioContext (already created + resumed in voToggle)
+    if(audioCtx){
+      try{
+        var src = audioCtx.createMediaElementSource(audio);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        dataArr = new Uint8Array(analyser.frequencyBinCount);
+        src.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      }catch(e){
+        // If Web Audio setup fails, audio still plays through element normally
+        console.warn('Web Audio setup:',e);
+        analyser = null; dataArr = null;
       }
-    });
+    }
+
     audio.addEventListener('playing',function(){
-      // Audio is ACTUALLY outputting — now show pause
       state='playing';setBtn('⏸','PAUSE','playing');startActive();
     });
     audio.addEventListener('pause',function(){
@@ -433,15 +441,15 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
       state='idle';setBtn('▶','PLAY BRIEFING','');
       setSub('Audio error — try again');startIdle();
     });
-    audio.addEventListener('waiting',function(){
-      // Buffering mid-play
-      if(state==='playing'){setBtn('◌','BUFFERING…','loading');}
-    });
-    audio.addEventListener('stalled',function(){
-      if(state==='playing'){setBtn('◌','BUFFERING…','loading');}
-    });
 
-    audio.play().catch(function(e){
+    // Resume context one more time right before play (belt+suspenders)
+    var playPromise;
+    if(audioCtx&&audioCtx.state==='suspended'){
+      playPromise = audioCtx.resume().then(function(){ return audio.play(); });
+    } else {
+      playPromise = audio.play();
+    }
+    playPromise.catch(function(e){
       state='idle';setBtn('▶','PLAY BRIEFING','');
       setSub('Click to play · '+'River');startIdle();
     });
