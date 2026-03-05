@@ -305,161 +305,81 @@ footer{background:rgba(10,22,40,0.8);border-top:1px solid rgba(201,168,76,0.1);p
 
 
 <!-- ═══════════════════════════════════════════════════════════ -->
-<!-- HUIT.AI VOICE ENGINE — AI-generated broadcast audio        -->
-<!-- Show: down-payment-decoded | Host: Morgan Hayes | Voice: ElevenLabs  -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+
+
+
 <style>
 .voice-player {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  display: flex; align-items: flex-end; gap: 12px;
   font-family: 'DM Sans', sans-serif;
 }
-.voice-avatar-wrap {
-  position: relative;
-  cursor: pointer;
+.voice-ring-wrap {
+  position: relative; cursor: pointer;
+  width: 88px; height: 88px;
 }
-.voice-avatar-canvas {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: 2px solid #1ABC9C55;
-  display: block;
-  background: #060E1A;
-  transition: border-color 0.3s;
-}
-.voice-avatar-wrap.speaking .voice-avatar-canvas {
-  border-color: #1ABC9C;
-  box-shadow: 0 0 20px #1ABC9C44;
-}
-.voice-pulse-ring {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 2px solid #1ABC9C00;
-  transition: all 0.1s;
-  pointer-events: none;
-}
-.voice-avatar-wrap.speaking .voice-pulse-ring {
-  border-color: #1ABC9C55;
-  animation: voicePulse 1s ease-in-out infinite;
-}
-@keyframes voicePulse {
-  0%,100% { transform: scale(1); opacity: 0.6; }
-  50%      { transform: scale(1.12); opacity: 0.2; }
+.voice-ring-canvas {
+  width: 88px; height: 88px;
+  display: block; border-radius: 50%;
 }
 .voice-card {
   background: rgba(6,14,26,0.96);
   border: 1px solid #1ABC9C33;
-  border-radius: 8px;
-  padding: 12px 16px;
-  min-width: 220px;
-  max-width: 280px;
+  border-radius: 8px; padding: 12px 16px;
+  min-width: 220px; max-width: 280px;
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 .voice-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 8px;
 }
 .voice-status {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #1ABC9C;
-  text-transform: uppercase;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 2px; color: #1ABC9C; text-transform: uppercase;
 }
-.voice-status.loading { color: rgba(138,149,163,0.6); animation: blink 1.5s infinite; }
+.voice-status.loading { color: rgba(138,149,163,0.5); animation: blink 1.5s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 .voice-host { font-size: 13px; font-weight: 600; color: #F4F1EB; }
-.voice-role  { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(138,149,163,0.6); letter-spacing: 1px; margin-top: 2px; }
-.voice-script {
-  font-size: 11px;
-  color: rgba(138,149,163,0.7);
-  line-height: 1.6;
-  margin-top: 8px;
-  max-height: 56px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
-.voice-waveform {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-top: 8px;
-  height: 20px;
-}
-.voice-bar {
-  width: 3px;
-  background: #1ABC9C;
-  border-radius: 2px;
-  transition: height 0.05s;
-  min-height: 3px;
-}
-.voice-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-}
+.voice-role { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(138,149,163,0.55); letter-spacing: 1px; margin-top: 2px; }
+.voice-script { font-size: 11px; color: rgba(138,149,163,0.7); line-height: 1.6; margin-top: 8px; max-height: 54px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.voice-waveform { display: flex; align-items: center; gap: 2px; margin-top: 8px; height: 18px; }
+.voice-bar { width: 3px; background: #1ABC9C; border-radius: 2px; transition: height 0.05s; min-height: 2px; }
+.voice-controls { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 .voice-btn {
-  background: #1ABC9C22;
-  border: 1px solid #1ABC9C44;
-  color: #1ABC9C;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 1px;
+  background: #1ABC9C22; border: 1px solid #1ABC9C44;
+  color: #1ABC9C; font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 1px;
 }
 .voice-btn:hover { background: #1ABC9C33; }
 .voice-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .voice-dismiss {
-  background: none;
-  border: none;
-  color: rgba(138,149,163,0.4);
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
+  background: none; border: none; color: rgba(138,149,163,0.4);
+  font-size: 16px; cursor: pointer; padding: 0 4px; line-height: 1;
 }
 .voice-dismiss:hover { color: rgba(138,149,163,0.8); }
-@media(max-width:600px) {
+@media(max-width:600px){
   .voice-player { bottom: 16px; right: 16px; }
-  .voice-card { min-width: 180px; max-width: 220px; }
-  .voice-avatar-canvas { width: 72px; height: 72px; }
+  .voice-card { min-width: 170px; max-width: 210px; }
+  .voice-ring-wrap { width: 68px; height: 68px; }
+  .voice-ring-canvas { width: 68px; height: 68px; }
 }
 </style>
 
 <div class="voice-player" id="voicePlayer">
-  <!-- Avatar canvas -->
-  <div class="voice-avatar-wrap" id="avatarWrap" onclick="voiceToggle()">
-    <canvas class="voice-avatar-canvas" id="avatarCanvas" width="192" height="192"></canvas>
-    <div class="voice-pulse-ring" id="pulseRing"></div>
+  <div class="voice-ring-wrap" onclick="voiceToggle()">
+    <canvas class="voice-ring-canvas" id="ringCanvas" width="176" height="176"></canvas>
   </div>
-
-  <!-- Info card -->
   <div class="voice-card" id="voiceCard">
     <div class="voice-card-header">
       <span class="voice-status loading" id="voiceStatus">◌ LOADING</span>
-      <button class="voice-dismiss" onclick="document.getElementById('voicePlayer').style.display='none'" title="Dismiss">×</button>
+      <button class="voice-dismiss" onclick="document.getElementById('voicePlayer').style.display='none'">×</button>
     </div>
     <div class="voice-host">Morgan Hayes</div>
     <div class="voice-role">Down Payment Strategist · The Equity Network</div>
     <div class="voice-script" id="voiceScript">Generating today's broadcast…</div>
-    <div class="voice-waveform" id="waveform">
-      <div class="voice-bar" id="bar0" style="height:3px"></div><div class="voice-bar" id="bar1" style="height:3px"></div><div class="voice-bar" id="bar2" style="height:3px"></div><div class="voice-bar" id="bar3" style="height:3px"></div><div class="voice-bar" id="bar4" style="height:3px"></div><div class="voice-bar" id="bar5" style="height:3px"></div><div class="voice-bar" id="bar6" style="height:3px"></div><div class="voice-bar" id="bar7" style="height:3px"></div><div class="voice-bar" id="bar8" style="height:3px"></div><div class="voice-bar" id="bar9" style="height:3px"></div><div class="voice-bar" id="bar10" style="height:3px"></div><div class="voice-bar" id="bar11" style="height:3px"></div><div class="voice-bar" id="bar12" style="height:3px"></div><div class="voice-bar" id="bar13" style="height:3px"></div><div class="voice-bar" id="bar14" style="height:3px"></div><div class="voice-bar" id="bar15" style="height:3px"></div>
-    </div>
+    <div class="voice-waveform" id="waveform"><div class="voice-bar" id="bar0" style="height:2px"></div><div class="voice-bar" id="bar1" style="height:2px"></div><div class="voice-bar" id="bar2" style="height:2px"></div><div class="voice-bar" id="bar3" style="height:2px"></div><div class="voice-bar" id="bar4" style="height:2px"></div><div class="voice-bar" id="bar5" style="height:2px"></div><div class="voice-bar" id="bar6" style="height:2px"></div><div class="voice-bar" id="bar7" style="height:2px"></div><div class="voice-bar" id="bar8" style="height:2px"></div><div class="voice-bar" id="bar9" style="height:2px"></div><div class="voice-bar" id="bar10" style="height:2px"></div><div class="voice-bar" id="bar11" style="height:2px"></div><div class="voice-bar" id="bar12" style="height:2px"></div><div class="voice-bar" id="bar13" style="height:2px"></div><div class="voice-bar" id="bar14" style="height:2px"></div><div class="voice-bar" id="bar15" style="height:2px"></div></div>
     <div class="voice-controls">
       <button class="voice-btn" id="voicePlayBtn" onclick="voiceToggle()" disabled>▶ PLAY</button>
     </div>
@@ -469,247 +389,144 @@ footer{background:rgba(10,22,40,0.8);border-top:1px solid rgba(201,168,76,0.1);p
 <audio id="voiceAudio" preload="auto"></audio>
 
 <script>
-(function() {
-  const SHOW_ID   = 'down-payment-decoded';
-  const HOST      = 'Morgan Hayes';
-  const ROLE      = 'Down Payment Strategist';
-  const COLOR     = '#1ABC9C';
-  const VOICE_API = 'https://equity-network-v2.vercel.app/api/voice/generate';
+(function(){
+  var SHOW_ID   = "down-payment-decoded";
+  var COLOR     = "#1ABC9C";
+  var VOICE_API = "https://equity-network-v2.vercel.app/api/voice/generate";
 
-  let audioEl      = document.getElementById('voiceAudio');
-  let canvas       = document.getElementById('avatarCanvas');
-  let ctx          = canvas.getContext('2d');
-  let avatarWrap   = document.getElementById('avatarWrap');
-  let statusEl     = document.getElementById('voiceStatus');
-  let scriptEl     = document.getElementById('voiceScript');
-  let playBtn      = document.getElementById('voicePlayBtn');
-  let audioCtx     = null;
-  let analyser     = null;
-  let animId       = 0;
-  let ampBuffer    = new Float32Array(16).fill(0);
-  let isPlaying    = false;
-  let audioReady   = false;
+  var audio    = document.getElementById("voiceAudio");
+  var canvas   = document.getElementById("ringCanvas");
+  var ctx      = canvas.getContext("2d");
+  var statusEl = document.getElementById("voiceStatus");
+  var scriptEl = document.getElementById("voiceScript");
+  var playBtn  = document.getElementById("voicePlayBtn");
 
-  // ── Avatar renderer ────────────────────────────────────────
-  function drawAvatar(amp) {
+  var audioCtx = null, analyser = null, animId = 0;
+  var isPlaying = false, audioReady = false;
+  var bars = new Float32Array(48).fill(0);
+
+  function hexAlpha(hex, a) {
+    return hex + Math.min(255, Math.round(a * 255)).toString(16).padStart(2, "0");
+  }
+
+  function drawRing(amp) {
     var W = canvas.width, H = canvas.height;
     var cx = W/2, cy = H/2;
     var t  = Date.now() * 0.001;
+    var ringR = W * 0.36;
+    var N = 48;
 
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle = '#060E1A';
-    ctx.beginPath();
-    ctx.arc(cx,cy,W/2,0,Math.PI*2);
-    ctx.fill();
+    ctx.fillStyle = "#060E1A";
+    ctx.fillRect(0, 0, W, H);
 
-    // ambient glow
-    var grad = ctx.createRadialGradient(cx,cy-10,5,cx,cy-10,65);
-    grad.addColorStop(0, COLOR+'28');
-    grad.addColorStop(1,'transparent');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.arc(cx,cy,W/2,0,Math.PI*2); ctx.fill();
+    // track ring
+    ctx.strokeStyle = hexAlpha(COLOR, 0.1);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, ringR, 0, Math.PI*2); ctx.stroke();
 
-    // neck
-    ctx.fillStyle = '#C8956C';
-    ctx.fillRect(cx-11, cy+14, 22, 24);
+    // radial bars
+    for (var i = 0; i < N; i++) {
+      var angle  = (i/N) * Math.PI*2 - Math.PI/2;
+      var target = isPlaying
+        ? amp * (0.5 + 0.5*Math.sin(t*8 + i*0.4)) * (0.6 + Math.random()*0.4)
+        : 0.03 + 0.025*Math.sin(t*1.1 + i*0.25);
+      bars[i] += (target - bars[i]) * 0.18;
 
-    // head
-    ctx.fillStyle = '#D4A574';
-    ctx.beginPath();
-    ctx.ellipse(cx, cy-8, 34, 40, 0, 0, Math.PI*2);
-    ctx.fill();
+      var x1 = cx + Math.cos(angle)*(ringR-2);
+      var y1 = cy + Math.sin(angle)*(ringR-2);
+      var x2 = cx + Math.cos(angle)*(ringR + bars[i]*36);
+      var y2 = cy + Math.sin(angle)*(ringR + bars[i]*36);
 
-    // hair
-    ctx.fillStyle = '#2C1810';
-    ctx.beginPath();
-    ctx.ellipse(cx, cy-42, 36, 18, 0, Math.PI, Math.PI*2);
-    ctx.fill();
-    ctx.beginPath(); ctx.arc(cx-34, cy-32, 10, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx+34, cy-32, 10, 0, Math.PI*2); ctx.fill();
-
-    // eyes
-    var blinkH = Math.sin(t*0.38) > 0.96 ? 1 : 4;
-    ctx.fillStyle = '#1A0F0A';
-    ctx.beginPath(); ctx.ellipse(cx-12,cy-16,5,blinkH,0,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(cx+12,cy-16,5,blinkH,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.beginPath(); ctx.arc(cx-10,cy-18,1.5,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx+14,cy-18,1.5,0,Math.PI*2); ctx.fill();
-
-    // eyebrows
-    ctx.strokeStyle = '#2C1810'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(cx-18,cy-28); ctx.lineTo(cx-6,cy-26); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx+18,cy-28); ctx.lineTo(cx+6,cy-26); ctx.stroke();
-
-    // mouth — amplitude driven
-    var openAmt = amp * 14;
-    ctx.fillStyle = '#C07B5A';
-    ctx.beginPath();
-    ctx.ellipse(cx, cy+6, 10, 3, 0, 0, Math.PI*2);
-    ctx.fill();
-    if (openAmt > 1) {
-      ctx.fillStyle = '#1A0A0A';
-      ctx.beginPath();
-      ctx.ellipse(cx, cy+8, 8, openAmt*0.55, 0, 0, Math.PI);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      ctx.beginPath();
-      ctx.ellipse(cx, cy+7, 6, Math.min(openAmt*0.25,2.5), 0, 0, Math.PI);
-      ctx.fill();
+      var a = isPlaying ? 0.45 + bars[i]*1.6 : 0.2;
+      ctx.strokeStyle = hexAlpha(COLOR, Math.min(1, a));
+      ctx.lineWidth = 2.2; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
     }
 
-    // shirt
-    ctx.fillStyle = COLOR;
-    ctx.beginPath();
-    ctx.moveTo(cx-W*0.55,H);
-    ctx.lineTo(cx-40,cy+36);
-    ctx.lineTo(cx-14,cy+44);
-    ctx.lineTo(cx+14,cy+44);
-    ctx.lineTo(cx+40,cy+36);
-    ctx.lineTo(cx+W*0.55,H);
-    ctx.closePath(); ctx.fill();
-
-    // collar
-    ctx.fillStyle = 'white';
-    ctx.beginPath();
-    ctx.moveTo(cx-14,cy+36); ctx.lineTo(cx,cy+52);
-    ctx.lineTo(cx+14,cy+36); ctx.lineTo(cx+8,cy+32);
-    ctx.lineTo(cx,cy+44);    ctx.lineTo(cx-8,cy+32);
-    ctx.closePath(); ctx.fill();
-
-    // speaking ring
-    if (amp > 0.08) {
-      ctx.strokeStyle = COLOR + Math.round(amp*100+30).toString(16).padStart(2,'0');
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(cx,cy-8, 38 + amp*12, 0, Math.PI*2);
-      ctx.stroke();
+    // center glow when speaking
+    if (isPlaying && amp > 0.05) {
+      var g = ctx.createRadialGradient(cx,cy,0,cx,cy,ringR*0.65);
+      g.addColorStop(0, hexAlpha(COLOR, amp*0.3));
+      g.addColorStop(1, "transparent");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx,cy,ringR*0.65,0,Math.PI*2); ctx.fill();
     }
+
+    // center icon
+    ctx.fillStyle = hexAlpha(COLOR, isPlaying ? 0.9 : 0.3);
+    ctx.font = Math.round(ringR*0.5)+"px serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("◉", cx, cy);
   }
 
-  // ── Waveform bars ────────────────────────────────────────────
-  function updateWaveform(freqData) {
-    var step = Math.floor(freqData.length / 16);
-    for (var i = 0; i < 16; i++) {
-      var val = freqData[i * step] / 255;
-      ampBuffer[i] = ampBuffer[i] * 0.7 + val * 0.3;
-      var el = document.getElementById('bar' + i);
-      if (el) el.style.height = Math.max(3, ampBuffer[i] * 20) + 'px';
-    }
-  }
-
-  // ── Animation loop ───────────────────────────────────────────
   function animLoop() {
     var amp = 0;
     if (analyser && isPlaying) {
       var buf = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(buf);
-      amp = buf.slice(0,8).reduce(function(a,b){return a+b},0) / (8*255);
-      updateWaveform(buf);
+      amp = buf.slice(0,8).reduce(function(a,b){return a+b},0)/(8*255);
+      var step = Math.floor(buf.length/16);
+      for (var i=0;i<16;i++){
+        var v = buf[i*step]/255;
+        var el = document.getElementById("bar"+i);
+        if (el) el.style.height = Math.max(2, v*18)+"px";
+      }
     } else {
-      for (var i=0;i<16;i++) {
-        var el = document.getElementById('bar'+i);
-        if (el) el.style.height = '3px';
+      for (var i=0;i<16;i++){
+        var el = document.getElementById("bar"+i);
+        if (el) el.style.height = "2px";
       }
     }
-    drawAvatar(amp);
-    if (isPlaying) avatarWrap.classList.add('speaking');
-    else avatarWrap.classList.remove('speaking');
+    drawRing(amp);
     animId = requestAnimationFrame(animLoop);
   }
 
-  // ── Set up Web Audio analyser ────────────────────────────────
   function setupAnalyser() {
     try {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var source = audioCtx.createMediaElementSource(audioEl);
+        audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+        var src = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
         analyser.fftSize = 256;
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
+        src.connect(analyser); analyser.connect(audioCtx.destination);
       }
-    } catch(e) { console.warn('Web Audio unavailable:', e); }
+    } catch(e){}
   }
 
-  // ── Toggle play/pause ────────────────────────────────────────
-  window.voiceToggle = function() {
+  window.voiceToggle = function(){
     if (!audioReady) return;
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    if (isPlaying) {
-      audioEl.pause();
-    } else {
-      setupAnalyser();
-      audioEl.play().catch(function(e){ console.warn('Autoplay blocked:', e); });
-    }
+    if (audioCtx && audioCtx.state==="suspended") audioCtx.resume();
+    if (isPlaying) { audio.pause(); }
+    else { setupAnalyser(); audio.play().catch(function(){}); }
   };
 
-  // ── Audio events ─────────────────────────────────────────────
-  audioEl.addEventListener('play', function() {
-    isPlaying = true;
-    statusEl.className = 'voice-status';
-    statusEl.textContent = '◉ ON AIR';
-    playBtn.textContent = '⏸ PAUSE';
-  });
-  audioEl.addEventListener('pause', function() {
-    isPlaying = false;
-    statusEl.textContent = '◎ PAUSED';
-    playBtn.textContent = '▶ PLAY';
-  });
-  audioEl.addEventListener('ended', function() {
-    isPlaying = false;
-    statusEl.textContent = '◎ COMPLETE';
-    playBtn.textContent = '↺ REPLAY';
-  });
+  audio.addEventListener("play",  function(){ isPlaying=true;  statusEl.className="voice-status"; statusEl.textContent="◉ ON AIR"; playBtn.textContent="⏸ PAUSE"; });
+  audio.addEventListener("pause", function(){ isPlaying=false; statusEl.textContent="◎ PAUSED";   playBtn.textContent="▶ PLAY"; });
+  audio.addEventListener("ended", function(){ isPlaying=false; statusEl.textContent="◎ COMPLETE"; playBtn.textContent="↺ REPLAY"; });
 
-  // ── Fetch audio from voice API ────────────────────────────────
-  function loadVoice() {
-    statusEl.className = 'voice-status loading';
-    statusEl.textContent = '◌ GENERATING';
-
-    fetch(VOICE_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ show_id: SHOW_ID, episode: 1 })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.audio_url) {
-        audioEl.src = data.audio_url;
-        audioEl.load();
-        if (data.script) {
-          scriptEl.textContent = data.script;
-        }
-        audioReady = true;
-        playBtn.disabled = false;
-        statusEl.className = 'voice-status';
-        statusEl.textContent = '◎ READY';
-
-        // Auto-play after short delay (respects browser autoplay policies)
-        setTimeout(function() {
+  function loadVoice(){
+    statusEl.className="voice-status loading"; statusEl.textContent="◌ GENERATING";
+    fetch(VOICE_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({show_id:SHOW_ID,episode:1})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if (d.audio_url){
+        audio.src = d.audio_url; audio.load();
+        if (d.script) scriptEl.textContent = d.script;
+        audioReady=true; playBtn.disabled=false;
+        statusEl.className="voice-status"; statusEl.textContent="◎ READY";
+        setTimeout(function(){
           setupAnalyser();
-          audioEl.play().catch(function() {
-            // Autoplay blocked — user must click
-            statusEl.textContent = '▶ CLICK TO PLAY';
-          });
-        }, 800);
+          audio.play().catch(function(){ statusEl.textContent="▶ CLICK TO PLAY"; });
+        }, 600);
       }
     })
-    .catch(function(err) {
-      statusEl.className = 'voice-status';
-      statusEl.textContent = '✕ ERROR';
-      scriptEl.textContent = 'Voice generation unavailable.';
-      console.error('Voice load error:', err);
-    });
+    .catch(function(e){ statusEl.textContent="✕ ERROR"; });
   }
 
-  // ── Boot ──────────────────────────────────────────────────────
   animLoop();
   loadVoice();
-
 })();
 </script>
-<!-- END HUIT.AI VOICE ENGINE -->
 
 </body>
 </html>
