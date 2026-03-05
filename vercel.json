@@ -1,12 +1,50 @@
 {
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/api/fred",
-      "destination": "/api/fred.js"
+      "src": "/api/fred",
+      "dest": "/api/fred.js"
     },
     {
-      "source": "/api/fred/(.*)",
-      "destination": "/api/fred.js"
+      "src": "/shows/rate-watch-daily",
+      "dest": "/shows/rate-watch-daily.html"
+    },
+    {
+      "src": "/shows/the-fed-report",
+      "dest": "/shows/the-fed-report.html"
+    },
+    {
+      "src": "/shows/housing-market-weekly",
+      "dest": "/shows/housing-market-weekly.html"
+    },
+    {
+      "src": "/shows/mortgage-news-now",
+      "dest": "/shows/mortgage-news-now.html"
+    },
+    {
+      "src": "/shows/credit-score-clinic",
+      "dest": "/shows/credit-score-clinic.html"
+    },
+    {
+      "src": "/shows/down-payment-decoded",
+      "dest": "/shows/down-payment-decoded.html"
+    },
+    {
+      "src": "/shows/the-affordability-index",
+      "dest": "/shows/the-affordability-index.html"
+    },
+    {
+      "src": "/shows/hmda-deep-dive",
+      "dest": "/shows/hmda-deep-dive.html"
+    },
+    {
+      "src": "/simulators/(.*)",
+      "dest": "/simulators/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ],
   "headers": [
