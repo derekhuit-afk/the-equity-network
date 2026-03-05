@@ -393,5 +393,377 @@ window._renderLive = function(d, f) {
 };
 </script>
 
+
+<!-- ═══════════════════════════════════════════════════════════
+     EQUITY NETWORK — AI NEWS TICKER + MODAL
+     Source: /api/news (Claude + web search, 2hr cache)
+═══════════════════════════════════════════════════════════ -->
+<style>
+/* ── NEWS TICKER BAR ───────────────────────── */
+#news-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:500;
+  height:32px;background:rgba(4,8,18,0.97);
+  border-top:1px solid rgba(59,130,246,0.15);
+  display:flex;align-items:center;
+  font-family:'DM Mono',monospace;
+}
+.news-badge{
+  flex-shrink:0;display:flex;align-items:center;gap:6px;
+  padding:0 14px 0 16px;border-right:1px solid rgba(59,130,246,0.15);
+  font-size:8px;letter-spacing:2.5px;color:#3B82F6;white-space:nowrap;
+}
+.news-dot{width:5px;height:5px;border-radius:50%;background:#3B82F6;animation:newsPulse 2.5s ease-in-out infinite;}
+@keyframes newsPulse{0%,100%{opacity:1}50%{opacity:0.2}}
+.news-ai-tag{
+  flex-shrink:0;font-size:7px;letter-spacing:1.5px;color:rgba(59,130,246,0.45);
+  padding:0 12px;border-right:1px solid rgba(59,130,246,0.08);white-space:nowrap;
+}
+.news-track{flex:1;overflow:hidden;cursor:pointer;position:relative;}
+.news-track::before{content:'';position:absolute;left:0;top:0;bottom:0;width:30px;background:linear-gradient(to right,rgba(4,8,18,0.97),transparent);z-index:1;pointer-events:none;}
+.news-track::after{content:'';position:absolute;right:0;top:0;bottom:0;width:30px;background:linear-gradient(to left,rgba(4,8,18,0.97),transparent);z-index:1;pointer-events:none;}
+.news-scroll{display:inline-flex;white-space:nowrap;animation:newsRun 80s linear infinite;}
+.news-scroll:hover{animation-play-state:paused;}
+.news-item{
+  display:inline-flex;align-items:center;gap:10px;padding:0 28px;
+  font-size:10px;color:rgba(244,241,235,0.7);border-right:1px solid rgba(255,255,255,0.04);
+  transition:color 0.2s;cursor:pointer;
+}
+.news-item:hover{color:rgba(244,241,235,1);}
+.news-item .n-cat{
+  font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:1px 5px;border-radius:1px;
+  background:rgba(59,130,246,0.15);color:rgba(59,130,246,0.8);flex-shrink:0;
+}
+.news-item .n-cat.high{background:rgba(239,68,68,0.12);color:rgba(239,68,68,0.8);}
+.news-item .n-cat.medium{background:rgba(245,158,11,0.12);color:rgba(245,158,11,0.7);}
+.news-item .n-cat.low{background:rgba(16,185,129,0.12);color:rgba(16,185,129,0.7);}
+.news-item .n-num{font-size:8px;color:rgba(59,130,246,0.35);flex-shrink:0;}
+@keyframes newsRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── NEWS MODAL ────────────────────────────── */
+#news-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(2,6,14,0.82);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+@media(min-width:640px){
+  #news-overlay{align-items:center;}
+}
+#news-overlay.open{opacity:1;pointer-events:all;}
+#news-modal{
+  background:#070F1D;border:1px solid rgba(59,130,246,0.2);
+  width:100%;max-width:680px;
+  border-radius:8px 8px 0 0;
+  transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.22,1,0.36,1);
+  position:relative;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
+}
+@media(min-width:640px){
+  #news-modal{
+    border-radius:6px;
+    transform:translateY(20px) scale(0.97);
+    max-height:80vh;
+    transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),opacity 0.3s;
+    opacity:0;
+  }
+  #news-overlay.open #news-modal{transform:translateY(0) scale(1);opacity:1;}
+}
+#news-overlay.open #news-modal{transform:translateY(0);}
+
+/* Modal drag handle (mobile) */
+.modal-handle{
+  width:36px;height:3px;background:rgba(255,255,255,0.1);
+  border-radius:2px;margin:10px auto 0;flex-shrink:0;
+}
+@media(min-width:640px){.modal-handle{display:none;}}
+
+/* Modal header */
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px 12px;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;
+}
+.modal-header-left{display:flex;align-items:center;gap:10px;}
+.modal-story-num{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:rgba(59,130,246,0.6);
+}
+.modal-category{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;
+  padding:2px 8px;border-radius:2px;text-transform:uppercase;
+}
+.modal-close{
+  width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);color:rgba(138,149,163,0.7);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:14px;transition:all 0.2s;flex-shrink:0;
+}
+.modal-close:hover{background:rgba(255,255,255,0.1);color:var(--white);}
+
+/* Modal body */
+.modal-body{padding:20px 24px 16px;overflow-y:auto;flex:1;}
+.modal-headline{
+  font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,24px);
+  font-weight:900;line-height:1.2;color:rgba(244,241,235,0.95);
+  margin-bottom:14px;
+}
+.modal-summary{
+  font-size:14px;color:rgba(138,149,163,0.85);line-height:1.75;margin-bottom:16px;
+}
+.modal-meta{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;
+  color:rgba(138,149,163,0.4);padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+.modal-source-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:rgba(59,130,246,0.7);text-decoration:none;font-size:9px;
+  letter-spacing:1px;padding:5px 12px;border:1px solid rgba(59,130,246,0.2);
+  border-radius:2px;transition:all 0.2s;margin-top:2px;
+}
+.modal-source-link:hover{color:rgba(59,130,246,1);border-color:rgba(59,130,246,0.5);background:rgba(59,130,246,0.05);}
+
+/* Modal nav */
+.modal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px 16px;border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0;
+  gap:12px;
+}
+.modal-nav-btn{
+  display:flex;align-items:center;gap:7px;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;
+  color:rgba(138,149,163,0.5);padding:7px 14px;border:1px solid rgba(255,255,255,0.06);
+  border-radius:2px;background:transparent;transition:all 0.2s;text-transform:uppercase;
+}
+.modal-nav-btn:hover:not(:disabled){color:rgba(244,241,235,0.8);border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);}
+.modal-nav-btn:disabled{opacity:0.25;cursor:default;}
+.modal-nav-dots{display:flex;gap:5px;align-items:center;}
+.modal-nav-dot{
+  width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.12);
+  cursor:pointer;transition:all 0.2s;
+}
+.modal-nav-dot.active{background:rgba(59,130,246,0.7);width:14px;border-radius:3px;}
+.modal-nav-dot:hover:not(.active){background:rgba(255,255,255,0.25);}
+
+/* AI attribution footer */
+.modal-ai-footer{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;
+  color:rgba(138,149,163,0.25);padding:8px 24px;flex-shrink:0;
+  border-top:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;gap:6px;
+}
+.modal-ai-footer::before{content:'◆';font-size:7px;}
+
+/* Loading state */
+.news-loading .news-item{color:rgba(255,255,255,0.3);}
+
+/* Urgency dot on headline */
+.urgency-dot{
+  width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  display:inline-block;margin-right:4px;
+}
+.urgency-dot.high{background:#EF4444;}
+.urgency-dot.medium{background:#F59E0B;}
+.urgency-dot.low{background:#10B981;}
+</style>
+
+<!-- News Ticker Bar -->
+<div id="news-bar">
+  <div class="news-badge"><div class="news-dot"></div>NEWS</div>
+  <div class="news-ai-tag">AI · LIVE</div>
+  <div class="news-track" id="newsTrack">
+    <div class="news-scroll" id="newsScroll">
+      <!-- populated by JS -->
+      <span class="news-item"><span class="n-cat medium">Loading</span><span>Fetching latest housing news…</span></span>
+      <span class="news-item"><span class="n-cat low">FRED</span><span>Live mortgage rate data active</span></span>
+      <span class="news-item"><span class="n-cat medium">Loading</span><span>Fetching latest housing news…</span></span>
+      <span class="news-item"><span class="n-cat low">FRED</span><span>Live mortgage rate data active</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- News Modal Overlay -->
+<div id="news-overlay" role="dialog" aria-modal="true" aria-label="News Story">
+  <div id="news-modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <span class="modal-story-num" id="mStoryNum">STORY 1 OF 10</span>
+        <span class="modal-category" id="mCat" style="background:rgba(59,130,246,0.12);color:rgba(59,130,246,0.8);">Market</span>
+      </div>
+      <button class="modal-close" id="mClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-headline" id="mHeadline">Loading…</h2>
+      <p class="modal-summary" id="mSummary"></p>
+      <div class="modal-meta">
+        <span id="mSource"></span>
+        <a href="#" id="mLink" class="modal-source-link" target="_blank" rel="noopener" style="display:none;">READ FULL STORY →</a>
+      </div>
+    </div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn" id="mPrev" disabled>← PREV</button>
+      <div class="modal-nav-dots" id="mDots"></div>
+      <button class="modal-nav-btn" id="mNext">NEXT →</button>
+    </div>
+    <div class="modal-ai-footer" id="mFooter">Powered by Claude AI · The Equity Network · Updated every 2 hours</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stories = [];
+  var currentIdx = 0;
+  var overlay = document.getElementById('news-overlay');
+  var modal   = document.getElementById('news-modal');
+
+  // Category colors
+  var catColors = {
+    Rates:        ['rgba(201,168,76,0.12)','rgba(201,168,76,0.8)'],
+    Market:       ['rgba(59,130,246,0.12)','rgba(59,130,246,0.8)'],
+    Construction: ['rgba(16,185,129,0.12)','rgba(16,185,129,0.8)'],
+    Policy:       ['rgba(139,92,246,0.12)','rgba(139,92,246,0.8)'],
+    Regulation:   ['rgba(236,72,153,0.12)','rgba(236,72,153,0.8)'],
+    Affordability:['rgba(249,115,22,0.12)','rgba(249,115,22,0.8)'],
+    Programs:     ['rgba(6,182,212,0.12)','rgba(6,182,212,0.8)'],
+    Forecast:     ['rgba(168,85,247,0.12)','rgba(168,85,247,0.8)'],
+    Inventory:    ['rgba(16,185,129,0.12)','rgba(16,185,129,0.8)'],
+    Economy:      ['rgba(239,68,68,0.12)','rgba(239,68,68,0.8)'],
+  };
+
+  function catStyle(cat){ return catColors[cat]||catColors.Market; }
+
+  // Build ticker HTML from stories
+  function buildTicker(data){
+    stories = data;
+    var items = '';
+    for(var i=0;i<data.length;i++){
+      var s=data[i];
+      var cs=catStyle(s.category);
+      var urgClass=s.urgency||'medium';
+      items+='<span class="news-item" data-idx="'+i+'">'
+        +'<span class="n-num">'+(i+1).toString().padStart(2,'0')+'</span>'
+        +'<span class="n-cat '+urgClass+'" style="background:'+cs[0]+';color:'+cs[1]+'">'
+        +s.category+'</span>'
+        +'<span class="urgency-dot '+urgClass+'"></span>'
+        +escHtml(s.headline)
+        +'</span>';
+    }
+    // Duplicate for seamless scroll
+    var scroll=document.getElementById('newsScroll');
+    if(scroll){ scroll.innerHTML=items+items; }
+
+    // Bind click on track
+    document.getElementById('newsTrack').addEventListener('click', function(e){
+      var item = e.target.closest('.news-item');
+      if(item){ openModal(parseInt(item.getAttribute('data-idx')||'0')); }
+    });
+  }
+
+  function escHtml(s){
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function openModal(idx){
+    currentIdx=idx;
+    renderModal();
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+    // Focus close button for accessibility
+    setTimeout(function(){ document.getElementById('mClose').focus(); }, 100);
+  }
+
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+  }
+
+  function renderModal(){
+    if(!stories.length)return;
+    var s=stories[currentIdx];
+    var cs=catStyle(s.category);
+
+    document.getElementById('mStoryNum').textContent='STORY '+(currentIdx+1)+' OF '+stories.length;
+    var catEl=document.getElementById('mCat');
+    catEl.textContent=s.category;
+    catEl.style.background=cs[0]; catEl.style.color=cs[1];
+
+    document.getElementById('mHeadline').textContent=s.headline||'';
+    document.getElementById('mSummary').textContent=s.summary||'';
+
+    var srcEl=document.getElementById('mSource');
+    srcEl.textContent=s.source?'Source: '+s.source:'';
+
+    var linkEl=document.getElementById('mLink');
+    if(s.url&&s.url.startsWith('http')){
+      linkEl.href=s.url;
+      linkEl.style.display='inline-flex';
+    } else {
+      linkEl.style.display='none';
+    }
+
+    // Dots
+    var dotsEl=document.getElementById('mDots');
+    dotsEl.innerHTML='';
+    for(var i=0;i<stories.length;i++){
+      var d=document.createElement('div');
+      d.className='modal-nav-dot'+(i===currentIdx?' active':'');
+      d.setAttribute('data-i',i);
+      d.onclick=(function(ii){return function(){openModal(ii);};})(i);
+      dotsEl.appendChild(d);
+    }
+
+    document.getElementById('mPrev').disabled=(currentIdx===0);
+    document.getElementById('mNext').disabled=(currentIdx===stories.length-1);
+  }
+
+  // Close handlers
+  document.getElementById('mClose').addEventListener('click',closeModal);
+  overlay.addEventListener('click',function(e){ if(e.target===overlay)closeModal(); });
+  document.addEventListener('keydown',function(e){
+    if(!overlay.classList.contains('open'))return;
+    if(e.key==='Escape')closeModal();
+    if(e.key==='ArrowLeft'&&currentIdx>0){currentIdx--;renderModal();}
+    if(e.key==='ArrowRight'&&currentIdx<stories.length-1){currentIdx++;renderModal();}
+  });
+
+  document.getElementById('mPrev').addEventListener('click',function(){
+    if(currentIdx>0){currentIdx--;renderModal();}
+  });
+  document.getElementById('mNext').addEventListener('click',function(){
+    if(currentIdx<stories.length-1){currentIdx++;renderModal();}
+  });
+
+  // Touch swipe on modal body
+  var touchStartX=0;
+  modal.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX;},{passive:true});
+  modal.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(dx)>50){
+      if(dx<0&&currentIdx<stories.length-1){currentIdx++;renderModal();}
+      if(dx>0&&currentIdx>0){currentIdx--;renderModal();}
+    }
+  });
+
+  // Adjust body padding for news bar
+  document.body.style.paddingBottom='32px';
+
+  // Fetch news
+  fetch('/api/news')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.stories&&d.stories.length){
+        buildTicker(d.stories);
+        var footer=document.getElementById('mFooter');
+        if(footer){
+          footer.textContent=(d.fallback?'Fallback data':'Powered by Claude AI')
+            +' · The Equity Network · '
+            +(d.fetchedAt?'Updated '+d.fetchedAt.slice(0,10):'');
+        }
+      }
+    })
+    .catch(function(e){console.warn('News fetch error:',e);});
+})();
+</script>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
 </body>
 </html>
