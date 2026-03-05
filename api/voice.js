@@ -51,7 +51,12 @@ function buildScript(show, d) {
   var bs=d.fed_balance_sheet?'$'+(d.fed_balance_sheet/1e9).toFixed(0)+'B':null;
   var cc=d.cc_delinquency?d.cc_delinquency.toFixed(2)+'%':null;
   var md=d.mortgage_delinquency?d.mortgage_delinquency.toFixed(2)+'%':null;
-  var hs=d.housing_starts?Math.round(d.housing_starts)+'K':null;
+  var hs  = d.housing_starts      ? Math.round(d.housing_starts)+'K'                   : null;
+  var ns  = d.new_home_sales      ? d.new_home_sales+'K'                                   : null;
+  var es  = d.existing_home_sales ? (d.existing_home_sales/1e6).toFixed(2)+'M'             : null;
+  var spTxt = r30&&t10 ? (r30-t10 > 2.0
+    ? 'historically wide above the 150 to 175 basis point norm — compression is possible without Treasury yields falling'
+    : 'near the historical average, so mortgage rates will largely track Treasury moves') : 'notable';
 
   const s = {
 
