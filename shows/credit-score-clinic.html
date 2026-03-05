@@ -27,21 +27,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(6,14,26,0.96
 .nav-cta:hover{background:var(--gold2)!important;color:#000!important;}
 
 /* TICKER */
-.ticker-bar{position:fixed;top:64px;left:0;right:0;z-index:199;height:30px;background:rgba(4,10,20,0.98);border-bottom:1px solid rgba(201,168,76,0.07);overflow:hidden;display:flex;align-items:center;}
-.ticker-badge{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 16px 0 20px;border-right:1px solid rgba(201,168,76,0.1);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2.5px;color:#27AE60;white-space:nowrap;}
-.ticker-dot{width:5px;height:5px;border-radius:50%;background:#27AE60;animation:pulse 2s ease-in-out infinite;}
+.ticker-bar{position:fixed;top:64px;left:0;right:0;z-index:199;height:45px;background:rgba(4,10,20,0.98);border-bottom:1px solid rgba(201,168,76,0.07);overflow:hidden;display:flex;align-items:center;}
+.ticker-badge{flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 24px 0 30px;border-right:1px solid rgba(201,168,76,0.1);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2.5px;color:#27AE60;white-space:nowrap;}
+.ticker-dot{width:8px;height:8px;border-radius:50%;background:#27AE60;animation:pulse 2s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
 .ticker-track{flex:1;overflow:hidden;}
 .ticker-inner{display:inline-flex;white-space:nowrap;animation:tickerRun 50s linear infinite;}
 .ticker-inner:hover{animation-play-state:paused;}
-.t-item{display:inline-flex;align-items:center;gap:7px;padding:0 22px;font-family:'DM Mono',monospace;font-size:9px;border-right:1px solid rgba(255,255,255,0.04);}
-.t-item .t-lbl{color:rgba(138,149,163,0.45);letter-spacing:1px;}
+.t-item{display:inline-flex;align-items:center;gap:10px;padding:0 33px;font-family:'DM Mono',monospace;font-size:13px;border-right:1px solid rgba(255,255,255,0.04);}
+.t-item .t-lbl{color:rgba(138,149,163,0.45);letter-spacing:1px;font-size:11px;}
 .t-item .t-val{color:var(--white);}
 .t-item .up{color:#C0392B;}.t-item .dn{color:#27AE60;}
 @keyframes tickerRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* PAGE WRAPPER */
-.page{padding-top:94px;}
+.page{padding-top:109px;}
 .wrap{max-width:1200px;margin:0 auto;padding:0 40px;}
 
 /* SHOW HERO */
@@ -386,21 +386,21 @@ window._renderLive = function(d, f) {
 /* ── NEWS TICKER BAR ───────────────────────── */
 #news-bar{
   position:fixed;bottom:0;left:0;right:0;z-index:500;
-  height:32px;background:rgba(4,8,18,0.97);
+  height:48px;background:rgba(4,8,18,0.97);
   border-top:1px solid rgba(59,130,246,0.15);
   display:flex;align-items:center;
   font-family:'DM Mono',monospace;
 }
 .news-badge{
-  flex-shrink:0;display:flex;align-items:center;gap:6px;
-  padding:0 14px 0 16px;border-right:1px solid rgba(59,130,246,0.15);
-  font-size:8px;letter-spacing:2.5px;color:#3B82F6;white-space:nowrap;
+  flex-shrink:0;display:flex;align-items:center;gap:9px;
+  padding:0 21px 0 24px;border-right:1px solid rgba(59,130,246,0.15);
+  font-size:12px;letter-spacing:2.5px;color:#3B82F6;white-space:nowrap;
 }
-.news-dot{width:5px;height:5px;border-radius:50%;background:#3B82F6;animation:newsPulse 2.5s ease-in-out infinite;}
+.news-dot{width:8px;height:8px;border-radius:50%;background:#3B82F6;animation:newsPulse 2.5s ease-in-out infinite;}
 @keyframes newsPulse{0%,100%{opacity:1}50%{opacity:0.2}}
 .news-ai-tag{
-  flex-shrink:0;font-size:7px;letter-spacing:1.5px;color:rgba(59,130,246,0.45);
-  padding:0 12px;border-right:1px solid rgba(59,130,246,0.08);white-space:nowrap;
+  flex-shrink:0;font-size:10px;letter-spacing:1.5px;color:rgba(59,130,246,0.45);
+  padding:0 18px;border-right:1px solid rgba(59,130,246,0.08);white-space:nowrap;
 }
 .news-track{flex:1;overflow:hidden;cursor:pointer;position:relative;}
 .news-track::before{content:'';position:absolute;left:0;top:0;bottom:0;width:30px;background:linear-gradient(to right,rgba(4,8,18,0.97),transparent);z-index:1;pointer-events:none;}
@@ -408,19 +408,19 @@ window._renderLive = function(d, f) {
 .news-scroll{display:inline-flex;white-space:nowrap;animation:newsRun 80s linear infinite;}
 .news-scroll:hover{animation-play-state:paused;}
 .news-item{
-  display:inline-flex;align-items:center;gap:10px;padding:0 28px;
-  font-size:10px;color:rgba(244,241,235,0.7);border-right:1px solid rgba(255,255,255,0.04);
+  display:inline-flex;align-items:center;gap:15px;padding:0 42px;
+  font-size:15px;color:rgba(244,241,235,0.7);border-right:1px solid rgba(255,255,255,0.04);
   transition:color 0.2s;cursor:pointer;
 }
 .news-item:hover{color:rgba(244,241,235,1);}
 .news-item .n-cat{
-  font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:1px 5px;border-radius:1px;
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:1px;
   background:rgba(59,130,246,0.15);color:rgba(59,130,246,0.8);flex-shrink:0;
 }
 .news-item .n-cat.high{background:rgba(239,68,68,0.12);color:rgba(239,68,68,0.8);}
 .news-item .n-cat.medium{background:rgba(245,158,11,0.12);color:rgba(245,158,11,0.7);}
 .news-item .n-cat.low{background:rgba(16,185,129,0.12);color:rgba(16,185,129,0.7);}
-.news-item .n-num{font-size:8px;color:rgba(59,130,246,0.35);flex-shrink:0;}
+.news-item .n-num{font-size:12px;color:rgba(59,130,246,0.35);flex-shrink:0;}
 @keyframes newsRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── NEWS MODAL ────────────────────────────── */
@@ -541,8 +541,8 @@ window._renderLive = function(d, f) {
 
 /* Urgency dot on headline */
 .urgency-dot{
-  width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:1px;
-  display:inline-block;margin-right:4px;
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  display:inline-block;margin-right:6px;
 }
 .urgency-dot.high{background:#EF4444;}
 .urgency-dot.medium{background:#F59E0B;}
@@ -728,7 +728,7 @@ window._renderLive = function(d, f) {
   });
 
   // Adjust body padding for news bar
-  document.body.style.paddingBottom='32px';
+  document.body.style.paddingBottom='48px';
 
   // Fetch news
   fetch('/api/news')
