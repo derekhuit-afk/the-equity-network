@@ -1,7 +1,7 @@
 // api/fred.js — Vercel serverless FRED data fetcher
-// Runs server-side, no CORS issues
+// Show-specific series + shared base rates
 
-const SERIES = {
+const BASE_SERIES = {
   MORTGAGE30US: 'r30',
   MORTGAGE15US: 'r15',
   DGS10:        't10',
@@ -9,65 +9,119 @@ const SERIES = {
   FEDFUNDS:     'ff',
 };
 
-function parseCsv(csv, histN = 16) {
+const SHOW_SERIES = {
+  'rate-watch-daily': {
+    MORTGAGE30US: 'r30', MORTGAGE15US: 'r15',
+    DGS10: 't10', DGS2: 't2', FEDFUNDS: 'ff',
+  },
+  'the-fed-report': {
+    FEDFUNDS: 'ff', DGS10: 't10', DGS2: 't2',
+    T10YIE: 'inflation_breakeven',
+    WALCL: 'fed_balance_sheet',
+    CPIAUCSL: 'cpi',
+  },
+  'housing-market-weekly': {
+    HOUST:          'housing_starts',
+    MSPUS:          'median_price',
+    MSACSR:         'months_supply',
+    HSN1F:          'new_home_sales',
+    EXHOSLUSM495S:  'existing_home_sales',
+    MORTGAGE30US:   'r30',
+  },
+  'mortgage-news-now': {
+    MORTGAGE30US: 'r30', MORTGAGE15US: 'r15',
+    DGS10: 't10', FEDFUNDS: 'ff',
+    DRCCLACBS:    'cc_delinquency',
+  },
+  'credit-score-clinic': {
+    DRCCLACBS:    'cc_delinquency',
+    DRSFRMACBS:   'mortgage_delinquency',
+    MORTGAGE30US: 'r30',
+    DGS10:        't10',
+  },
+  'down-payment-decoded': {
+    MSPUS:        'median_price',
+    MORTGAGE30US: 'r30',
+    MORTGAGE15US: 'r15',
+    FEDFUNDS:     'ff',
+  },
+  'the-affordability-index': {
+    MSPUS:          'median_price',
+    MORTGAGE30US:   'r30',
+    MEHOINUSA672N:  'median_income',
+    HOUST:          'housing_starts',
+    MSACSR:         'months_supply',
+  },
+  'hmda-deep-dive': {
+    MORTGAGE30US: 'r30',
+    DRSFRMACBS:   'mortgage_delinquency',
+    DRCCLACBS:    'cc_delinquency',
+    HOUST:        'housing_starts',
+    MSPUS:        'median_price',
+  },
+};
+
+function parseCsv(csv, histN = 24) {
   const rows = csv.trim().split('\n').filter(r => !r.startsWith('DATE') && r.trim());
   if (!rows.length) return { v: null, prev: null, date: null, hist: [] };
   const last = rows[rows.length - 1].split(',');
   const prev = rows.length > 1 ? rows[rows.length - 2].split(',') : last;
   const hist = rows.slice(-histN).map(r => {
-    const val = parseFloat(r.split(',')[1]);
-    return isNaN(val) ? null : val;
-  }).filter(v => v !== null);
-  return {
-    v:    parseFloat(last[1]),
-    prev: parseFloat(prev[1]),
-    date: last[0],
-    hist,
-  };
+    const [d, v] = r.split(',');
+    return { date: d, v: parseFloat(v) };
+  }).filter(x => !isNaN(x.v));
+  return { v: parseFloat(last[1]), prev: parseFloat(prev[1]), date: last[0], hist };
 }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
 
+  const show = req.query.show || null;
+  const seriesMap = show && SHOW_SERIES[show] ? SHOW_SERIES[show] : BASE_SERIES;
+
   try {
-    const fetches = Object.keys(SERIES).map(id =>
+    const fetches = Object.keys(seriesMap).map(id =>
       fetch(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${id}`)
         .then(r => r.text())
-        .then(csv => ({ id, ...parseCsv(csv) }))
+        .then(csv => ({ id, key: seriesMap[id], ...parseCsv(csv) }))
     );
-
     const results = await Promise.all(fetches);
 
-    const data = {};
+    const data = { show, live: true, fetchedAt: new Date().toISOString() };
     for (const r of results) {
-      const key = SERIES[r.id];
-      data[key]        = r.v;
-      data[key + 'p']  = r.prev;
-      data[key + 'date'] = r.date;
-      if (r.id === 'MORTGAGE30US') data.hist30 = r.hist;
+      data[r.key]          = r.v;
+      data[r.key + 'Prev'] = r.prev;
+      data[r.key + 'Date'] = r.date;
+      data[r.key + 'Hist'] = r.hist;
     }
 
-    // Derived
-    data.spread      = data.r30 && data.t10 ? parseFloat((data.r30 - data.t10).toFixed(2)) : null;
-    data.yieldCurve  = data.t10 && data.t2  ? (data.t10 > data.t2 ? 'Normal' : 'Inverted') : 'Unknown';
-    data.t10t2spread = data.t10 && data.t2  ? parseFloat((data.t10 - data.t2).toFixed(2)) : null;
-    data.live        = true;
-    data.fetchedAt   = new Date().toISOString();
+    // Derived fields
+    if (data.r30 && data.t10) data.spread = parseFloat((data.r30 - data.t10).toFixed(2));
+    if (data.t10 && data.t2)  data.yieldCurve = data.t10 > data.t2 ? 'Normal' : 'Inverted';
+    if (data.t10 && data.t2)  data.t10t2spread = parseFloat((data.t10 - data.t2).toFixed(2));
+    if (data.median_price && data.r30 && data.median_income) {
+      const monthlyRate = data.r30 / 100 / 12;
+      const n = 360;
+      const loanAmt = data.median_price * 0.8;
+      const pmt = loanAmt * (monthlyRate * Math.pow(1+monthlyRate,n)) / (Math.pow(1+monthlyRate,n)-1);
+      const monthlyIncome = data.median_income / 12;
+      data.affordability_ratio = parseFloat((pmt / monthlyIncome * 100).toFixed(1));
+      data.monthly_payment = Math.round(pmt);
+    }
 
     res.status(200).json(data);
   } catch (err) {
-    // Fallback with known-good values
     res.status(200).json({
-      r30: 5.98, r30p: 6.01, r30date: '2026-02-26',
-      r15: 5.21, r15p: 5.24, r15date: '2026-02-26',
-      t10: 4.28, t10p: 4.31, t10date: '2026-03-04',
-      t2:  4.01, t2p:  4.03,
-      ff:  4.33, ffp:  4.33,
-      spread: 1.70, yieldCurve: 'Normal', t10t2spread: 0.27,
-      hist30: [6.81,6.72,6.65,6.54,6.44,6.38,6.29,6.24,6.19,6.17,6.22,6.21,6.15,6.09,6.01,5.98],
-      live: false, fetchedAt: new Date().toISOString(),
-      error: err.message,
+      show, live: false, error: err.message,
+      r30: 5.98, r30Prev: 6.01, r15: 5.44, t10: 4.06, t10Prev: 4.12,
+      t2: 3.51, ff: 3.64, spread: 1.92, yieldCurve: 'Normal',
+      median_price: 405300, median_income: 83730, monthly_payment: 1924,
+      affordability_ratio: 27.7, housing_starts: 1404, months_supply: 7.6,
+      new_home_sales: 745, existing_home_sales: 3910000,
+      cc_delinquency: 2.94, mortgage_delinquency: 1.78,
+      inflation_breakeven: 2.29, fed_balance_sheet: 6613797, cpi: 326.6,
+      fetchedAt: new Date().toISOString(),
     });
   }
 }
