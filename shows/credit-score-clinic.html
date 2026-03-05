@@ -180,6 +180,252 @@ footer{background:rgba(8,18,32,0.9);border-top:1px solid rgba(201,168,76,0.08);p
    </div>
   </div>
 
+<!-- ── AI VOICE OVERVIEW PLAYER ─────────────────────────────────── -->
+<style>
+.voice-overview{
+  max-width:1200px;margin:0 auto;padding:8px 40px 0;
+}
+.vo-card{
+  display:flex;align-items:center;gap:20px;
+  background:rgba(8,16,30,0.7);
+  border:1px solid rgba(245,158,11,0.18);
+  border-radius:4px;padding:16px 24px;
+  position:relative;overflow:hidden;
+}
+.vo-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(245,158,11,0.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+/* Canvas waveform */
+.vo-canvas-wrap{flex-shrink:0;position:relative;width:72px;height:72px;}
+#voCanvas{width:72px;height:72px;border-radius:50%;}
+/* Info */
+.vo-info{flex:1;min-width:0;}
+.vo-eyebrow{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;
+  color:rgba(245,158,11,0.7);
+  text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px;
+}
+.vo-eyebrow::before{content:'◉';font-size:7px;}
+.vo-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:rgba(244,241,235,0.9);margin-bottom:3px;}
+.vo-sub{font-size:12px;color:rgba(138,149,163,0.55);font-family:'DM Mono',monospace;letter-spacing:0.5px;}
+/* Script preview */
+.vo-script{
+  font-size:12px;color:rgba(138,149,163,0.6);line-height:1.6;
+  max-width:520px;margin-top:8px;display:none;
+}
+/* Play button */
+.vo-btn{
+  flex-shrink:0;display:flex;align-items:center;gap:8px;cursor:pointer;
+  background:rgba(245,158,11,0.12);
+  border:1px solid rgba(245,158,11,0.3);
+  color:rgba(245,158,11,0.9);
+  padding:10px 20px;border-radius:2px;font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  transition:all 0.2s;white-space:nowrap;
+}
+.vo-btn:hover:not(.loading):not(.playing){
+  background:rgba(245,158,11,0.22);
+  border-color:rgba(245,158,11,0.6);
+}
+.vo-btn .vo-icon{font-size:14px;}
+.vo-btn.loading{opacity:0.6;cursor:wait;}
+.vo-btn.playing{
+  background:rgba(245,158,11,0.08);
+  border-color:rgba(245,158,11,0.2);
+}
+/* Progress bar */
+.vo-progress{
+  position:absolute;bottom:0;left:0;height:2px;
+  background:rgba(245,158,11,0.6);
+  width:0%;transition:width 0.5s linear;
+}
+/* Spin animation */
+@keyframes voSpin{to{transform:rotate(360deg)}}
+.vo-spin{animation:voSpin 1s linear infinite;display:inline-block;}
+
+@media(max-width:640px){
+  .voice-overview{padding:8px 20px 0;}
+  .vo-card{padding:14px 16px;gap:14px;}
+  .vo-canvas-wrap,.vo-canvas-wrap canvas{width:54px;height:54px;}
+  .vo-title{font-size:14px;}
+  .vo-btn{padding:8px 14px;font-size:9px;}
+  .vo-script{font-size:11px;}
+}
+</style>
+
+<div class="voice-overview">
+ <div class="vo-card">
+  <div class="vo-canvas-wrap">
+   <canvas id="voCanvas" width="72" height="72"></canvas>
+  </div>
+  <div class="vo-info">
+   <div class="vo-eyebrow">AI Voice Overview</div>
+   <div class="vo-title">Live Data Briefing</div>
+   <div class="vo-sub" id="voSub">Voiced by Alice · Powered by Huit.AI</div>
+   <div class="vo-script" id="voScript"></div>
+  </div>
+  <button class="vo-btn" id="voBtn" onclick="voToggle()">
+   <span class="vo-icon" id="voIcon">▶</span>
+   <span id="voBtnText">PLAY BRIEFING</span>
+  </button>
+  <div class="vo-progress" id="voProgress"></div>
+ </div>
+</div>
+
+<script>
+(function(){
+  var SHOW = 'credit-score-clinic';
+  var COLOR = '#F59E0B';
+  var audio = null;
+  var rafId = null;
+  var analyser = null;
+  var dataArr = null;
+  var audioCtx = null;
+  var state = 'idle'; // idle | loading | playing | paused
+
+  // ── Radial waveform canvas ────────────────────────────────
+  var canvas = document.getElementById('voCanvas');
+  var ctx2 = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height, CX = W/2, CY = H/2;
+  var BARS = 48, R_INNER = 20, R_OUTER = 32;
+
+  function hexToRgb(hex){
+    var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return r+','+g+','+b;
+  }
+  var rgb = hexToRgb(COLOR);
+
+  function drawIdle(){
+    ctx2.clearRect(0,0,W,H);
+    var t = Date.now()/1000;
+    ctx2.save();
+    ctx2.translate(CX,CY);
+    for(var i=0;i<BARS;i++){
+      var angle = (i/BARS)*Math.PI*2 - Math.PI/2;
+      var amp = 0.15 + 0.1*Math.sin(t*0.8 + i*0.4);
+      var len = R_INNER * amp;
+      var x1 = Math.cos(angle)*R_INNER, y1 = Math.sin(angle)*R_INNER;
+      var x2 = Math.cos(angle)*(R_INNER+len), y2 = Math.sin(angle)*(R_INNER+len);
+      ctx2.beginPath();ctx2.moveTo(x1,y1);ctx2.lineTo(x2,y2);
+      ctx2.strokeStyle='rgba('+rgb+',0.25)';ctx2.lineWidth=2;ctx2.lineCap='round';ctx2.stroke();
+    }
+    // center dot
+    ctx2.beginPath();ctx2.arc(0,0,6,0,Math.PI*2);
+    ctx2.fillStyle='rgba('+rgb+',0.35)';ctx2.fill();
+    ctx2.restore();
+    if(state==='idle') rafId=requestAnimationFrame(drawIdle);
+  }
+
+  function drawActive(){
+    ctx2.clearRect(0,0,W,H);
+    if(analyser&&dataArr) analyser.getByteFrequencyData(dataArr);
+    ctx2.save();ctx2.translate(CX,CY);
+    for(var i=0;i<BARS;i++){
+      var angle = (i/BARS)*Math.PI*2 - Math.PI/2;
+      var val = dataArr ? (dataArr[Math.floor(i*(dataArr.length/BARS))]||0)/255 : 0.15+0.1*Math.sin(Date.now()/400+i*0.4);
+      var len = R_INNER*0.2 + (R_OUTER-R_INNER)*val;
+      var x1=Math.cos(angle)*R_INNER, y1=Math.sin(angle)*R_INNER;
+      var x2=Math.cos(angle)*(R_INNER+len), y2=Math.sin(angle)*(R_INNER+len);
+      var alpha=0.3+val*0.7;
+      ctx2.beginPath();ctx2.moveTo(x1,y1);ctx2.lineTo(x2,y2);
+      ctx2.strokeStyle='rgba('+rgb+','+alpha+')';ctx2.lineWidth=2.5;ctx2.lineCap='round';ctx2.stroke();
+    }
+    ctx2.beginPath();ctx2.arc(0,0,6,0,Math.PI*2);
+    ctx2.fillStyle='rgba('+rgb+',0.8)';ctx2.fill();
+    ctx2.restore();
+    if(state==='playing'||state==='loading') rafId=requestAnimationFrame(drawActive);
+  }
+
+  function startIdle(){ if(rafId)cancelAnimationFrame(rafId); drawIdle(); }
+  function startActive(){ if(rafId)cancelAnimationFrame(rafId); drawActive(); }
+  startIdle();
+
+  // ── Button state helpers ──────────────────────────────────
+  function setBtn(icon,label,cls){
+    var btn=document.getElementById('voBtn'),
+        ic=document.getElementById('voIcon'),
+        tx=document.getElementById('voBtnText');
+    btn.className='vo-btn'+(cls?' '+cls:'');
+    ic.className='vo-icon'+(cls==='loading'?' vo-spin':'');
+    ic.textContent=icon; tx.textContent=label;
+  }
+  function setSub(t){var e=document.getElementById('voSub');if(e)e.textContent=t;}
+  function setProgress(pct){var e=document.getElementById('voProgress');if(e)e.style.width=pct+'%';}
+
+  // ── Main toggle ───────────────────────────────────────────
+  window.voToggle = function(){
+    if(state==='loading')return;
+    if(state==='playing'){ audio&&audio.pause(); return; }
+    if(state==='paused' && audio){ audio.play(); return; }
+    // idle → fetch & play
+    state='loading';
+    setBtn('◌','GENERATING…','loading');
+    setSub('Claude is writing your briefing…');
+    startActive();
+
+    fetch('/api/voice?show='+SHOW)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(d.error && !d.audioUrl) throw new Error(d.error);
+        // Show script if available
+        var scriptEl=document.getElementById('voScript');
+        if(scriptEl&&d.script){scriptEl.textContent=d.script;scriptEl.style.display='block';}
+        setSub(d.cached?'Cached briefing · '+'Alice':'Live briefing · '+'Alice'+' · Huit.AI');
+        playAudio(d.audioUrl);
+      })
+      .catch(function(err){
+        console.error('Voice error:',err);
+        state='idle';
+        setBtn('▶','PLAY BRIEFING','');
+        setSub('Voice unavailable · '+err.message.slice(0,50));
+        startIdle();
+      });
+  };
+
+  function playAudio(url){
+    audio = new Audio(url);
+    audio.crossOrigin='anonymous';
+
+    // Web Audio for waveform
+    try{
+      audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      var src = audioCtx.createMediaElementSource(audio);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 128;
+      dataArr = new Uint8Array(analyser.frequencyBinCount);
+      src.connect(analyser);
+      analyser.connect(audioCtx.destination);
+    }catch(e){console.warn('AudioContext:',e);}
+
+    audio.addEventListener('play',function(){
+      state='playing';setBtn('⏸','PAUSE','playing');startActive();
+    });
+    audio.addEventListener('pause',function(){
+      state='paused';setBtn('▶','RESUME','');startIdle();
+    });
+    audio.addEventListener('ended',function(){
+      state='idle';setBtn('▶','PLAY AGAIN','');setProgress(100);
+      setTimeout(function(){setProgress(0);},1200);startIdle();
+    });
+    audio.addEventListener('timeupdate',function(){
+      if(audio.duration)setProgress((audio.currentTime/audio.duration)*100);
+    });
+    audio.addEventListener('error',function(e){
+      state='idle';setBtn('▶','PLAY BRIEFING','');
+      setSub('Audio error — try again');startIdle();
+    });
+
+    audio.play().catch(function(e){
+      state='idle';setBtn('▶','PLAY BRIEFING','');
+      setSub('Click to play · '+'Alice');startIdle();
+    });
+  }
+})();
+</script>
+<!-- ── END AI VOICE OVERVIEW ─────────────────────────────────── -->
+
   <!-- LIVE DASHBOARD -->
   <div class="wrap">
 
