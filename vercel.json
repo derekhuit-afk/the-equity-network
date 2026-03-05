@@ -9,6 +9,10 @@
       "dest": "/api/news.js"
     },
     {
+      "src": "/api/voice",
+      "dest": "/api/voice.js"
+    },
+    {
       "src": "/shows/rate-watch-daily",
       "dest": "/shows/rate-watch-daily.html"
     },
