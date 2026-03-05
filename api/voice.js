@@ -84,7 +84,6 @@ function buildScript(show, d) {
 "hmda-deep-dive":
 `With the thirty-year at ${r2(r30)||'current levels'}, mortgage delinquency at ${md||'current levels'}, and credit card stress at ${cc||'current levels'}, lender market share is actively shifting — and loan officers with access to that data have a real edge. The Huit AI APEX platform holds seven years of HMDA federal data — fourteen-point-two million loan records — covering approval and denial rates, origination volume, rate spread analysis, and market share by county, lender, and loan type. HMDA reveals where share is moving and where denial rates are rising. That intelligence grows a business in a down market.`,
 
-  }
   };
 
   return s[show] || `The thirty-year fixed rate is ${r2(r30)||'at current levels'} today. Live mortgage and housing market intelligence from The Equity Network, powered by Huit dot A I.`;
