@@ -1,10 +1,12 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "routes": [
     {
       "src": "/api/fred",
-      "dest": "/api/fred.js"
+      "dest": "/api/fred.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate=7200"
+      }
     },
     {
       "src": "/shows/rate-watch-daily",
@@ -39,27 +41,8 @@
       "dest": "/shows/hmda-deep-dive.html"
     },
     {
-      "src": "/simulators/(.*)",
-      "dest": "/simulators/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "s-maxage=3600, stale-while-revalidate=7200"
-        }
-      ]
     }
   ]
 }
