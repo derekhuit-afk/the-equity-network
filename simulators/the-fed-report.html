@@ -117,6 +117,41 @@ svg.chart{width:100%;display:block;}
 .script-text{font-size:13px;color:var(--mid);line-height:1.8;max-height:90px;overflow-y:auto;}
 .script-text em{color:var(--white);font-style:normal;}
 .vo-dir{color:rgba(201,168,76,0.5);font-size:11px;font-style:italic;}
+
+/* ── SIM VOICE PLAYER ─────────────── */
+.sim-voice-bar{
+  max-width:1280px;margin:0 auto;
+  display:flex;align-items:center;gap:16px;
+  padding:10px 28px;
+  background:rgba(4,8,18,0.95);
+  border-top:1px solid rgba(201,168,76,0.12);
+  border-bottom:1px solid rgba(201,168,76,0.06);
+}
+.sim-vo-canvas-wrap{flex-shrink:0;position:relative;}
+#simVoCanvas{border-radius:50%;}
+.sim-vo-info{flex:1;min-width:0;}
+.sim-vo-eye{font-family:'Roboto Mono',monospace;font-size:7px;letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+.sim-vo-eye::before{content:'◉';font-size:6px;}
+.sim-vo-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;
+  color:rgba(248,249,250,0.9);}
+.sim-vo-sub{font-family:'Roboto Mono',monospace;font-size:9px;color:rgba(138,149,163,0.5);
+  letter-spacing:0.5px;margin-top:2px;}
+.sim-vo-btn{
+  flex-shrink:0;display:flex;align-items:center;gap:7px;cursor:pointer;
+  padding:8px 16px;border-radius:2px;
+  font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;transition:all 0.2s;white-space:nowrap;border:1px solid;
+}
+.sim-vo-btn.loading{opacity:0.6;cursor:wait;}
+.sim-vo-prog{
+  position:absolute;bottom:0;left:0;height:2px;width:0%;
+  transition:width 0.5s linear;
+}
+.sim-voice-bar{position:relative;}
+@keyframes simVoSpin{to{transform:rotate(360deg)}}
+.sim-vo-spin{animation:simVoSpin 1s linear infinite;display:inline-block;}
+
 </style>
 </head>
 <body>
@@ -277,6 +312,129 @@ svg.chart{width:100%;display:block;}
   <div class="script-label" id="script-seg-label">Scene 1 of 7 · Channel Ident</div>
   <div class="script-text" id="voiceover-text"></div>
 </div>
+<!-- SIM VOICE PLAYER -->
+<div class="sim-voice-bar" id="simVoiceBar">
+  <div class="sim-vo-canvas-wrap">
+    <canvas id="simVoCanvas" width="44" height="44"></canvas>
+  </div>
+  <div class="sim-vo-info">
+    <div class="sim-vo-eye" style="color:rgba(139,92,246,0.7);">AI Voice Overview</div>
+    <div class="sim-vo-title">Live Data Briefing</div>
+    <div class="sim-vo-sub" id="simVoSub">Voiced by Bill · Powered by Huit.AI</div>
+  </div>
+  <button class="sim-vo-btn" id="simVoBtn" onclick="simVoToggle()"
+    style="color:rgba(139,92,246,0.9);border-color:rgba(139,92,246,0.35);background:rgba(139,92,246,0.08);">
+    <span id="simVoIcon">▶</span>
+    <span id="simVoBtnTxt">PLAY BRIEFING</span>
+  </button>
+  <div class="sim-vo-prog" id="simVoProg" style="background:rgba(139,92,246,0.6);"></div>
+</div>
+<script>
+(function(){
+  var SHOW='the-fed-report', COLOR='#8B5CF6';
+  var audio=null, rafId=null, analyser=null, dataArr=null, audioCtx=null, state='idle';
+  var canvas=document.getElementById('simVoCanvas');
+  var ctx2=canvas?canvas.getContext('2d'):null;
+  var W=44,H=44,CX=22,CY=22,BARS=36,RI=12,RO=20;
+  function rgb(a){var r=parseInt(COLOR.slice(1,3),16),g=parseInt(COLOR.slice(3,5),16),b=parseInt(COLOR.slice(5,7),16);return r+','+g+','+b;}
+  var RG=rgb();
+  function drawIdle(){
+    if(!ctx2)return;
+    ctx2.clearRect(0,0,W,H);
+    var t=Date.now()/1000;
+    ctx2.save();ctx2.translate(CX,CY);
+    for(var i=0;i<BARS;i++){
+      var a=(i/BARS)*Math.PI*2-Math.PI/2,amp=0.15+0.1*Math.sin(t*0.8+i*0.4),len=RI*amp;
+      ctx2.beginPath();ctx2.moveTo(Math.cos(a)*RI,Math.sin(a)*RI);
+      ctx2.lineTo(Math.cos(a)*(RI+len),Math.sin(a)*(RI+len));
+      ctx2.strokeStyle='rgba('+RG+',0.25)';ctx2.lineWidth=1.5;ctx2.lineCap='round';ctx2.stroke();
+    }
+    ctx2.beginPath();ctx2.arc(0,0,4,0,Math.PI*2);ctx2.fillStyle='rgba('+RG+',0.35)';ctx2.fill();
+    ctx2.restore();
+    if(state==='idle')rafId=requestAnimationFrame(drawIdle);
+  }
+  function drawActive(){
+    if(!ctx2)return;
+    ctx2.clearRect(0,0,W,H);
+    if(analyser&&dataArr)analyser.getByteFrequencyData(dataArr);
+    ctx2.save();ctx2.translate(CX,CY);
+    for(var i=0;i<BARS;i++){
+      var a=(i/BARS)*Math.PI*2-Math.PI/2;
+      var val=dataArr?(dataArr[Math.floor(i*(dataArr.length/BARS))]||0)/255:0.15+0.1*Math.sin(Date.now()/400+i*0.4);
+      var len=RI*0.2+(RO-RI)*val,alpha=0.3+val*0.7;
+      ctx2.beginPath();ctx2.moveTo(Math.cos(a)*RI,Math.sin(a)*RI);
+      ctx2.lineTo(Math.cos(a)*(RI+len),Math.sin(a)*(RI+len));
+      ctx2.strokeStyle='rgba('+RG+','+alpha+')';ctx2.lineWidth=2;ctx2.lineCap='round';ctx2.stroke();
+    }
+    ctx2.beginPath();ctx2.arc(0,0,4,0,Math.PI*2);ctx2.fillStyle='rgba('+RG+',0.8)';ctx2.fill();
+    ctx2.restore();
+    if(state==='playing'||state==='loading')rafId=requestAnimationFrame(drawActive);
+  }
+  function startIdle(){if(rafId)cancelAnimationFrame(rafId);drawIdle();}
+  function startActive(){if(rafId)cancelAnimationFrame(rafId);drawActive();}
+  startIdle();
+
+  function setBtn(icon,label,cls){
+    var btn=document.getElementById('simVoBtn'),ic=document.getElementById('simVoIcon'),tx=document.getElementById('simVoBtnTxt');
+    if(!btn)return;
+    btn.className='sim-vo-btn'+(cls?' '+cls:'');
+    ic.className=(cls==='loading'?'sim-vo-spin':'');
+    ic.textContent=icon;tx.textContent=label;
+  }
+  function setSub(t){var e=document.getElementById('simVoSub');if(e)e.textContent=t;}
+  function setProg(p){var e=document.getElementById('simVoProg');if(e)e.style.width=p+'%';}
+
+  window.simVoToggle=function(){
+    if(state==='loading')return;
+    if(audio&&(state==='playing'||state==='paused')){
+      if(state==='playing'){audio.pause();return;}
+      if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+      audio.play().catch(function(){});return;
+    }
+    // Unlock AudioContext synchronously
+    if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+    if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+    // Create + unlock audio element before fetch
+    audio=new Audio();audio.volume=0;
+    audio.play().then(function(){audio.pause();audio.volume=1;}).catch(function(){});
+    state='loading';setBtn('◌','GENERATING…','loading');setSub('Generating live briefing…');startActive();
+
+    fetch('/api/voice?show='+SHOW)
+      .then(function(r){
+        var ct=r.headers.get('content-type')||'';
+        if(ct.indexOf('audio')!==-1||ct.indexOf('octet')!==-1){
+          return r.blob().then(function(b){return{audioUrl:URL.createObjectURL(b),_blob:true};}); 
+        }
+        return r.json();
+      })
+      .then(function(d){
+        if(!d._blob&&d.error&&!d.audioUrl)throw new Error(d.error);
+        setSub(d.cached?'Today\'s briefing · Bill':'Live briefing · Bill · Huit.AI');
+        if(audioCtx){
+          try{
+            var src=audioCtx.createMediaElementSource(audio);
+            analyser=audioCtx.createAnalyser();analyser.fftSize=128;
+            dataArr=new Uint8Array(analyser.frequencyBinCount);
+            src.connect(analyser);analyser.connect(audioCtx.destination);
+          }catch(e){analyser=null;dataArr=null;}
+        }
+        audio.src=d.audioUrl;audio.volume=1;audio.load();
+        audio.addEventListener('playing',function(){state='playing';setBtn('⏸','PAUSE','');startActive();},{once:true});
+        audio.addEventListener('pause',function(){if(state==='playing'){state='paused';setBtn('▶','RESUME','');startIdle();}});
+        audio.addEventListener('ended',function(){state='idle';setBtn('▶','PLAY AGAIN','');setProg(100);setTimeout(function(){setProg(0);},1200);startIdle();});
+        audio.addEventListener('timeupdate',function(){if(audio.duration)setProg((audio.currentTime/audio.duration)*100);});
+        audio.addEventListener('error',function(){state='idle';setBtn('▶','RETRY','');setSub('Audio error — tap to retry');startIdle();});
+        var pp=audioCtx&&audioCtx.state==='suspended'?audioCtx.resume().then(function(){return audio.play();}):audio.play();
+        pp.catch(function(){state='idle';setBtn('▶','PLAY BRIEFING','');setSub('Tap to play · Bill');startIdle();});
+      })
+      .catch(function(err){
+        state='idle';setBtn('▶','PLAY BRIEFING','');
+        setSub('Unavailable · '+err.message.slice(0,50));audio=null;startIdle();
+      });
+  };
+})();
+</script>
+
 
 <script>
 const FRED='https://fred.stlouisfed.org/graph/fredgraph.csv';
