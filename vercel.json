@@ -13,6 +13,22 @@
       "dest": "/api/voice.js"
     },
     {
+      "src": "/simulators/rate-watch-daily",
+      "dest": "/simulators/rate-watch-daily.html"
+    },
+    {
+      "src": "/simulators/the-fed-report",
+      "dest": "/simulators/the-fed-report.html"
+    },
+    {
+      "src": "/simulators/housing-market-weekly",
+      "dest": "/simulators/housing-market-weekly.html"
+    },
+    {
+      "src": "/simulators/mortgage-news-now",
+      "dest": "/simulators/mortgage-news-now.html"
+    },
+    {
       "src": "/shows/rate-watch-daily",
       "dest": "/shows/rate-watch-daily.html"
     },
