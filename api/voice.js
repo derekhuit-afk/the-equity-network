@@ -13,7 +13,7 @@ const SHOW_CONFIG = {
 
 const BUCKET = 'equity-audio';
 
-function r2(v){ return v!=null?v.toFixed(2)+'%':null; }
+function r2(v){ return v!=null?v.toFixed(2)+' percent':null; }
 function pr(v){ return v?'$'+Math.round(v/1000)+'K':null; }
 function pmt(p,r){
   if(!p||!r)return null;
@@ -33,8 +33,8 @@ function incReqK(p,r){
 
 function buildScript(show, d) {
   var r30=d.r30, r15=d.r15, t10=d.t10, t2=d.t2, ff=d.ff;
-  var sp=r30&&t10?(r30-t10).toFixed(2)+'%':null;
-  var yc=t10&&t2?(t10>t2?'normal, with a '+(t10-t2).toFixed(2)+'% spread':'inverted by '+Math.abs((t10-t2).toFixed(2))+'%'):'unclear';
+  var sp=r30&&t10?(r30-t10).toFixed(2)+' percent':null;
+  var yc=t10&&t2?(t10>t2?'normal, with a '+(t10-t2).toFixed(2)+' percent spread':'inverted by '+Math.abs((t10-t2).toFixed(2))+' percent'):'unclear';
   var cond=!d.months_supply?'mixed':d.months_supply<3?'a hot seller\'s market':d.months_supply<5?'a seller\'s market':d.months_supply<7?'balanced':' a buyer\'s market';
   var sup=d.months_supply?d.months_supply.toFixed(1):null;
   var med=pr(d.median_price);
@@ -47,10 +47,10 @@ function buildScript(show, d) {
   var i400=r30?'$'+Math.round(400000*(r30/100/12)*Math.pow(1+r30/100/12,360)/(Math.pow(1+r30/100/12,360)-1)*12/0.28/1000)+'K':null;
   var aff=affPct(d.median_price,r30,d.median_income);
   var iReq=incReqK(d.median_price,r30);
-  var ib=d.inflation_breakeven?d.inflation_breakeven.toFixed(2)+'%':null;
+  var ib=d.inflation_breakeven?d.inflation_breakeven.toFixed(2)+' percent':null;
   var bs=d.fed_balance_sheet?'$'+(d.fed_balance_sheet/1e9).toFixed(0)+'B':null;
-  var cc=d.cc_delinquency?d.cc_delinquency.toFixed(2)+'%':null;
-  var md=d.mortgage_delinquency?d.mortgage_delinquency.toFixed(2)+'%':null;
+  var cc=d.cc_delinquency?d.cc_delinquency.toFixed(2)+' percent':null;
+  var md=d.mortgage_delinquency?d.mortgage_delinquency.toFixed(2)+' percent':null;
   var hs  = d.housing_starts      ? Math.round(d.housing_starts)+'K'                   : null;
   var ns  = d.new_home_sales      ? d.new_home_sales+'K'                                   : null;
   var es  = d.existing_home_sales ? (d.existing_home_sales/1e6).toFixed(2)+'M'             : null;
