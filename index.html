@@ -4,937 +4,132 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Huit.AI — Launching Soon</title>
-<meta name="description" content="Huit.AI — The mortgage intelligence platform built for the people who move markets. Launching 2026.">
-<meta property="og:title" content="Huit.AI — Launching Soon">
-<meta property="og:description" content="Mortgage and real estate AI intelligence. Built different. Launching 2026.">
+<meta name="description" content="Huit.AI — The mortgage intelligence platform. Launching 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=JetBrains+Mono:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy: #040D1A;
-  --navy2: #071426;
-  --teal: #0E7C7B;
-  --teal2: #12A09F;
-  --teal3: #17C4C3;
-  --teal-glow: rgba(14,124,123,0.15);
-  --teal-glow2: rgba(23,196,195,0.08);
-  --white: #F0F4F8;
-  --muted: #8899AA;
-  --border: rgba(14,124,123,0.2);
-  --border2: rgba(14,124,123,0.08);
-  --red: #E05252;
-  --amber: #D4A017;
-}
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--navy);
-  color: var(--white);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
+:root {
+  --navy:#040D1A; --teal:#0E7C7B; --teal2:#17C4C3;
+  --white:#F0F4F8; --muted:#607080;
+  --border:rgba(14,124,123,0.22); --grid:rgba(23,196,195,0.04);
 }
-
-/* ── GRID BACKGROUND ─────────────────────────────────────── */
-.grid-bg {
-  position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-  background-image:
-    linear-gradient(var(--teal-glow2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--teal-glow2) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-.grid-bg::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,124,123,0.12) 0%, transparent 70%),
-              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(14,124,123,0.08) 0%, transparent 60%);
-}
-
-/* ── SCAN LINE ───────────────────────────────────────────── */
-@keyframes scan {
-  0% { transform: translateY(-100vh); }
-  100% { transform: translateY(100vh); }
-}
-.scanline {
-  position: fixed; left: 0; right: 0; height: 2px; z-index: 1;
-  background: linear-gradient(90deg, transparent, rgba(23,196,195,0.3), transparent);
-  animation: scan 8s linear infinite;
-  pointer-events: none;
-}
-
-/* ── LAYOUT ──────────────────────────────────────────────── */
-.container {
-  position: relative; z-index: 2;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-/* ── HEADER ──────────────────────────────────────────────── */
-header {
-  padding: 2.5rem 0 0;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border2);
-  padding-bottom: 1.5rem;
-}
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-  color: var(--white);
-  text-decoration: none;
-}
-.logo span { color: var(--teal3); }
-.badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: var(--teal3);
-  border: 1px solid var(--teal);
-  padding: 0.3rem 0.75rem;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-}
-.badge::before {
-  content: '';
-  position: absolute; top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(23,196,195,0.1), transparent);
-  animation: shimmer 3s infinite;
-}
-@keyframes shimmer { to { left: 100%; } }
-
-/* ── HERO ────────────────────────────────────────────────── */
-.hero { padding: 6rem 0 4rem; text-align: center; }
-
-.eyebrow {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
-  color: var(--teal3);
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  display: flex; align-items: center; justify-content: center; gap: 1rem;
-}
-.eyebrow::before, .eyebrow::after {
-  content: ''; display: block;
-  width: 40px; height: 1px; background: var(--teal);
-}
-
-@keyframes glitch {
-  0%,90%,100% { clip-path: none; transform: translate(0); }
-  92% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translate(-3px, 0); color: var(--teal3); }
-  94% { clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%); transform: translate(3px, 0); }
-  96% { clip-path: none; transform: translate(0); }
-}
-
-.hero-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: clamp(3.5rem, 10vw, 8rem);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  margin-bottom: 0.5rem;
-  animation: glitch 6s ease-in-out infinite;
-}
-.hero-title-sub {
-  font-family: 'Syne', sans-serif;
-  font-weight: 400;
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  letter-spacing: 0.02em;
-  color: var(--teal2);
-  margin-bottom: 2rem;
-}
-.hero-desc {
-  font-size: 1.05rem;
-  color: var(--muted);
-  max-width: 560px;
-  margin: 0 auto 3rem;
-  line-height: 1.7;
-}
-
-/* ── COUNTDOWN ───────────────────────────────────────────── */
-.countdown-wrap {
-  display: flex; justify-content: center; gap: 1.5rem;
-  margin-bottom: 3.5rem;
-  flex-wrap: wrap;
-}
-.countdown-block {
-  display: flex; flex-direction: column; align-items: center;
-  min-width: 90px;
-}
-.countdown-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  color: var(--white);
-  line-height: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border);
-  background: rgba(14,124,123,0.05);
-  position: relative;
-  min-width: 90px;
-  text-align: center;
-}
-.countdown-num::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 60%, rgba(14,124,123,0.1));
-}
-.countdown-sep {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 3rem;
-  color: var(--teal);
-  align-self: flex-start;
-  padding-top: 0.5rem;
-  line-height: 1;
-}
-.countdown-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-top: 0.5rem;
-}
-
-/* ── EMAIL CAPTURE ───────────────────────────────────────── */
-.capture-wrap {
-  display: flex; justify-content: center;
-  margin-bottom: 2rem;
-}
-.capture-form {
-  display: flex;
-  border: 1px solid var(--border);
-  background: rgba(14,124,123,0.04);
-  width: 100%;
-  max-width: 520px;
-  position: relative;
-  overflow: hidden;
-}
-.capture-form::before {
-  content: '';
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--teal3), transparent);
-}
-.capture-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 1rem 1.25rem;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  color: var(--white);
-}
-.capture-input::placeholder { color: var(--muted); }
-.capture-btn {
-  background: var(--teal);
-  border: none;
-  cursor: pointer;
-  padding: 1rem 1.75rem;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--white);
-  text-transform: uppercase;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-.capture-btn:hover { background: var(--teal2); }
-.capture-note {
-  font-size: 0.78rem;
-  color: var(--muted);
-  text-align: center;
-}
-.success-msg {
-  display: none;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--teal3);
-  text-align: center;
-  padding: 1rem;
-  border: 1px solid var(--teal);
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-/* ── DIVIDER ─────────────────────────────────────────────── */
-.section-divider {
-  border: none;
-  border-top: 1px solid var(--border2);
-  margin: 4rem 0 3.5rem;
-}
-
-/* ── SECTION LABEL ───────────────────────────────────────── */
-.section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
-  color: var(--teal);
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  display: flex; align-items: center; gap: 0.75rem;
-}
-.section-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-
-/* ── DEPARTMENT EMAILS ───────────────────────────────────── */
-.dept-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  background: var(--border);
-  margin-bottom: 1rem;
-}
-.dept-card {
-  background: var(--navy2);
-  padding: 1.25rem 1.5rem;
-  transition: background 0.2s;
-  display: flex; flex-direction: column; gap: 0.35rem;
-}
-.dept-card:hover { background: rgba(14,124,123,0.08); }
-.dept-name {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--teal3);
-}
-.dept-desc {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.4;
-}
-.dept-email {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--white);
-  text-decoration: none;
-  margin-top: 0.25rem;
-  transition: color 0.15s;
-}
-.dept-email:hover { color: var(--teal3); }
-
-/* ── DISCLOSURE ACCORDIONS ───────────────────────────────── */
-.disclosure-list { display: flex; flex-direction: column; gap: 1px; }
-
-details {
-  border: 1px solid var(--border);
-  background: var(--navy2);
-  overflow: hidden;
-}
-details + details { border-top: none; }
-
-summary {
-  padding: 1.25rem 1.5rem;
-  cursor: pointer;
-  list-style: none;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  user-select: none;
-  transition: background 0.2s;
-}
-summary:hover { background: rgba(14,124,123,0.06); }
-summary::-webkit-details-marker { display: none; }
-
-.summary-inner {
-  display: flex; align-items: center; gap: 1rem; flex: 1;
-}
-.summary-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.5rem;
-  border: 1px solid;
-  white-space: nowrap;
-}
-.tag-green { color: #5EC989; border-color: #5EC989; background: rgba(94,201,137,0.08); }
-.tag-amber { color: #D4A017; border-color: #D4A017; background: rgba(212,160,23,0.08); }
-.tag-teal  { color: var(--teal3); border-color: var(--teal); background: var(--teal-glow); }
-.tag-blue  { color: #6EC6FF; border-color: #6EC6FF; background: rgba(110,198,255,0.08); }
-
-.summary-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: -0.01em;
-}
-.chevron {
-  width: 20px; height: 20px;
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem;
-  color: var(--teal3);
-  flex-shrink: 0;
-  transition: transform 0.25s, background 0.2s;
-}
-details[open] .chevron { transform: rotate(45deg); background: var(--teal-glow); }
-
-.details-body {
-  padding: 0 1.5rem 1.5rem;
-  font-size: 0.875rem;
-  line-height: 1.75;
-  color: #AABCCC;
-}
-.details-body h3 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--teal3);
-  margin: 1.5rem 0 0.5rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--border2);
-}
-.details-body h3:first-child { margin-top: 0; }
-.details-body p { margin-bottom: 0.75rem; }
-.details-body ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
-.details-body li { margin-bottom: 0.4rem; }
-.details-body strong { color: var(--white); font-weight: 500; }
-.details-body a { color: var(--teal3); text-decoration: none; }
-.details-body a:hover { text-decoration: underline; }
-.details-body .notice {
-  background: rgba(212,160,23,0.08);
-  border-left: 3px solid var(--amber);
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
-  color: #E8C87A;
-  font-size: 0.82rem;
-}
-.details-body .notice.red {
-  background: rgba(224,82,82,0.08);
-  border-left-color: var(--red);
-  color: #E89090;
-}
-.details-body .notice.green {
-  background: rgba(94,201,137,0.08);
-  border-left-color: #5EC989;
-  color: #8ED9AA;
-}
-
-/* ── STATUS BAR ──────────────────────────────────────────── */
-.status-bar {
-  margin: 3rem 0;
-  border: 1px solid var(--border);
-  background: var(--navy2);
-  padding: 1.25rem 1.5rem;
-  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-}
-.status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--teal3);
-  box-shadow: 0 0 8px var(--teal3);
-  flex-shrink: 0;
-  animation: pulse-dot 2s infinite;
-}
-@keyframes pulse-dot {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-.status-text {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-.status-text strong { color: var(--teal3); }
-
-/* ── FOOTER ──────────────────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border2);
-  padding: 2.5rem 0 3rem;
-  margin-top: 4rem;
-}
-.footer-inner {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 2rem; flex-wrap: wrap;
-}
-.footer-brand {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--white);
-  margin-bottom: 0.35rem;
-}
-.footer-brand span { color: var(--teal3); }
-.footer-sub {
-  font-size: 0.78rem;
-  color: var(--muted);
-  max-width: 280px;
-  line-height: 1.5;
-}
-.footer-legal {
-  font-size: 0.72rem;
-  color: var(--muted);
-  line-height: 1.6;
-  text-align: right;
-}
-.footer-legal a { color: var(--teal); text-decoration: none; }
-.footer-legal a:hover { color: var(--teal3); }
-.footer-copy {
-  margin-top: 2rem;
-  font-size: 0.72rem;
-  color: #3D5060;
-  text-align: center;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.05em;
-}
-
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .hero { padding: 4rem 0 3rem; }
-  .countdown-sep { display: none; }
-  header { flex-direction: column; gap: 1rem; align-items: flex-start; }
-  .footer-legal { text-align: left; }
-  .dept-grid { grid-template-columns: 1fr; }
-}
+html,body{height:100%;}
+body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:52px 52px;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(14,124,123,0.10) 0%,transparent 70%);}
+@keyframes scan{0%{top:-4px}100%{top:100vh}}
+.scanline{position:fixed;left:0;right:0;height:2px;z-index:1;
+  background:linear-gradient(90deg,transparent,rgba(23,196,195,0.25),transparent);
+  animation:scan 9s linear infinite;pointer-events:none;}
+.wrap{position:relative;z-index:2;display:flex;flex-direction:column;
+  align-items:center;gap:0;padding:2rem;width:100%;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-0.03em;
+  margin-bottom:3.5rem;color:var(--white);}
+.logo span{color:var(--teal2);}
+@keyframes glitch{
+  0%,88%,100%{clip-path:none;transform:translate(0);}
+  90%{clip-path:polygon(0 18%,100% 18%,100% 32%,0 32%);transform:translate(-4px);color:var(--teal2);}
+  92%{clip-path:polygon(0 55%,100% 55%,100% 70%,0 70%);transform:translate(4px);}
+  94%{clip-path:none;transform:translate(0);}}
+.headline{font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(3rem,12vw,9rem);line-height:0.88;letter-spacing:-0.05em;
+  text-align:center;margin-bottom:0.4rem;animation:glitch 7s ease-in-out infinite;}
+.subhead{font-family:'JetBrains Mono',monospace;
+  font-size:clamp(0.7rem,1.5vw,0.95rem);letter-spacing:0.3em;
+  color:var(--teal2);text-transform:uppercase;text-align:center;margin-bottom:4rem;}
+.countdown{display:flex;align-items:flex-start;
+  gap:clamp(0.5rem,2vw,1.5rem);margin-bottom:5rem;}
+.cd-block{display:flex;flex-direction:column;align-items:center;}
+.cd-num{font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:clamp(2.8rem,8vw,6rem);line-height:1;color:var(--white);
+  min-width:clamp(80px,14vw,140px);text-align:center;
+  padding:0.4rem 0.6rem;border:1px solid var(--border);
+  background:rgba(14,124,123,0.04);position:relative;}
+.cd-num::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 65%,rgba(23,196,195,0.06));pointer-events:none;}
+.cd-label{font-family:'JetBrains Mono',monospace;
+  font-size:clamp(0.55rem,1vw,0.65rem);letter-spacing:0.2em;
+  color:var(--muted);text-transform:uppercase;margin-top:0.5rem;}
+.cd-sep{font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:clamp(2rem,6vw,4.5rem);color:var(--teal);line-height:1;
+  padding-top:0.4rem;align-self:flex-start;}
+.email-section{display:flex;flex-direction:column;align-items:center;
+  gap:0;width:100%;max-width:680px;}
+.email-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;
+  letter-spacing:0.25em;color:var(--teal);text-transform:uppercase;
+  margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;width:100%;}
+.email-label::before,.email-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.email-grid{display:grid;grid-template-columns:repeat(4,1fr);
+  width:100%;border:1px solid var(--border);overflow:hidden;}
+.email-cell{padding:0.9rem 1rem;border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);display:flex;flex-direction:column;
+  gap:0.2rem;transition:background 0.18s;}
+.email-cell:hover{background:rgba(14,124,123,0.07);}
+.email-cell:nth-child(4n){border-right:none;}
+.email-cell:nth-last-child(-n+4){border-bottom:none;}
+.email-dept{font-family:'JetBrains Mono',monospace;font-size:0.58rem;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--teal2);}
+.email-addr{font-family:'JetBrains Mono',monospace;
+  font-size:clamp(0.62rem,1.1vw,0.75rem);color:var(--white);text-decoration:none;}
+.email-addr:hover{color:var(--teal2);}
+@media(max-width:560px){
+  .email-grid{grid-template-columns:repeat(2,1fr);}
+  .email-cell:nth-child(4n){border-right:1px solid var(--border);}
+  .email-cell:nth-child(2n){border-right:none;}
+  .email-cell:nth-last-child(-n+4){border-bottom:1px solid var(--border);}
+  .email-cell:nth-last-child(-n+2){border-bottom:none;}
+  .cd-sep{display:none;}}
 </style>
 </head>
 <body>
-
-<div class="grid-bg"></div>
 <div class="scanline"></div>
-
-<div class="container">
-
-  <!-- HEADER -->
-  <header>
-    <a href="#" class="logo">HUIT<span>.</span>AI</a>
-    <div class="badge">Under Construction</div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="eyebrow">Mortgage Intelligence Platform</div>
-    <div class="hero-title">LAUNCHING</div>
-    <div class="hero-title-sub">2026</div>
-    <p class="hero-desc">
-      The mortgage and real estate intelligence platform built for the professionals who move markets.
-      AI-powered recruiting, pipeline intelligence, and equity analytics — built different.
-    </p>
-
-    <!-- COUNTDOWN -->
-    <div class="countdown-wrap">
-      <div class="countdown-block">
-        <div class="countdown-num" id="cd-days">000</div>
-        <div class="countdown-label">Days</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-block">
-        <div class="countdown-num" id="cd-hours">00</div>
-        <div class="countdown-label">Hours</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-block">
-        <div class="countdown-num" id="cd-mins">00</div>
-        <div class="countdown-label">Min</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-block">
-        <div class="countdown-num" id="cd-secs">00</div>
-        <div class="countdown-label">Sec</div>
-      </div>
-    </div>
-
-    <!-- EMAIL CAPTURE -->
-    <div class="capture-wrap">
-      <form class="capture-form" id="capture-form" onsubmit="handleSubmit(event)">
-        <input type="email" class="capture-input" id="email-input" placeholder="Enter your email for early access" required>
-        <button type="submit" class="capture-btn">Notify Me</button>
-      </form>
-    </div>
-    <div class="success-msg" id="success-msg">
-      ✓ &nbsp;You're on the list. We'll reach out before anyone else.
-    </div>
-    <p class="capture-note">No spam. Early access for mortgage professionals only.</p>
-  </section>
-
-  <hr class="section-divider">
-
-  <!-- STATUS -->
-  <div class="status-bar">
-    <div class="status-dot"></div>
-    <div class="status-text">
-      <strong>Platform Status:</strong> &nbsp; Active development &nbsp;|&nbsp;
-      <strong>Compliance Score:</strong> &nbsp; 90/100 PASS &nbsp;|&nbsp;
-      <strong>Stage:</strong> &nbsp; Pre-Launch / Pre-Revenue &nbsp;|&nbsp;
-      <strong>Founder:</strong> &nbsp; Derek Huit, NMLS #203980 &nbsp;|&nbsp;
-      <strong>HQ:</strong> &nbsp; Anchorage, Alaska
+<div class="wrap">
+  <div class="logo">HUIT<span>.</span>AI</div>
+  <div class="headline">LAUNCHING</div>
+  <div class="subhead">Mortgage Intelligence Platform &nbsp;·&nbsp; 2026</div>
+  <div class="countdown">
+    <div class="cd-block"><div class="cd-num" id="cd-d">000</div><div class="cd-label">Days</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-label">Hours</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-label">Min</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-label">Sec</div></div>
+  </div>
+  <div class="email-section">
+    <div class="email-label">Contact</div>
+    <div class="email-grid">
+      <div class="email-cell"><span class="email-dept">Compliance</span><a href="mailto:compliance@huit.ai" class="email-addr">compliance@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Legal</span><a href="mailto:legal@huit.ai" class="email-addr">legal@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Privacy</span><a href="mailto:privacy@huit.ai" class="email-addr">privacy@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Security</span><a href="mailto:security@huit.ai" class="email-addr">security@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Investors</span><a href="mailto:investors@huit.ai" class="email-addr">investors@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Support</span><a href="mailto:support@huit.ai" class="email-addr">support@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Press</span><a href="mailto:press@huit.ai" class="email-addr">press@huit.ai</a></div>
+      <div class="email-cell"><span class="email-dept">Careers</span><a href="mailto:careers@huit.ai" class="email-addr">careers@huit.ai</a></div>
     </div>
   </div>
-
-  <!-- CONTACT DIRECTORY -->
-  <div class="section-label">Contact Directory</div>
-
-  <div class="dept-grid">
-
-    <div class="dept-card">
-      <div class="dept-name">Compliance</div>
-      <div class="dept-desc">Regulatory questions, OBA disclosures, APEX permissible use, data governance</div>
-      <a href="mailto:compliance@huit.ai" class="dept-email">compliance@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Legal</div>
-      <div class="dept-desc">Contract inquiries, MSA/DPA execution, terms review, outside counsel coordination</div>
-      <a href="mailto:legal@huit.ai" class="dept-email">legal@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Privacy</div>
-      <div class="dept-desc">GLBA, CCPA, data subject requests, Privacy Policy questions, data deletion</div>
-      <a href="mailto:privacy@huit.ai" class="dept-email">privacy@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Security</div>
-      <div class="dept-desc">Security incidents, vulnerability disclosures, breach notifications, infosec inquiries</div>
-      <a href="mailto:security@huit.ai" class="dept-email">security@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Investors</div>
-      <div class="dept-desc">Investment inquiries, accredited investor qualification, offering materials requests</div>
-      <a href="mailto:investors@huit.ai" class="dept-email">investors@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Support</div>
-      <div class="dept-desc">Platform support, onboarding assistance, technical issues, account questions</div>
-      <a href="mailto:support@huit.ai" class="dept-email">support@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Press &amp; Media</div>
-      <div class="dept-desc">Media inquiries, press kit requests, interview and speaking engagements</div>
-      <a href="mailto:press@huit.ai" class="dept-email">press@huit.ai</a>
-    </div>
-
-    <div class="dept-card">
-      <div class="dept-name">Careers</div>
-      <div class="dept-desc">Employment inquiries, partnership discussions, contractor and advisory interest</div>
-      <a href="mailto:careers@huit.ai" class="dept-email">careers@huit.ai</a>
-    </div>
-
-  </div>
-
-  <hr class="section-divider">
-
-  <!-- DISCLOSURES -->
-  <div class="section-label">Legal Disclosures</div>
-
-  <div class="disclosure-list">
-
-    <!-- PRIVACY POLICY -->
-    <details>
-      <summary>
-        <div class="summary-inner">
-          <span class="summary-tag tag-teal">Privacy Policy</span>
-          <span class="summary-title">Privacy Policy — Huit.AI / HyperLoanAI</span>
-        </div>
-        <span class="chevron">+</span>
-      </summary>
-      <div class="details-body">
-        <p><strong>Effective Date:</strong> March 2026 &nbsp;|&nbsp; <strong>Entity:</strong> Huit.AI &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:privacy@huit.ai">privacy@huit.ai</a></p>
-
-        <h3>1. Information We Collect</h3>
-        <p>We collect: <strong>account information</strong> (name, email, company, NMLS ID); <strong>usage data</strong> (platform interactions, feature usage, log data); <strong>content you provide</strong> (contact lists, pipeline records, documents you upload); and <strong>payment information</strong> processed by Stripe (Huit.AI does not store payment card data).</p>
-
-        <h3>2. How We Use Your Information</h3>
-        <p>Your data is used exclusively to: deliver and operate the Huit.AI platform; provide customer support; communicate platform updates; comply with legal obligations; and detect and prevent fraud or abuse. <strong>We do not sell your personal information.</strong></p>
-
-        <h3>3. Data Sharing</h3>
-        <p>We share data only with service providers necessary to deliver the platform: <strong>Supabase</strong> (database hosting), <strong>Stripe</strong> (payment processing — PCI DSS compliant), <strong>Vercel</strong> (application hosting), <strong>OpenAI API</strong> (AI inference). A complete subprocessor list is available upon request at <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
-
-        <h3>4. AI Model Training</h3>
-        <p>Your data will never be used to train, fine-tune, or develop any Huit.AI AI model without your explicit written consent. All AI model inputs are derived exclusively from publicly available CFPB HMDA LAR data and NMLS public records.</p>
-
-        <h3>5. Data Security</h3>
-        <p>We maintain a written information security program compliant with the GLBA Safeguards Rule (16 C.F.R. Part 314). Controls include encryption in transit (TLS 1.2+) and at rest, role-based access controls, audit logging, and annual security review. Breach notification within 72 hours of discovery.</p>
-
-        <h3>6. Data Retention & Deletion</h3>
-        <p>Account data is retained while your subscription is active. Upon termination: 30-day export window; data deleted within 90 days; written deletion confirmation provided upon request. Submit deletion requests to <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
-
-        <h3>7. California Residents — CCPA Rights</h3>
-        <p>California residents have the right to: (a) know what personal information we collect; (b) request deletion of personal information; (c) opt out of the sale of personal information (we do not sell data); and (d) non-discrimination for exercising CCPA rights. Submit CCPA requests to <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
-
-        <h3>8. GLBA Notice</h3>
-        <p>As a technology service provider to regulated financial institutions, Huit.AI operates as a service provider under the Gramm-Leach-Bliley Act. We do not collect or use nonpublic personal information from financial institution customers except as necessary to deliver contracted services.</p>
-
-        <div class="notice">Questions about this Privacy Policy: <a href="mailto:privacy@huit.ai">privacy@huit.ai</a> &nbsp;|&nbsp; Not legal advice. March 2026.</div>
-      </div>
-    </details>
-
-    <!-- TERMS OF SERVICE -->
-    <details>
-      <summary>
-        <div class="summary-inner">
-          <span class="summary-tag tag-blue">Terms of Service</span>
-          <span class="summary-title">Terms of Service — Huit.AI Platform</span>
-        </div>
-        <span class="chevron">+</span>
-      </summary>
-      <div class="details-body">
-        <p><strong>Effective Date:</strong> March 2026 &nbsp;|&nbsp; <strong>Governing Law:</strong> New Jersey &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:legal@huit.ai">legal@huit.ai</a></p>
-
-        <div class="notice green">These Terms of Service are in review pending retention of outside compliance counsel. They will be published in final executed form at huit.ai/terms prior to platform launch.</div>
-
-        <h3>1. Permitted Use</h3>
-        <p>The Huit.AI platform is licensed for lawful mortgage and real estate business purposes only. Subscribers may not: resell or redistribute platform access; use the platform to compete directly with Huit.AI; use platform outputs to circumvent any applicable law; or use APEX intelligence for any purpose other than recruiting outreach prioritization and retention planning.</p>
-
-        <h3>2. AI Output Disclaimer</h3>
-        <p><strong>All AI-generated outputs from the Huit.AI platform — including Transition Likelihood Scores, lead scores, equity estimates, behavioral signals, and all other model outputs — are informational signals only.</strong> They are not credit decisions, appraisals, employment decisions, legal opinions, or financial advice. Subscribers bear full responsibility for all decisions made using Huit.AI output. Huit.AI outputs do not constitute consumer reports under the Fair Credit Reporting Act when used within authorized scope.</p>
-
-        <h3>3. Data Ownership</h3>
-        <p>You own all data you enter into the platform. You grant Huit.AI a limited, non-exclusive, non-transferable processing license to use your data solely to deliver the services you have subscribed to. Huit.AI acquires no ownership interest in your data and will not use it to train AI models without your explicit consent.</p>
-
-        <h3>4. Subscription and Billing</h3>
-        <p>Subscriptions are billed monthly or annually. All fees are processed through Stripe. Refunds are not provided for partial billing periods. Prices: STARTER $625/mo | SCOUT $1,250/mo | COMMAND $2,350/mo | DOMINATE $4,125/mo. 15% discount applies to annual billing. All modules bundled — no standalone pricing.</p>
-
-        <h3>5. Limitation of Liability</h3>
-        <p>Huit.AI's aggregate liability to any subscriber for any claim arising under these Terms is limited to the total fees paid by that subscriber in the 12 months preceding the claim. Huit.AI is not liable for any indirect, incidental, special, consequential, or punitive damages.</p>
-
-        <h3>6. Termination</h3>
-        <p>Either party may terminate the subscription with 30 days written notice. Subscriber data will be exportable for 30 days post-termination and deleted within 90 days. Huit.AI may immediately suspend access for material breach of these Terms.</p>
-
-        <h3>7. Governing Law & Disputes</h3>
-        <p>These Terms are governed by the laws of the State of New Jersey. Any dispute will be resolved by binding arbitration under AAA Commercial Arbitration Rules in Camden County, NJ. The prevailing party is entitled to reasonable attorney's fees.</p>
-
-        <div class="notice">Full Terms of Service will be published at huit.ai/terms prior to launch. Questions: <a href="mailto:legal@huit.ai">legal@huit.ai</a></div>
-      </div>
-    </details>
-
-    <!-- APEX PERMISSIBLE USE & FCRA -->
-    <details>
-      <summary>
-        <div class="summary-inner">
-          <span class="summary-tag tag-amber">APEX / FCRA</span>
-          <span class="summary-title">APEX Permissible Use Notice &amp; FCRA Disclosure</span>
-        </div>
-        <span class="chevron">+</span>
-      </summary>
-      <div class="details-body">
-        <p><strong>Applicable to:</strong> All APEX and REAPEX module subscribers &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:compliance@huit.ai">compliance@huit.ai</a></p>
-
-        <div class="notice red"><strong>Important:</strong> By activating APEX, subscribers make binding legal representations regarding their intended use. Read this notice in full before activating the APEX module.</div>
-
-        <h3>1. What APEX Is</h3>
-        <p>APEX is Huit.AI's talent intelligence platform. It identifies and scores mortgage loan officers using the Transition Likelihood Score (TLS) and Source Talent Detection Algorithm (STDA), derived exclusively from publicly available CFPB HMDA LAR data (2017–2024) and NMLS public licensee records. APEX does not use credit bureau data, non-public personal financial information, or any individual's private records.</p>
-
-        <h3>2. FCRA Analysis — Authorized Use</h3>
-        <p>Huit.AI has conducted a full Fair Credit Reporting Act (15 U.S.C. §1681) applicability analysis. <strong>Conclusion:</strong> TLS scores and APEX intelligence do not constitute consumer reports when used solely for recruiting outreach prioritization. APEX output is authorized for: (a) identifying loan officers for recruiting outreach; (b) retention planning for existing team members; (c) mortgage market intelligence and landscape analysis.</p>
-
-        <h3>3. Prohibited Uses</h3>
-        <ul>
-          <li><strong>No adverse employment decisions:</strong> APEX output may NOT be used as the basis for termination, demotion, reassignment, denial of promotion, or any other adverse employment action.</li>
-          <li><strong>No employment screening:</strong> APEX output may NOT be shared with any third party for employment screening purposes.</li>
-          <li><strong>No credit decisions:</strong> APEX output may NOT be used to make or inform any credit, lending, or financial product decision about any individual.</li>
-        </ul>
-
-        <h3>4. Permissible Use Certification</h3>
-        <p>All APEX subscribers must execute the Permissible Use Certification (v2.0) at account activation, certifying: (1) APEX used for outreach/retention only; (2) no adverse employment decisions; (3) no third-party sharing for employment purposes; (4) independent FCRA/NLRA/state employment law compliance; (5) legitimate business purpose for each list generated.</p>
-
-        <h3>5. Data Provenance</h3>
-        <p>All APEX model inputs are derived exclusively from: <strong>CFPB HMDA public LAR data</strong> (cfpb.gov) and <strong>NMLS public licensee records</strong> (nmlsconsumeraccess.org). No non-public data. No credit bureau data. No individually identifiable non-public financial information.</p>
-
-        <h3>6. Loan Officer Rights</h3>
-        <p>Licensed mortgage professionals whose public data appears in the APEX system have the following rights: right to know (compliance@huit.ai), right to correct factual inaccuracies, right to opt out of APEX outreach lists. Contact <a href="mailto:compliance@huit.ai">compliance@huit.ai</a> with NMLS license number to exercise any right.</p>
-
-        <h3>7. NLRA Section 7 Notice</h3>
-        <p>Employers using APEX to monitor their own current employees should consult labor counsel regarding NLRA Section 7 obligations before deploying APEX for internal retention surveillance. Huit.AI is a data intelligence vendor — not your legal counsel.</p>
-
-        <h3>8. Model Validation</h3>
-        <p>TLS and Lead Scoring Engine third-party validation is in-flight and expected to be complete prior to enterprise (COMMAND/DOMINATE tier) client deployments. FFIEC SR 11-7 model documentation available to enterprise clients upon request at <a href="mailto:compliance@huit.ai">compliance@huit.ai</a>.</p>
-
-        <div class="notice">Questions about APEX permissible use or FCRA compliance: <a href="mailto:compliance@huit.ai">compliance@huit.ai</a></div>
-      </div>
-    </details>
-
-    <!-- INVESTMENT GUIDELINES SUMMARY -->
-    <details>
-      <summary>
-        <div class="summary-inner">
-          <span class="summary-tag tag-green">Investors</span>
-          <span class="summary-title">Investment Guidelines Summary — Huit.AI</span>
-        </div>
-        <span class="chevron">+</span>
-      </summary>
-      <div class="details-body">
-        <p><strong>Stage:</strong> Pre-Launch / Pre-Revenue &nbsp;|&nbsp; <strong>Funding:</strong> Self-funded &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:investors@huit.ai">investors@huit.ai</a></p>
-
-        <div class="notice red"><strong>Not an offer to sell securities.</strong> This summary is for informational purposes only. No investment should be made until outside securities counsel has been retained, all required SEC and state filings have been completed, and all required offering documents have been executed. Nothing here constitutes legal, securities, tax, or financial advice.</div>
-
-        <h3>1. Available Investment Instruments</h3>
-        <p>Huit.AI may offer investment through the following instruments (subject to securities counsel review and required regulatory filings):</p>
-        <ul>
-          <li><strong>SAFE (Simple Agreement for Future Equity)</strong> — Pre-money SAFE with valuation cap and discount. YC standard form. Accredited investors.</li>
-          <li><strong>Convertible Note</strong> — Interest-bearing debt converting to equity at priced round. 6% interest, 18–24 month maturity.</li>
-          <li><strong>Series Seed Preferred Stock</strong> — Priced equity round. Full NVCA-standard preferred terms. Board observer right (not voting).</li>
-          <li><strong>Revenue-Based Financing</strong> — Non-dilutive debt repaid as % of monthly revenue. Suitable for post-revenue stage.</li>
-          <li><strong>Warrants</strong> — Right to purchase equity at fixed exercise price. Typically issued alongside strategic agreements.</li>
-          <li><strong>Advisory Equity / Stock Options</strong> — Equity for non-cash contributions. Common stock, monthly vesting.</li>
-          <li><strong>Strategic Investment Agreement</strong> — Financial investment bundled with commercial/platform rights for corporate investors.</li>
-          <li><strong>Special Purpose Vehicle (SPV)</strong> — Pooled investment structure for groups of investors.</li>
-          <li><strong>Reg CF Crowdfunding</strong> — Up to $5M from accredited and non-accredited investors via registered crowdfunding portal.</li>
-        </ul>
-
-        <h3>2. Investor Categories</h3>
-        <ul>
-          <li><strong>Category A — Corporate Strategic:</strong> A company that employs Derek Huit. Subject to RESPA §8 analysis, employer board recusal, and employment agreement review. Full Employer-Client Disclosure required.</li>
-          <li><strong>Category B — Current Employee (Individual):</strong> Individual currently employed at Derek's employer-company. Subject to employer OBA disclosure, FINRA Rule 3270/3280 (if registered rep), and pre-clearance requirements.</li>
-          <li><strong>Category C — Former Employee (Individual):</strong> Individual previously employed at a company where Derek has worked. Subject to accredited investor qualification and FINRA rules at current employer (if applicable).</li>
-          <li><strong>Category D — Other Accredited Individual:</strong> Any accredited investor with no current employer relationship to Derek. Standard Reg D disclosure.</li>
-        </ul>
-
-        <h3>3. Key Requirements for All Investors</h3>
-        <ul>
-          <li>Accredited investor qualification required for Reg D offerings (income test, net worth test, or Series 7/65/82 license)</li>
-          <li>Executed Subscription Agreement with accredited investor representations and MNPI certification</li>
-          <li>KYC/AML verification (government ID, SSN/EIN, beneficial ownership for entities)</li>
-          <li>OFAC screening before investment acceptance</li>
-          <li>SEC Form D filed within 15 days of first sale</li>
-          <li>State Blue Sky notice filings in each investor's state of residence</li>
-        </ul>
-
-        <h3>4. Corporate Employer-Investor Requirements</h3>
-        <ul>
-          <li>Full RESPA §8 analysis required before any investment</li>
-          <li>Derek Huit recuses from all employer investment deliberations and approvals</li>
-          <li>Board approval by disinterested decision-makers only</li>
-          <li>Board observer seat (not voting) preferred over voting board seat</li>
-          <li>APEX firewall: employer-investor may not use investor information rights to obtain APEX intelligence about competitors</li>
-        </ul>
-
-        <h3>5. FINRA Registered Representatives</h3>
-        <p>Any investor holding a Series 7 or other FINRA license at a FINRA member firm must provide prior written notice under FINRA Rule 3270 (Outside Business Activities) and FINRA Rule 3280 (Private Securities Transactions) to their employing member firm before investing. Huit.AI requires a representation in the Subscription Agreement confirming this notice has been provided.</p>
-
-        <h3>6. Prohibited Practices</h3>
-        <ul>
-          <li>No RESPA §8 quid pro quo: investment may never be conditioned on or connected to the referral of mortgage business</li>
-          <li>No unregistered finder compensation: transaction-based referral fees to unregistered persons are prohibited</li>
-          <li>No general solicitation in 506(b) offerings</li>
-          <li>No conditioning employment on investment</li>
-          <li>No use of MNPI in connection with any investment decision</li>
-        </ul>
-
-        <div class="notice">Investment inquiries: <a href="mailto:investors@huit.ai">investors@huit.ai</a> &nbsp;|&nbsp; Not an offer to sell securities. Not legal or financial advice. March 2026.</div>
-      </div>
-    </details>
-
-    <!-- OBA / CANDIDATE DISCLOSURE -->
-    <details>
-      <summary>
-        <div class="summary-inner">
-          <span class="summary-tag tag-teal">OBA Disclosure</span>
-          <span class="summary-title">Outside Business Activity Disclosure — Derek Huit</span>
-        </div>
-        <span class="chevron">+</span>
-      </summary>
-      <div class="details-body">
-        <p><strong>Applicable to:</strong> Companies considering employing Derek Huit &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:legal@huit.ai">legal@huit.ai</a></p>
-
-        <h3>Outside Business Activity — Summary</h3>
-        <p>Derek Huit is the Founder and CEO of Huit.AI, a pre-launch mortgage and real estate intelligence technology platform. Huit.AI is a software vendor — it is not a mortgage lender, does not originate loans, and does not compete with any mortgage lender for borrowers, originations, or referral partners.</p>
-
-        <h3>What Huit.AI Is Not</h3>
-        <ul>
-          <li>Not a mortgage lender or broker</li>
-          <li>Not an NMLS company license holder</li>
-          <li>Not a competing originator for loans, borrowers, or referral sources</li>
-          <li>Not currently generating revenue (pre-launch, pre-revenue)</li>
-        </ul>
-
-        <h3>Information Barrier Commitments</h3>
-        <ul>
-          <li>No employer data will enter any Huit.AI system</li>
-          <li>Entirely separate technology infrastructure</li>
-          <li>No use of employer brand or title in Huit.AI marketing without written consent</li>
-          <li>APEX will not target employer's own loan officers without express written authorization</li>
-          <li>Employment duties take first priority over all Huit.AI activities</li>
-        </ul>
-
-        <h3>IP Protection</h3>
-        <p>All Huit.AI IP (TLS, STDA, SCF Registry — patent-pending) was developed prior to any new employment relationship and is vested in Huit.AI. No work product created using employer resources belongs to Huit.AI. Filing dates available upon request.</p>
-
-        <div class="notice">Full OBA Disclosure document available upon request: <a href="mailto:legal@huit.ai">legal@huit.ai</a></div>
-      </div>
-    </details>
-
-  </div>
-
-  <hr class="section-divider">
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <div>
-        <div class="footer-brand">HUIT<span>.</span>AI</div>
-        <div class="footer-sub">Mortgage and real estate intelligence. Built for professionals who move markets. Anchorage, Alaska.</div>
-      </div>
-      <div class="footer-legal">
-        <a href="mailto:compliance@huit.ai">compliance@huit.ai</a><br>
-        <a href="mailto:legal@huit.ai">legal@huit.ai</a><br>
-        <a href="mailto:support@huit.ai">support@huit.ai</a><br>
-        <a href="mailto:investors@huit.ai">investors@huit.ai</a><br><br>
-        Not legal advice. Not an offer to sell securities.<br>
-        Compliance Score: 90/100 PASS · March 2026
-      </div>
-    </div>
-    <div class="footer-copy">
-      © 2026 Huit.AI · All rights reserved · NMLS #203980 (Individual) · huit.ai
-    </div>
-  </footer>
-
-</div><!-- /container -->
-
+</div>
 <script>
-// ── COUNTDOWN ──────────────────────────────────────────────
-const LAUNCH = new Date('2026-09-01T00:00:00Z');
-
-function pad(n, w=2) { return String(n).padStart(w, '0'); }
-
-function tick() {
-  const now = new Date();
-  const diff = Math.max(0, LAUNCH - now);
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent = pad(d, 3);
-  document.getElementById('cd-hours').textContent = pad(h);
-  document.getElementById('cd-mins').textContent = pad(m);
-  document.getElementById('cd-secs').textContent = pad(s);
+const LAUNCH=new Date('2026-09-01T00:00:00Z');
+const pad=(n,w=2)=>String(n).padStart(w,'0');
+function tick(){
+  const diff=Math.max(0,LAUNCH-Date.now());
+  document.getElementById('cd-d').textContent=pad(Math.floor(diff/86400000),3);
+  document.getElementById('cd-h').textContent=pad(Math.floor(diff%86400000/3600000));
+  document.getElementById('cd-m').textContent=pad(Math.floor(diff%3600000/60000));
+  document.getElementById('cd-s').textContent=pad(Math.floor(diff%60000/1000));
 }
-
-tick();
-setInterval(tick, 1000);
-
-// ── EMAIL CAPTURE ──────────────────────────────────────────
-function handleSubmit(e) {
-  e.preventDefault();
-  const email = document.getElementById('email-input').value;
-  if (!email) return;
-  document.getElementById('capture-form').style.display = 'none';
-  document.getElementById('success-msg').style.display = 'block';
-  // In production: POST to /api/waitlist
-  console.log('Waitlist signup:', email);
-}
+tick();setInterval(tick,1000);
 </script>
 </body>
 </html>
