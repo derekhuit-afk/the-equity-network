@@ -1,1606 +1,940 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>The Equity Network — Mortgage Intelligence Television</title>
-<meta name="description" content="The Equity Network — 24-hour AI-generated mortgage and real estate intelligence. Rate Watch Daily, Housing Market Weekly, The Fed Report, and more. A Huit.ai media property."/>
-<meta property="og:title" content="The Equity Network"/>
-<meta property="og:description" content="Mortgage intelligence television. Live rate data, market analysis, Fed coverage. Built for loan officers, real estate professionals, and homebuyers."/>
-<meta property="og:url" content="https://theequitynetwork.tv"/>
-<meta property="og:type" content="website"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<link rel="canonical" href="https://theequitynetwork.tv"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Huit.AI — Launching Soon</title>
+<meta name="description" content="Huit.AI — The mortgage intelligence platform built for the people who move markets. Launching 2026.">
+<meta property="og:title" content="Huit.AI — Launching Soon">
+<meta property="og:description" content="Mortgage and real estate AI intelligence. Built different. Launching 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #C9A84C;
-  --gold2: #E8C84A;
-  --gold3: #B8942A;
-  --gold-dim: rgba(201,168,76,0.12);
-  --navy: #0A1628;
-  --navy2: #0D1E35;
-  --dark: #060E1A;
-  --darker: #03080F;
-  --white: #F4F1EB;
-  --mid: #8A95A3;
-  --mid2: #6B7685;
-  --green: #27AE60;
-  --red: #C0392B;
+  --navy: #040D1A;
+  --navy2: #071426;
+  --teal: #0E7C7B;
+  --teal2: #12A09F;
+  --teal3: #17C4C3;
+  --teal-glow: rgba(14,124,123,0.15);
+  --teal-glow2: rgba(23,196,195,0.08);
+  --white: #F0F4F8;
+  --muted: #8899AA;
+  --border: rgba(14,124,123,0.2);
+  --border2: rgba(14,124,123,0.08);
+  --red: #E05252;
+  --amber: #D4A017;
 }
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--dark);
+  background: var(--navy);
   color: var(--white);
-  font-weight: 300;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ── NOISE TEXTURE ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
-}
-
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(6,14,26,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(201,168,76,0.1);
-  padding: 0 40px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  text-decoration: none;
-}
-.nav-bug {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--gold3), var(--gold2));
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--dark);
-  letter-spacing: 1px;
-}
-.nav-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 0.5px;
-}
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  list-style: none;
-}
-.nav-links a {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--mid);
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--gold); }
-.nav-cta {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--gold);
-  border: 1px solid rgba(201,168,76,0.4);
-  padding: 8px 18px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: all 0.2s;
-}
-.nav-cta:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
-
-/* ── LIVE TICKER ── */
-.ticker-strip {
-  position: fixed;
-  top: 64px; left: 0; right: 0;
-  z-index: 99;
-  height: 32px;
-  background: var(--navy);
-  border-bottom: 1px solid rgba(201,168,76,0.15);
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-.ticker-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--green);
-  padding: 0 16px;
-  white-space: nowrap;
-  border-right: 1px solid rgba(201,168,76,0.2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.5s ease-in-out infinite; }
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-.ticker-scroll { flex: 1; overflow: hidden; }
-.ticker-content {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  animation: scroll 50s linear infinite;
-  padding-left: 100%;
-}
-@keyframes scroll { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
-.t-item { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--white); padding: 0 20px; }
-.t-label { color: var(--gold); opacity: 0.7; margin-right: 4px; }
-.t-up { color: var(--green); }
-.t-dn { color: var(--red); }
-.t-sep { color: rgba(201,168,76,0.3); }
-
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  padding-top: 96px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 15% 40%, rgba(201,168,76,0.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 70%, rgba(10,22,40,0.8) 0%, transparent 60%),
-    linear-gradient(180deg, var(--dark) 0%, #030810 100%);
-}
-.hero-grid-lines {
-  position: absolute;
-  inset: 0;
+/* ── GRID BACKGROUND ─────────────────────────────────────── */
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
   background-image:
-    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
-  background-size: 80px 80px;
+    linear-gradient(var(--teal-glow2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--teal-glow2) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
-.hero-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 40px 120px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-.hero-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 4px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.hero-eyebrow::before {
+.grid-bg::after {
   content: '';
-  width: 32px; height: 1px;
-  background: var(--gold);
-  opacity: 0.6;
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,124,123,0.12) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(14,124,123,0.08) 0%, transparent 60%);
 }
+
+/* ── SCAN LINE ───────────────────────────────────────────── */
+@keyframes scan {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+.scanline {
+  position: fixed; left: 0; right: 0; height: 2px; z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(23,196,195,0.3), transparent);
+  animation: scan 8s linear infinite;
+  pointer-events: none;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.container {
+  position: relative; z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+header {
+  padding: 2.5rem 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 1.5rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-decoration: none;
+}
+.logo span { color: var(--teal3); }
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--teal3);
+  border: 1px solid var(--teal);
+  padding: 0.3rem 0.75rem;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+.badge::before {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(23,196,195,0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+@keyframes shimmer { to { left: 100%; } }
+
+/* ── HERO ────────────────────────────────────────────────── */
+.hero { padding: 6rem 0 4rem; text-align: center; }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--teal3);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+}
+.eyebrow::before, .eyebrow::after {
+  content: ''; display: block;
+  width: 40px; height: 1px; background: var(--teal);
+}
+
+@keyframes glitch {
+  0%,90%,100% { clip-path: none; transform: translate(0); }
+  92% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translate(-3px, 0); color: var(--teal3); }
+  94% { clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%); transform: translate(3px, 0); }
+  96% { clip-path: none; transform: translate(0); }
+}
+
 .hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 72px;
-  font-weight: 900;
-  line-height: 0.95;
-  letter-spacing: -2px;
-  margin-bottom: 28px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.5rem;
+  animation: glitch 6s ease-in-out infinite;
 }
-.hero-title em {
-  font-style: italic;
-  color: var(--gold);
+.hero-title-sub {
+  font-family: 'Syne', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  letter-spacing: 0.02em;
+  color: var(--teal2);
+  margin-bottom: 2rem;
 }
-.hero-sub {
-  font-size: 18px;
-  color: var(--mid);
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 560px;
+  margin: 0 auto 3rem;
   line-height: 1.7;
-  max-width: 480px;
-  margin-bottom: 40px;
 }
-.hero-sub strong { color: var(--white); font-weight: 500; }
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+
+/* ── COUNTDOWN ───────────────────────────────────────────── */
+.countdown-wrap {
+  display: flex; justify-content: center; gap: 1.5rem;
+  margin-bottom: 3.5rem;
   flex-wrap: wrap;
 }
-.btn-primary {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--dark);
-  background: linear-gradient(135deg, var(--gold3), var(--gold2));
-  padding: 14px 28px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: all 0.2s;
-  font-weight: 500;
+.countdown-block {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 90px;
 }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-secondary {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--gold);
-  border: 1px solid rgba(201,168,76,0.35);
-  padding: 14px 28px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: all 0.2s;
-}
-.btn-secondary:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
-.hero-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 48px;
-}
-.stat-chip {
-  padding: 16px 20px;
-  background: rgba(201,168,76,0.04);
-  border: 1px solid rgba(201,168,76,0.1);
-}
-.stat-chip-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
+.countdown-num {
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: var(--gold);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--white);
   line-height: 1;
-  margin-bottom: 4px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  background: rgba(14,124,123,0.05);
+  position: relative;
+  min-width: 90px;
+  text-align: center;
 }
-.stat-chip-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--mid);
+.countdown-num::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(14,124,123,0.1));
+}
+.countdown-sep {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3rem;
+  color: var(--teal);
+  align-self: flex-start;
+  padding-top: 0.5rem;
+  line-height: 1;
+}
+.countdown-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
   text-transform: uppercase;
+  margin-top: 0.5rem;
 }
 
-/* HERO RIGHT — LIVE RATE CARD */
-.hero-rate-card {
-  background: var(--navy2);
-  border: 1px solid rgba(201,168,76,0.2);
-  padding: 32px;
+/* ── EMAIL CAPTURE ───────────────────────────────────────── */
+.capture-wrap {
+  display: flex; justify-content: center;
+  margin-bottom: 2rem;
+}
+.capture-form {
+  display: flex;
+  border: 1px solid var(--border);
+  background: rgba(14,124,123,0.04);
+  width: 100%;
+  max-width: 520px;
   position: relative;
   overflow: hidden;
 }
-.hero-rate-card::before {
+.capture-form::before {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold3), var(--gold2), var(--gold3));
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal3), transparent);
 }
-.rate-card-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--gold);
+.capture-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 1rem 1.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--white);
+}
+.capture-input::placeholder { color: var(--muted); }
+.capture-btn {
+  background: var(--teal);
+  border: none;
+  cursor: pointer;
+  padding: 1rem 1.75rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--white);
   text-transform: uppercase;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: background 0.2s;
+  white-space: nowrap;
 }
-.rate-card-label span {
-  color: var(--green);
-  font-size: 9px;
+.capture-btn:hover { background: var(--teal2); }
+.capture-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
 }
-.rate-main-display {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.rate-big {
-  background: rgba(0,0,0,0.3);
-  padding: 20px;
-  border: 1px solid rgba(201,168,76,0.08);
-}
-.rate-big-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: var(--mid);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.rate-big-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-}
-.rate-big-chg {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  margin-top: 6px;
-}
-.rate-row-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.rate-row-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: rgba(0,0,0,0.2);
-  border-left: 2px solid rgba(201,168,76,0.2);
-}
-.rate-row-name { font-size: 12px; color: var(--mid); }
-.rate-row-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--white); }
-.rate-mini-chart { margin-top: 16px; }
-.rate-card-footer {
-  margin-top: 16px;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--mid2);
-  letter-spacing: 1px;
-}
-.up { color: var(--green); }
-.dn { color: var(--red); }
-
-/* ── SHOWS SECTION ── */
-section { position: relative; z-index: 1; }
-.shows-section {
-  padding: 100px 40px;
-  max-width: 1280px;
+.success-msg {
+  display: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--teal3);
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid var(--teal);
+  max-width: 520px;
   margin: 0 auto;
 }
-.section-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 48px;
-}
-.section-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 4px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 44px;
-  font-weight: 900;
-  color: var(--white);
-  line-height: 1;
-}
-.section-title em { font-style: italic; color: var(--gold); }
-.section-link {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--gold);
-  text-decoration: none;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(201,168,76,0.3);
-  padding-bottom: 2px;
+
+/* ── DIVIDER ─────────────────────────────────────────────── */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border2);
+  margin: 4rem 0 3.5rem;
 }
 
-/* FEATURED SHOW */
-.featured-show {
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 0;
-  background: var(--navy2);
-  border: 1px solid rgba(201,168,76,0.15);
-  margin-bottom: 24px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.featured-show:hover { border-color: rgba(201,168,76,0.4); }
-.featured-content {
-  padding: 44px 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.show-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 3px;
+/* ── SECTION LABEL ───────────────────────────────────────── */
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--teal);
   text-transform: uppercase;
-  padding: 4px 10px;
-  border: 1px solid;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
 }
-.badge-live { color: var(--green); border-color: rgba(39,174,96,0.3); }
-.badge-new { color: var(--gold); border-color: rgba(201,168,76,0.3); }
-.badge-data { color: #5B9BD5; border-color: rgba(91,155,213,0.3); }
-.badge-weekly { color: var(--mid); border-color: rgba(138,149,163,0.3); }
-.show-number {
-  font-family: 'Playfair Display', serif;
-  font-size: 100px;
-  font-weight: 900;
-  color: rgba(201,168,76,0.06);
-  line-height: 1;
-  position: absolute;
-  right: -10px;
-  top: -20px;
-  pointer-events: none;
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── DEPARTMENT EMAILS ───────────────────────────────────── */
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--border);
+  margin-bottom: 1rem;
+}
+.dept-card {
+  background: var(--navy2);
+  padding: 1.25rem 1.5rem;
+  transition: background 0.2s;
+  display: flex; flex-direction: column; gap: 0.35rem;
+}
+.dept-card:hover { background: rgba(14,124,123,0.08); }
+.dept-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal3);
+}
+.dept-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.dept-email {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--white);
+  text-decoration: none;
+  margin-top: 0.25rem;
+  transition: color 0.15s;
+}
+.dept-email:hover { color: var(--teal3); }
+
+/* ── DISCLOSURE ACCORDIONS ───────────────────────────────── */
+.disclosure-list { display: flex; flex-direction: column; gap: 1px; }
+
+details {
+  border: 1px solid var(--border);
+  background: var(--navy2);
+  overflow: hidden;
+}
+details + details { border-top: none; }
+
+summary {
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   user-select: none;
+  transition: background 0.2s;
 }
-.show-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.1;
-  margin-bottom: 12px;
-}
-.show-desc {
-  font-size: 15px;
-  color: var(--mid);
-  line-height: 1.7;
-  margin-bottom: 24px;
-  max-width: 460px;
-}
-.show-meta {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-.show-meta-item {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--mid2);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.show-meta-item::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--gold);
-  opacity: 0.5;
-}
-.show-meta-item:first-child::before { display: none; }
-.watch-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--dark);
-  background: linear-gradient(90deg, var(--gold3), var(--gold2));
-  padding: 12px 24px;
-  text-decoration: none;
-  text-transform: uppercase;
-  display: inline-block;
-  font-weight: 500;
-  transition: opacity 0.2s;
-  width: fit-content;
-}
-.watch-btn:hover { opacity: 0.85; }
-.featured-right {
-  background: var(--dark);
-  border-left: 1px solid rgba(201,168,76,0.1);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-}
-.ep-list-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.ep-list-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.ep-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--gold);
-  opacity: 0.5;
-  min-width: 24px;
-  padding-top: 1px;
-}
-.ep-title { font-size: 12px; color: var(--mid); line-height: 1.4; }
-.ep-title:hover { color: var(--white); }
+summary:hover { background: rgba(14,124,123,0.06); }
+summary::-webkit-details-marker { display: none; }
 
-/* SHOW GRID */
-.show-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+.summary-inner {
+  display: flex; align-items: center; gap: 1rem; flex: 1;
 }
-.show-card {
+.summary-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.tag-green { color: #5EC989; border-color: #5EC989; background: rgba(94,201,137,0.08); }
+.tag-amber { color: #D4A017; border-color: #D4A017; background: rgba(212,160,23,0.08); }
+.tag-teal  { color: var(--teal3); border-color: var(--teal); background: var(--teal-glow); }
+.tag-blue  { color: #6EC6FF; border-color: #6EC6FF; background: rgba(110,198,255,0.08); }
+
+.summary-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+.chevron {
+  width: 20px; height: 20px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  color: var(--teal3);
+  flex-shrink: 0;
+  transition: transform 0.25s, background 0.2s;
+}
+details[open] .chevron { transform: rotate(45deg); background: var(--teal-glow); }
+
+.details-body {
+  padding: 0 1.5rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: #AABCCC;
+}
+.details-body h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--teal3);
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border2);
+}
+.details-body h3:first-child { margin-top: 0; }
+.details-body p { margin-bottom: 0.75rem; }
+.details-body ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+.details-body li { margin-bottom: 0.4rem; }
+.details-body strong { color: var(--white); font-weight: 500; }
+.details-body a { color: var(--teal3); text-decoration: none; }
+.details-body a:hover { text-decoration: underline; }
+.details-body .notice {
+  background: rgba(212,160,23,0.08);
+  border-left: 3px solid var(--amber);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  color: #E8C87A;
+  font-size: 0.82rem;
+}
+.details-body .notice.red {
+  background: rgba(224,82,82,0.08);
+  border-left-color: var(--red);
+  color: #E89090;
+}
+.details-body .notice.green {
+  background: rgba(94,201,137,0.08);
+  border-left-color: #5EC989;
+  color: #8ED9AA;
+}
+
+/* ── STATUS BAR ──────────────────────────────────────────── */
+.status-bar {
+  margin: 3rem 0;
+  border: 1px solid var(--border);
   background: var(--navy2);
-  border: 1px solid rgba(201,168,76,0.1);
-  padding: 28px;
-  transition: all 0.25s;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  position: relative;
-  overflow: hidden;
+  padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
 }
-.show-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--gold3), var(--gold2));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--teal3);
+  box-shadow: 0 0 8px var(--teal3);
+  flex-shrink: 0;
+  animation: pulse-dot 2s infinite;
 }
-.show-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
-.show-card:hover::after { transform: scaleX(1); }
-.card-show-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 900;
-  color: rgba(201,168,76,0.06);
-  position: absolute;
-  right: 16px;
-  top: 8px;
-  line-height: 1;
-  pointer-events: none;
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
-.card-badge { margin-bottom: 16px; }
-.card-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.2;
-  margin-bottom: 10px;
+.status-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
 }
-.card-desc { font-size: 13px; color: var(--mid); line-height: 1.6; margin-bottom: 20px; }
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  padding-top: 14px;
-}
-.card-episodes {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--mid2);
-  letter-spacing: 1px;
-}
-.card-arrow {
-  font-size: 16px;
-  color: var(--gold);
-  opacity: 0.4;
-  transition: opacity 0.2s, transform 0.2s;
-}
-.show-card:hover .card-arrow { opacity: 1; transform: translateX(4px); }
+.status-text strong { color: var(--teal3); }
 
-/* ── LIVE DATA BAR ── */
-.data-bar {
-  background: var(--navy);
-  border-top: 1px solid rgba(201,168,76,0.1);
-  border-bottom: 1px solid rgba(201,168,76,0.1);
-  padding: 48px 40px;
-}
-.data-bar-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-}
-.data-cell {
-  padding: 20px 32px;
-  border-right: 1px solid rgba(201,168,76,0.08);
-}
-.data-cell:last-child { border-right: none; }
-.data-cell-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--mid);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.data-cell-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.data-cell-chg {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-}
-
-/* ── ABOUT HUIT.AI ── */
-.huit-section {
-  padding: 100px 40px;
-  background: var(--darker);
-  border-top: 1px solid rgba(201,168,76,0.08);
-}
-.huit-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 100px;
-  align-items: center;
-}
-.huit-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 4px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-.huit-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  font-weight: 900;
-  color: var(--white);
-  line-height: 1.05;
-  margin-bottom: 24px;
-}
-.huit-title em { font-style: italic; color: var(--gold); }
-.huit-body { font-size: 16px; color: var(--mid); line-height: 1.8; margin-bottom: 32px; }
-.huit-body strong { color: var(--white); font-weight: 500; }
-.huit-features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.huit-feature {
-  padding: 16px 20px;
-  background: rgba(201,168,76,0.04);
-  border: 1px solid rgba(201,168,76,0.1);
-}
-.huit-feature-name {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.huit-feature-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
-
-/* ── FOOTER ── */
+/* ── FOOTER ──────────────────────────────────────────────── */
 footer {
-  background: #020608;
-  border-top: 1px solid rgba(201,168,76,0.08);
-  padding: 48px 40px;
+  border-top: 1px solid var(--border2);
+  padding: 2.5rem 0 3rem;
+  margin-top: 4rem;
 }
 .footer-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 2rem; flex-wrap: wrap;
 }
 .footer-brand {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
   color: var(--white);
+  margin-bottom: 0.35rem;
 }
-.footer-brand span { color: var(--gold); }
-.footer-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--mid2);
-  letter-spacing: 2px;
-  margin-top: 4px;
+.footer-brand span { color: var(--teal3); }
+.footer-sub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  max-width: 280px;
+  line-height: 1.5;
 }
-.footer-links {
-  display: flex;
-  gap: 32px;
-  list-style: none;
+.footer-legal {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: right;
 }
-.footer-links a {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--mid2);
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--gold); }
+.footer-legal a { color: var(--teal); text-decoration: none; }
+.footer-legal a:hover { color: var(--teal3); }
 .footer-copy {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--mid2);
-  letter-spacing: 1px;
+  margin-top: 2rem;
+  font-size: 0.72rem;
+  color: #3D5060;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
 }
 
-/* ── UTIL ── */
-.gold-rule {
-  width: 100%; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
-  margin: 0;
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hero { padding: 4rem 0 3rem; }
+  .countdown-sep { display: none; }
+  header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  .footer-legal { text-align: left; }
+  .dept-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="nav-brand" href="/">
-    <div class="nav-bug">EN</div>
-    <div class="nav-name">The Equity Network</div>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#shows">Shows</a></li>
-    <li><a href="#live-data">Live Data</a></li>
-    <li><a href="#about">Huit.ai</a></li>
-  </ul>
-  <a class="nav-cta" href="https://huit.ai" target="_blank">Huit.ai Platform →</a>
-</nav>
+<div class="grid-bg"></div>
+<div class="scanline"></div>
 
-<!-- LIVE TICKER -->
-<div class="ticker-strip">
-  <div class="ticker-badge">
-    <div class="ticker-dot"></div>
-    LIVE
-  </div>
-  <div class="ticker-scroll">
-    <div class="ticker-content" id="ticker-content">
-      <span class="t-item"><span class="t-label">30YR FIXED</span><span id="t-r30">Loading...</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">15YR FIXED</span><span id="t-r15">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">10YR TREASURY</span><span id="t-t10">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">FED FUNDS</span><span id="t-ff">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">2YR TREASURY</span><span id="t-t2">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">MTG SPREAD</span><span id="t-spread">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">YIELD CURVE</span><span id="t-curve">—</span></span>
-      <!-- Duplicate for seamless loop -->
-      <span class="t-item"><span class="t-label">30YR FIXED</span><span id="t-r30b">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">15YR FIXED</span><span id="t-r15b">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">10YR TREASURY</span><span id="t-t10b">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">FED FUNDS</span><span id="t-ffb">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">2YR TREASURY</span><span id="t-t2b">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">MTG SPREAD</span><span id="t-spreadb">—</span></span>
-      <span class="t-sep">·</span>
-      <span class="t-item"><span class="t-label">YIELD CURVE</span><span id="t-curveb">—</span></span>
-    </div>
-  </div>
-</div>
+<div class="container">
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid-lines"></div>
-  <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-eyebrow">A Huit.ai Media Property</div>
-      <h1 class="hero-title">Mortgage<br/><em>Intelligence</em><br/>Television.</h1>
-      <p class="hero-sub">The only broadcast channel built exclusively for <strong>mortgage professionals, real estate agents, and homebuyers</strong> — with live FRED data, Fed coverage, and market intelligence updated in real time.</p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="#shows">Browse All Shows</a>
-        <a class="btn-secondary" href="/shows/rate-watch-daily">Watch Now</a>
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="logo">HUIT<span>.</span>AI</a>
+    <div class="badge">Under Construction</div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Mortgage Intelligence Platform</div>
+    <div class="hero-title">LAUNCHING</div>
+    <div class="hero-title-sub">2026</div>
+    <p class="hero-desc">
+      The mortgage and real estate intelligence platform built for the professionals who move markets.
+      AI-powered recruiting, pipeline intelligence, and equity analytics — built different.
+    </p>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-wrap">
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-days">000</div>
+        <div class="countdown-label">Days</div>
       </div>
-      <div class="hero-stats">
-        <div class="stat-chip">
-          <div class="stat-chip-val">32</div>
-          <div class="stat-chip-label">Shows at Launch</div>
-        </div>
-        <div class="stat-chip">
-          <div class="stat-chip-val">256</div>
-          <div class="stat-chip-label">Episodes</div>
-        </div>
-        <div class="stat-chip">
-          <div class="stat-chip-val">7yr</div>
-          <div class="stat-chip-label">HMDA Data</div>
-        </div>
-        <div class="stat-chip">
-          <div class="stat-chip-val">$0</div>
-          <div class="stat-chip-label">Cost to Watch</div>
-        </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-hours">00</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-mins">00</div>
+        <div class="countdown-label">Min</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-secs">00</div>
+        <div class="countdown-label">Sec</div>
       </div>
     </div>
-    <div class="hero-right">
-      <div class="hero-rate-card">
-        <div class="rate-card-label">
-          LIVE MARKET DATA
-          <span>● FRED API</span>
+
+    <!-- EMAIL CAPTURE -->
+    <div class="capture-wrap">
+      <form class="capture-form" id="capture-form" onsubmit="handleSubmit(event)">
+        <input type="email" class="capture-input" id="email-input" placeholder="Enter your email for early access" required>
+        <button type="submit" class="capture-btn">Notify Me</button>
+      </form>
+    </div>
+    <div class="success-msg" id="success-msg">
+      ✓ &nbsp;You're on the list. We'll reach out before anyone else.
+    </div>
+    <p class="capture-note">No spam. Early access for mortgage professionals only.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div class="status-text">
+      <strong>Platform Status:</strong> &nbsp; Active development &nbsp;|&nbsp;
+      <strong>Compliance Score:</strong> &nbsp; 90/100 PASS &nbsp;|&nbsp;
+      <strong>Stage:</strong> &nbsp; Pre-Launch / Pre-Revenue &nbsp;|&nbsp;
+      <strong>Founder:</strong> &nbsp; Derek Huit, NMLS #203980 &nbsp;|&nbsp;
+      <strong>HQ:</strong> &nbsp; Anchorage, Alaska
+    </div>
+  </div>
+
+  <!-- CONTACT DIRECTORY -->
+  <div class="section-label">Contact Directory</div>
+
+  <div class="dept-grid">
+
+    <div class="dept-card">
+      <div class="dept-name">Compliance</div>
+      <div class="dept-desc">Regulatory questions, OBA disclosures, APEX permissible use, data governance</div>
+      <a href="mailto:compliance@huit.ai" class="dept-email">compliance@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Legal</div>
+      <div class="dept-desc">Contract inquiries, MSA/DPA execution, terms review, outside counsel coordination</div>
+      <a href="mailto:legal@huit.ai" class="dept-email">legal@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Privacy</div>
+      <div class="dept-desc">GLBA, CCPA, data subject requests, Privacy Policy questions, data deletion</div>
+      <a href="mailto:privacy@huit.ai" class="dept-email">privacy@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Security</div>
+      <div class="dept-desc">Security incidents, vulnerability disclosures, breach notifications, infosec inquiries</div>
+      <a href="mailto:security@huit.ai" class="dept-email">security@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Investors</div>
+      <div class="dept-desc">Investment inquiries, accredited investor qualification, offering materials requests</div>
+      <a href="mailto:investors@huit.ai" class="dept-email">investors@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Support</div>
+      <div class="dept-desc">Platform support, onboarding assistance, technical issues, account questions</div>
+      <a href="mailto:support@huit.ai" class="dept-email">support@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Press &amp; Media</div>
+      <div class="dept-desc">Media inquiries, press kit requests, interview and speaking engagements</div>
+      <a href="mailto:press@huit.ai" class="dept-email">press@huit.ai</a>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-name">Careers</div>
+      <div class="dept-desc">Employment inquiries, partnership discussions, contractor and advisory interest</div>
+      <a href="mailto:careers@huit.ai" class="dept-email">careers@huit.ai</a>
+    </div>
+
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- DISCLOSURES -->
+  <div class="section-label">Legal Disclosures</div>
+
+  <div class="disclosure-list">
+
+    <!-- PRIVACY POLICY -->
+    <details>
+      <summary>
+        <div class="summary-inner">
+          <span class="summary-tag tag-teal">Privacy Policy</span>
+          <span class="summary-title">Privacy Policy — Huit.AI / HyperLoanAI</span>
         </div>
-        <div class="rate-main-display">
-          <div class="rate-big">
-            <div class="rate-big-label">30-Yr Fixed</div>
-            <div class="rate-big-val" id="hero-r30">—</div>
-            <div class="rate-big-chg" id="hero-r30-chg"></div>
-          </div>
-          <div class="rate-big">
-            <div class="rate-big-label">10-Yr Treasury</div>
-            <div class="rate-big-val" id="hero-t10">—</div>
-            <div class="rate-big-chg" id="hero-t10-chg"></div>
-          </div>
-        </div>
-        <div class="rate-row-list">
-          <div class="rate-row-item">
-            <span class="rate-row-name">15-Year Fixed</span>
-            <span class="rate-row-val" id="hero-r15">—</span>
-          </div>
-          <div class="rate-row-item">
-            <span class="rate-row-name">Fed Funds Rate</span>
-            <span class="rate-row-val" id="hero-ff">—</span>
-          </div>
-          <div class="rate-row-item">
-            <span class="rate-row-name">2-Year Treasury</span>
-            <span class="rate-row-val" id="hero-t2">—</span>
-          </div>
-          <div class="rate-row-item">
-            <span class="rate-row-name">Mtg-Treasury Spread</span>
-            <span class="rate-row-val" id="hero-spread">—</span>
-          </div>
-          <div class="rate-row-item">
-            <span class="rate-row-name">Yield Curve</span>
-            <span class="rate-row-val" id="hero-curve">—</span>
-          </div>
-        </div>
-        <div class="rate-mini-chart">
-          <svg id="hero-chart" viewBox="0 0 460 60" style="width:100%;height:60px;display:block;"></svg>
-        </div>
-        <div class="rate-card-footer" id="rate-source">Source: FRED · Federal Reserve Bank of St. Louis · Loading...</div>
+        <span class="chevron">+</span>
+      </summary>
+      <div class="details-body">
+        <p><strong>Effective Date:</strong> March 2026 &nbsp;|&nbsp; <strong>Entity:</strong> Huit.AI &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:privacy@huit.ai">privacy@huit.ai</a></p>
+
+        <h3>1. Information We Collect</h3>
+        <p>We collect: <strong>account information</strong> (name, email, company, NMLS ID); <strong>usage data</strong> (platform interactions, feature usage, log data); <strong>content you provide</strong> (contact lists, pipeline records, documents you upload); and <strong>payment information</strong> processed by Stripe (Huit.AI does not store payment card data).</p>
+
+        <h3>2. How We Use Your Information</h3>
+        <p>Your data is used exclusively to: deliver and operate the Huit.AI platform; provide customer support; communicate platform updates; comply with legal obligations; and detect and prevent fraud or abuse. <strong>We do not sell your personal information.</strong></p>
+
+        <h3>3. Data Sharing</h3>
+        <p>We share data only with service providers necessary to deliver the platform: <strong>Supabase</strong> (database hosting), <strong>Stripe</strong> (payment processing — PCI DSS compliant), <strong>Vercel</strong> (application hosting), <strong>OpenAI API</strong> (AI inference). A complete subprocessor list is available upon request at <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
+
+        <h3>4. AI Model Training</h3>
+        <p>Your data will never be used to train, fine-tune, or develop any Huit.AI AI model without your explicit written consent. All AI model inputs are derived exclusively from publicly available CFPB HMDA LAR data and NMLS public records.</p>
+
+        <h3>5. Data Security</h3>
+        <p>We maintain a written information security program compliant with the GLBA Safeguards Rule (16 C.F.R. Part 314). Controls include encryption in transit (TLS 1.2+) and at rest, role-based access controls, audit logging, and annual security review. Breach notification within 72 hours of discovery.</p>
+
+        <h3>6. Data Retention & Deletion</h3>
+        <p>Account data is retained while your subscription is active. Upon termination: 30-day export window; data deleted within 90 days; written deletion confirmation provided upon request. Submit deletion requests to <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
+
+        <h3>7. California Residents — CCPA Rights</h3>
+        <p>California residents have the right to: (a) know what personal information we collect; (b) request deletion of personal information; (c) opt out of the sale of personal information (we do not sell data); and (d) non-discrimination for exercising CCPA rights. Submit CCPA requests to <a href="mailto:privacy@huit.ai">privacy@huit.ai</a>.</p>
+
+        <h3>8. GLBA Notice</h3>
+        <p>As a technology service provider to regulated financial institutions, Huit.AI operates as a service provider under the Gramm-Leach-Bliley Act. We do not collect or use nonpublic personal information from financial institution customers except as necessary to deliver contracted services.</p>
+
+        <div class="notice">Questions about this Privacy Policy: <a href="mailto:privacy@huit.ai">privacy@huit.ai</a> &nbsp;|&nbsp; Not legal advice. March 2026.</div>
       </div>
-    </div>
-  </div>
-</section>
+    </details>
 
-<!-- LIVE DATA BAR -->
-<div class="data-bar" id="live-data">
-  <div class="data-bar-inner">
-    <div class="data-cell">
-      <div class="data-cell-label">30-Year Fixed</div>
-      <div class="data-cell-val" id="db-r30">—</div>
-      <div class="data-cell-chg" id="db-r30-chg"></div>
-    </div>
-    <div class="data-cell">
-      <div class="data-cell-label">10-Yr Treasury</div>
-      <div class="data-cell-val" id="db-t10">—</div>
-      <div class="data-cell-chg" id="db-t10-chg"></div>
-    </div>
-    <div class="data-cell">
-      <div class="data-cell-label">Fed Funds Rate</div>
-      <div class="data-cell-val" id="db-ff">—</div>
-      <div class="data-cell-chg" id="db-ff-chg"></div>
-    </div>
-    <div class="data-cell">
-      <div class="data-cell-label">Mtg-T10 Spread</div>
-      <div class="data-cell-val" id="db-spread">—</div>
-      <div class="data-cell-chg" id="db-spread-sub" style="font-size:11px;color:var(--mid);font-family:'DM Mono',monospace;"></div>
-    </div>
-    <div class="data-cell">
-      <div class="data-cell-label">Yield Curve</div>
-      <div class="data-cell-val" id="db-curve" style="font-size:22px;">—</div>
-      <div class="data-cell-chg" id="db-curve-sub" style="font-size:11px;color:var(--mid);font-family:'DM Mono',monospace;"></div>
-    </div>
-  </div>
-</div>
+    <!-- TERMS OF SERVICE -->
+    <details>
+      <summary>
+        <div class="summary-inner">
+          <span class="summary-tag tag-blue">Terms of Service</span>
+          <span class="summary-title">Terms of Service — Huit.AI Platform</span>
+        </div>
+        <span class="chevron">+</span>
+      </summary>
+      <div class="details-body">
+        <p><strong>Effective Date:</strong> March 2026 &nbsp;|&nbsp; <strong>Governing Law:</strong> New Jersey &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:legal@huit.ai">legal@huit.ai</a></p>
 
-<!-- SHOWS SECTION -->
-<div id="shows">
-  <div class="shows-section">
-    <div class="section-header">
+        <div class="notice green">These Terms of Service are in review pending retention of outside compliance counsel. They will be published in final executed form at huit.ai/terms prior to platform launch.</div>
+
+        <h3>1. Permitted Use</h3>
+        <p>The Huit.AI platform is licensed for lawful mortgage and real estate business purposes only. Subscribers may not: resell or redistribute platform access; use the platform to compete directly with Huit.AI; use platform outputs to circumvent any applicable law; or use APEX intelligence for any purpose other than recruiting outreach prioritization and retention planning.</p>
+
+        <h3>2. AI Output Disclaimer</h3>
+        <p><strong>All AI-generated outputs from the Huit.AI platform — including Transition Likelihood Scores, lead scores, equity estimates, behavioral signals, and all other model outputs — are informational signals only.</strong> They are not credit decisions, appraisals, employment decisions, legal opinions, or financial advice. Subscribers bear full responsibility for all decisions made using Huit.AI output. Huit.AI outputs do not constitute consumer reports under the Fair Credit Reporting Act when used within authorized scope.</p>
+
+        <h3>3. Data Ownership</h3>
+        <p>You own all data you enter into the platform. You grant Huit.AI a limited, non-exclusive, non-transferable processing license to use your data solely to deliver the services you have subscribed to. Huit.AI acquires no ownership interest in your data and will not use it to train AI models without your explicit consent.</p>
+
+        <h3>4. Subscription and Billing</h3>
+        <p>Subscriptions are billed monthly or annually. All fees are processed through Stripe. Refunds are not provided for partial billing periods. Prices: STARTER $625/mo | SCOUT $1,250/mo | COMMAND $2,350/mo | DOMINATE $4,125/mo. 15% discount applies to annual billing. All modules bundled — no standalone pricing.</p>
+
+        <h3>5. Limitation of Liability</h3>
+        <p>Huit.AI's aggregate liability to any subscriber for any claim arising under these Terms is limited to the total fees paid by that subscriber in the 12 months preceding the claim. Huit.AI is not liable for any indirect, incidental, special, consequential, or punitive damages.</p>
+
+        <h3>6. Termination</h3>
+        <p>Either party may terminate the subscription with 30 days written notice. Subscriber data will be exportable for 30 days post-termination and deleted within 90 days. Huit.AI may immediately suspend access for material breach of these Terms.</p>
+
+        <h3>7. Governing Law & Disputes</h3>
+        <p>These Terms are governed by the laws of the State of New Jersey. Any dispute will be resolved by binding arbitration under AAA Commercial Arbitration Rules in Camden County, NJ. The prevailing party is entitled to reasonable attorney's fees.</p>
+
+        <div class="notice">Full Terms of Service will be published at huit.ai/terms prior to launch. Questions: <a href="mailto:legal@huit.ai">legal@huit.ai</a></div>
+      </div>
+    </details>
+
+    <!-- APEX PERMISSIBLE USE & FCRA -->
+    <details>
+      <summary>
+        <div class="summary-inner">
+          <span class="summary-tag tag-amber">APEX / FCRA</span>
+          <span class="summary-title">APEX Permissible Use Notice &amp; FCRA Disclosure</span>
+        </div>
+        <span class="chevron">+</span>
+      </summary>
+      <div class="details-body">
+        <p><strong>Applicable to:</strong> All APEX and REAPEX module subscribers &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:compliance@huit.ai">compliance@huit.ai</a></p>
+
+        <div class="notice red"><strong>Important:</strong> By activating APEX, subscribers make binding legal representations regarding their intended use. Read this notice in full before activating the APEX module.</div>
+
+        <h3>1. What APEX Is</h3>
+        <p>APEX is Huit.AI's talent intelligence platform. It identifies and scores mortgage loan officers using the Transition Likelihood Score (TLS) and Source Talent Detection Algorithm (STDA), derived exclusively from publicly available CFPB HMDA LAR data (2017–2024) and NMLS public licensee records. APEX does not use credit bureau data, non-public personal financial information, or any individual's private records.</p>
+
+        <h3>2. FCRA Analysis — Authorized Use</h3>
+        <p>Huit.AI has conducted a full Fair Credit Reporting Act (15 U.S.C. §1681) applicability analysis. <strong>Conclusion:</strong> TLS scores and APEX intelligence do not constitute consumer reports when used solely for recruiting outreach prioritization. APEX output is authorized for: (a) identifying loan officers for recruiting outreach; (b) retention planning for existing team members; (c) mortgage market intelligence and landscape analysis.</p>
+
+        <h3>3. Prohibited Uses</h3>
+        <ul>
+          <li><strong>No adverse employment decisions:</strong> APEX output may NOT be used as the basis for termination, demotion, reassignment, denial of promotion, or any other adverse employment action.</li>
+          <li><strong>No employment screening:</strong> APEX output may NOT be shared with any third party for employment screening purposes.</li>
+          <li><strong>No credit decisions:</strong> APEX output may NOT be used to make or inform any credit, lending, or financial product decision about any individual.</li>
+        </ul>
+
+        <h3>4. Permissible Use Certification</h3>
+        <p>All APEX subscribers must execute the Permissible Use Certification (v2.0) at account activation, certifying: (1) APEX used for outreach/retention only; (2) no adverse employment decisions; (3) no third-party sharing for employment purposes; (4) independent FCRA/NLRA/state employment law compliance; (5) legitimate business purpose for each list generated.</p>
+
+        <h3>5. Data Provenance</h3>
+        <p>All APEX model inputs are derived exclusively from: <strong>CFPB HMDA public LAR data</strong> (cfpb.gov) and <strong>NMLS public licensee records</strong> (nmlsconsumeraccess.org). No non-public data. No credit bureau data. No individually identifiable non-public financial information.</p>
+
+        <h3>6. Loan Officer Rights</h3>
+        <p>Licensed mortgage professionals whose public data appears in the APEX system have the following rights: right to know (compliance@huit.ai), right to correct factual inaccuracies, right to opt out of APEX outreach lists. Contact <a href="mailto:compliance@huit.ai">compliance@huit.ai</a> with NMLS license number to exercise any right.</p>
+
+        <h3>7. NLRA Section 7 Notice</h3>
+        <p>Employers using APEX to monitor their own current employees should consult labor counsel regarding NLRA Section 7 obligations before deploying APEX for internal retention surveillance. Huit.AI is a data intelligence vendor — not your legal counsel.</p>
+
+        <h3>8. Model Validation</h3>
+        <p>TLS and Lead Scoring Engine third-party validation is in-flight and expected to be complete prior to enterprise (COMMAND/DOMINATE tier) client deployments. FFIEC SR 11-7 model documentation available to enterprise clients upon request at <a href="mailto:compliance@huit.ai">compliance@huit.ai</a>.</p>
+
+        <div class="notice">Questions about APEX permissible use or FCRA compliance: <a href="mailto:compliance@huit.ai">compliance@huit.ai</a></div>
+      </div>
+    </details>
+
+    <!-- INVESTMENT GUIDELINES SUMMARY -->
+    <details>
+      <summary>
+        <div class="summary-inner">
+          <span class="summary-tag tag-green">Investors</span>
+          <span class="summary-title">Investment Guidelines Summary — Huit.AI</span>
+        </div>
+        <span class="chevron">+</span>
+      </summary>
+      <div class="details-body">
+        <p><strong>Stage:</strong> Pre-Launch / Pre-Revenue &nbsp;|&nbsp; <strong>Funding:</strong> Self-funded &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:investors@huit.ai">investors@huit.ai</a></p>
+
+        <div class="notice red"><strong>Not an offer to sell securities.</strong> This summary is for informational purposes only. No investment should be made until outside securities counsel has been retained, all required SEC and state filings have been completed, and all required offering documents have been executed. Nothing here constitutes legal, securities, tax, or financial advice.</div>
+
+        <h3>1. Available Investment Instruments</h3>
+        <p>Huit.AI may offer investment through the following instruments (subject to securities counsel review and required regulatory filings):</p>
+        <ul>
+          <li><strong>SAFE (Simple Agreement for Future Equity)</strong> — Pre-money SAFE with valuation cap and discount. YC standard form. Accredited investors.</li>
+          <li><strong>Convertible Note</strong> — Interest-bearing debt converting to equity at priced round. 6% interest, 18–24 month maturity.</li>
+          <li><strong>Series Seed Preferred Stock</strong> — Priced equity round. Full NVCA-standard preferred terms. Board observer right (not voting).</li>
+          <li><strong>Revenue-Based Financing</strong> — Non-dilutive debt repaid as % of monthly revenue. Suitable for post-revenue stage.</li>
+          <li><strong>Warrants</strong> — Right to purchase equity at fixed exercise price. Typically issued alongside strategic agreements.</li>
+          <li><strong>Advisory Equity / Stock Options</strong> — Equity for non-cash contributions. Common stock, monthly vesting.</li>
+          <li><strong>Strategic Investment Agreement</strong> — Financial investment bundled with commercial/platform rights for corporate investors.</li>
+          <li><strong>Special Purpose Vehicle (SPV)</strong> — Pooled investment structure for groups of investors.</li>
+          <li><strong>Reg CF Crowdfunding</strong> — Up to $5M from accredited and non-accredited investors via registered crowdfunding portal.</li>
+        </ul>
+
+        <h3>2. Investor Categories</h3>
+        <ul>
+          <li><strong>Category A — Corporate Strategic:</strong> A company that employs Derek Huit. Subject to RESPA §8 analysis, employer board recusal, and employment agreement review. Full Employer-Client Disclosure required.</li>
+          <li><strong>Category B — Current Employee (Individual):</strong> Individual currently employed at Derek's employer-company. Subject to employer OBA disclosure, FINRA Rule 3270/3280 (if registered rep), and pre-clearance requirements.</li>
+          <li><strong>Category C — Former Employee (Individual):</strong> Individual previously employed at a company where Derek has worked. Subject to accredited investor qualification and FINRA rules at current employer (if applicable).</li>
+          <li><strong>Category D — Other Accredited Individual:</strong> Any accredited investor with no current employer relationship to Derek. Standard Reg D disclosure.</li>
+        </ul>
+
+        <h3>3. Key Requirements for All Investors</h3>
+        <ul>
+          <li>Accredited investor qualification required for Reg D offerings (income test, net worth test, or Series 7/65/82 license)</li>
+          <li>Executed Subscription Agreement with accredited investor representations and MNPI certification</li>
+          <li>KYC/AML verification (government ID, SSN/EIN, beneficial ownership for entities)</li>
+          <li>OFAC screening before investment acceptance</li>
+          <li>SEC Form D filed within 15 days of first sale</li>
+          <li>State Blue Sky notice filings in each investor's state of residence</li>
+        </ul>
+
+        <h3>4. Corporate Employer-Investor Requirements</h3>
+        <ul>
+          <li>Full RESPA §8 analysis required before any investment</li>
+          <li>Derek Huit recuses from all employer investment deliberations and approvals</li>
+          <li>Board approval by disinterested decision-makers only</li>
+          <li>Board observer seat (not voting) preferred over voting board seat</li>
+          <li>APEX firewall: employer-investor may not use investor information rights to obtain APEX intelligence about competitors</li>
+        </ul>
+
+        <h3>5. FINRA Registered Representatives</h3>
+        <p>Any investor holding a Series 7 or other FINRA license at a FINRA member firm must provide prior written notice under FINRA Rule 3270 (Outside Business Activities) and FINRA Rule 3280 (Private Securities Transactions) to their employing member firm before investing. Huit.AI requires a representation in the Subscription Agreement confirming this notice has been provided.</p>
+
+        <h3>6. Prohibited Practices</h3>
+        <ul>
+          <li>No RESPA §8 quid pro quo: investment may never be conditioned on or connected to the referral of mortgage business</li>
+          <li>No unregistered finder compensation: transaction-based referral fees to unregistered persons are prohibited</li>
+          <li>No general solicitation in 506(b) offerings</li>
+          <li>No conditioning employment on investment</li>
+          <li>No use of MNPI in connection with any investment decision</li>
+        </ul>
+
+        <div class="notice">Investment inquiries: <a href="mailto:investors@huit.ai">investors@huit.ai</a> &nbsp;|&nbsp; Not an offer to sell securities. Not legal or financial advice. March 2026.</div>
+      </div>
+    </details>
+
+    <!-- OBA / CANDIDATE DISCLOSURE -->
+    <details>
+      <summary>
+        <div class="summary-inner">
+          <span class="summary-tag tag-teal">OBA Disclosure</span>
+          <span class="summary-title">Outside Business Activity Disclosure — Derek Huit</span>
+        </div>
+        <span class="chevron">+</span>
+      </summary>
+      <div class="details-body">
+        <p><strong>Applicable to:</strong> Companies considering employing Derek Huit &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:legal@huit.ai">legal@huit.ai</a></p>
+
+        <h3>Outside Business Activity — Summary</h3>
+        <p>Derek Huit is the Founder and CEO of Huit.AI, a pre-launch mortgage and real estate intelligence technology platform. Huit.AI is a software vendor — it is not a mortgage lender, does not originate loans, and does not compete with any mortgage lender for borrowers, originations, or referral partners.</p>
+
+        <h3>What Huit.AI Is Not</h3>
+        <ul>
+          <li>Not a mortgage lender or broker</li>
+          <li>Not an NMLS company license holder</li>
+          <li>Not a competing originator for loans, borrowers, or referral sources</li>
+          <li>Not currently generating revenue (pre-launch, pre-revenue)</li>
+        </ul>
+
+        <h3>Information Barrier Commitments</h3>
+        <ul>
+          <li>No employer data will enter any Huit.AI system</li>
+          <li>Entirely separate technology infrastructure</li>
+          <li>No use of employer brand or title in Huit.AI marketing without written consent</li>
+          <li>APEX will not target employer's own loan officers without express written authorization</li>
+          <li>Employment duties take first priority over all Huit.AI activities</li>
+        </ul>
+
+        <h3>IP Protection</h3>
+        <p>All Huit.AI IP (TLS, STDA, SCF Registry — patent-pending) was developed prior to any new employment relationship and is vested in Huit.AI. No work product created using employer resources belongs to Huit.AI. Filing dates available upon request.</p>
+
+        <div class="notice">Full OBA Disclosure document available upon request: <a href="mailto:legal@huit.ai">legal@huit.ai</a></div>
+      </div>
+    </details>
+
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
       <div>
-        <div class="section-eyebrow">Daily News Block</div>
-        <h2 class="section-title">On <em>Now</em></h2>
+        <div class="footer-brand">HUIT<span>.</span>AI</div>
+        <div class="footer-sub">Mortgage and real estate intelligence. Built for professionals who move markets. Anchorage, Alaska.</div>
+      </div>
+      <div class="footer-legal">
+        <a href="mailto:compliance@huit.ai">compliance@huit.ai</a><br>
+        <a href="mailto:legal@huit.ai">legal@huit.ai</a><br>
+        <a href="mailto:support@huit.ai">support@huit.ai</a><br>
+        <a href="mailto:investors@huit.ai">investors@huit.ai</a><br><br>
+        Not legal advice. Not an offer to sell securities.<br>
+        Compliance Score: 90/100 PASS · March 2026
       </div>
     </div>
+    <div class="footer-copy">
+      © 2026 Huit.AI · All rights reserved · NMLS #203980 (Individual) · huit.ai
+    </div>
+  </footer>
 
-    <!-- RATE WATCH DAILY — FEATURED -->
-    <div class="featured-show">
-      <div class="featured-content">
-        <div>
-          <div class="show-badge badge-live">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span>
-            Live Data · Daily
-          </div>
-          <div class="show-title">Rate Watch Daily</div>
-          <div class="show-desc">The mortgage rate numbers that matter, explained in under four minutes. Live FRED data — 30-year fixed, 10-year Treasury, Fed Funds, and the spread that tells you where rates are heading. Every episode is unique because the data is live.</div>
-          <div class="show-meta">
-            <div class="show-meta-item">Season 1</div>
-            <div class="show-meta-item">8 Episodes</div>
-            <div class="show-meta-item">4 min each</div>
-            <div class="show-meta-item">Voice: Morgan</div>
-          </div>
-        </div>
-        <a class="watch-btn" href="/shows/rate-watch-daily">Watch Rate Watch Daily →</a>
-      </div>
-      <div class="featured-right">
-        <div class="ep-list-label">Episodes</div>
-        <div class="ep-list-item"><span class="ep-num">01</span><span class="ep-title">Why Mortgage Rates Move Every Day</span></div>
-        <div class="ep-list-item"><span class="ep-num">02</span><span class="ep-title">What the 10-Year Treasury Has to Do With Your Rate</span></div>
-        <div class="ep-list-item"><span class="ep-num">03</span><span class="ep-title">Reading a Rate Sheet for the First Time</span></div>
-        <div class="ep-list-item"><span class="ep-num">04</span><span class="ep-title">What a 0.25% Rate Difference Actually Costs You</span></div>
-        <div class="ep-list-item"><span class="ep-num">05</span><span class="ep-title">Morning Rate Check — What to Look for Before You Lock</span></div>
-        <div class="ep-list-item"><span class="ep-num">06</span><span class="ep-title">Why Your Rate Quote Expired Overnight</span></div>
-        <div class="ep-list-item"><span class="ep-num">07</span><span class="ep-title">Rate Volatility — What It Means and How to Prepare</span></div>
-        <div class="ep-list-item"><span class="ep-num">08</span><span class="ep-title">The Difference Between Interest Rate and APR</span></div>
-      </div>
-    </div>
-
-    <!-- OTHER DAILY NEWS SHOWS -->
-    <div class="show-grid" style="margin-bottom:64px;">
-      <a class="show-card" href="/shows/housing-market-weekly">
-        <div class="card-show-num">2</div>
-        <div class="card-badge"><div class="show-badge badge-live">Live Data · Weekly</div></div>
-        <div class="card-title">Housing Market Weekly</div>
-        <div class="card-desc">Inventory, median prices, days on market, affordability — the housing data every professional needs, sourced live from FRED every episode.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 8 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="/shows/mortgage-news-now">
-        <div class="card-show-num">3</div>
-        <div class="card-badge"><div class="show-badge badge-new">Industry News</div></div>
-        <div class="card-title">Mortgage News Now</div>
-        <div class="card-desc">CFPB, GSE policy, FHA limits, NAR settlement, VA funding fees — the regulatory and industry news mortgage professionals need to stay current.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 6 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="/shows/the-fed-report">
-        <div class="card-show-num">4</div>
-        <div class="card-badge"><div class="show-badge badge-live">Live Data · Weekly</div></div>
-        <div class="card-title">The Fed Report</div>
-        <div class="card-desc">Federal Reserve decisions that move mortgage rates — explained in plain English. Dot plots, FOMC statements, inflation data, and rate projections.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 6 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- DATA/EXPLAINER BLOCK -->
-    <div class="section-header">
-      <div>
-        <div class="section-eyebrow">Data &amp; Explainer Block</div>
-        <h2 class="section-title"><em>Deep</em> Intelligence</h2>
-      </div>
-    </div>
-
-    <div class="show-grid" style="margin-bottom:64px;">
-      <a class="show-card" href="/shows/hmda-deep-dive">
-        <div class="card-show-num">5</div>
-        <div class="card-badge"><div class="show-badge badge-data">Federal Data · 7yr</div></div>
-        <div class="card-title">HMDA Deep Dive</div>
-        <div class="card-desc">Seven years of federal mortgage data — 2017 through 2024. Denial rates, approval patterns, market share, and what the numbers reveal about every mortgage market in America.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 20 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="/shows/credit-score-clinic">
-        <div class="card-show-num">6</div>
-        <div class="card-badge"><div class="show-badge badge-new">Consumer Education</div></div>
-        <div class="card-title">Credit Score Clinic</div>
-        <div class="card-desc">How FICO scores are calculated, what moves them, and the fastest paths to improvement. Built for first-time buyers and loan officers who coach them.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 8 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="/shows/down-payment-decoded">
-        <div class="card-show-num">7</div>
-        <div class="card-badge"><div class="show-badge badge-new">Consumer Education</div></div>
-        <div class="card-title">Down Payment Decoded</div>
-        <div class="card-desc">Zero down to 20% — every option explained. DPA programs, gift funds, 401k rules, VA and USDA options, and how down payment affects your rate.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 10 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="/shows/the-affordability-index">
-        <div class="card-show-num">8</div>
-        <div class="card-badge"><div class="show-badge badge-live">Live Data</div></div>
-        <div class="card-title">The Affordability Index</div>
-        <div class="card-desc">Live payment calculations on real home prices across U.S. markets. What does affordability look like today, and what changes when rates move?</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 8 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="https://huit.ai" target="_blank">
-        <div class="card-show-num">9</div>
-        <div class="card-badge"><div class="show-badge badge-data">Platform Demo</div></div>
-        <div class="card-title">CRMEX in Action</div>
-        <div class="card-desc">The mortgage CRM built exclusively for loan officers — pipeline management, contact intelligence, automated follow-up, and compliance built in from day one.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 8 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-      <a class="show-card" href="https://huit.ai" target="_blank">
-        <div class="card-show-num">10</div>
-        <div class="card-badge"><div class="show-badge badge-data">Platform Demo</div></div>
-        <div class="card-title">APEX Recruiting Intelligence</div>
-        <div class="card-desc">AI-powered mortgage recruiter intelligence — HMDA-driven candidate research, 16-factor scoring, behavioral prediction, and market share analysis.</div>
-        <div class="card-footer">
-          <span class="card-episodes">8 episodes · 8 min</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- COMING SOON -->
-    <div class="section-header" style="margin-top:20px;">
-      <div>
-        <div class="section-eyebrow">More Programming</div>
-        <h2 class="section-title">Coming <em>Soon</em></h2>
-      </div>
-    </div>
-    <div class="show-grid">
-      <div class="show-card" style="opacity:0.5;cursor:default;">
-        <div class="card-badge"><div class="show-badge badge-weekly">Coming Soon</div></div>
-        <div class="card-title">First Home</div>
-        <div class="card-desc">The complete first-time homebuyer series — 16 episodes from credit prep to closing day.</div>
-        <div class="card-footer"><span class="card-episodes">16 episodes · 12 min</span></div>
-      </div>
-      <div class="show-card" style="opacity:0.5;cursor:default;">
-        <div class="card-badge"><div class="show-badge badge-weekly">Coming Soon</div></div>
-        <div class="card-title">The Script Lab</div>
-        <div class="card-desc">Word-for-word scripts for every mortgage objection, follow-up, and referral conversation.</div>
-        <div class="card-footer"><span class="card-episodes">16 episodes · 18 min</span></div>
-      </div>
-      <div class="show-card" style="opacity:0.5;cursor:default;">
-        <div class="card-badge"><div class="show-badge badge-weekly">Coming Soon</div></div>
-        <div class="card-title">The Derek Huit Show</div>
-        <div class="card-desc">18+ years, $1B+ funded. Derek's unfiltered take on mortgage, real estate, and building Huit.ai.</div>
-        <div class="card-footer"><span class="card-episodes">24 episodes · 12 min</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- HUIT.AI SECTION -->
-<div class="huit-section" id="about">
-  <div class="huit-inner">
-    <div>
-      <div class="huit-tag">Powered by Huit.ai</div>
-      <h2 class="huit-title">The Platform Behind<br/><em>The Channel</em></h2>
-      <p class="huit-body">The Equity Network is built on <strong>Huit.ai</strong> — the mortgage intelligence platform with 7 years of federal HMDA data, AI-powered recruiting, and the CRM built exclusively for mortgage professionals.</p>
-      <p class="huit-body">Every show on this network is powered by the same data infrastructure that runs Huit.ai's CRMEX, APEX, and HMDA intelligence products.</p>
-      <a class="btn-primary" href="https://huit.ai" target="_blank" style="margin-top:8px;">Explore Huit.ai →</a>
-    </div>
-    <div class="huit-features">
-      <div class="huit-feature">
-        <div class="huit-feature-name">CRMEX</div>
-        <div class="huit-feature-desc">Mortgage CRM built exclusively for loan officers — pipeline, contacts, compliance</div>
-      </div>
-      <div class="huit-feature">
-        <div class="huit-feature-name">APEX</div>
-        <div class="huit-feature-desc">AI recruiting intelligence — 16-factor scoring, HMDA-driven candidate research</div>
-      </div>
-      <div class="huit-feature">
-        <div class="huit-feature-name">HMDA Intelligence</div>
-        <div class="huit-feature-desc">7 years of federal mortgage data — 2017 through 2024 — market analysis and reporting</div>
-      </div>
-      <div class="huit-feature">
-        <div class="huit-feature-name">HuitSign</div>
-        <div class="huit-feature-desc">Document management and e-signature built for the mortgage workflow</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand">The <span>Equity</span> Network</div>
-      <div class="footer-tag">THEEQUITYNETWORK.TV · A HUIT.AI MEDIA PROPERTY</div>
-    </div>
-    <ul class="footer-links">
-      <li><a href="#shows">Shows</a></li>
-      <li><a href="https://huit.ai" target="_blank">Huit.ai</a></li>
-      <li><a href="https://www.linkedin.com/in/derekhuit" target="_blank">LinkedIn</a></li>
-    </ul>
-    <div class="footer-copy">Build Wealth · Build Knowledge · Build Home</div>
-  </div>
-</footer>
+</div><!-- /container -->
 
 <script>
-// ── LIVE FRED DATA via /api/fred ──
-let R = { r30:5.98, r30p:6.01, r15:5.21, t10:4.28, t10p:4.31, t2:4.01, ff:4.33, spread:1.70, hist30:[], yieldCurve:'Normal', t10t2spread:0.27, isLive:false };
+// ── COUNTDOWN ──────────────────────────────────────────────
+const LAUNCH = new Date('2026-09-01T00:00:00Z');
 
-async function loadData(){
-  try{
-    const d = await (await fetch('/api/fred')).json();
-    R.r30=d.r30; R.r30p=d.r30p; R.r15=d.r15;
-    R.t10=d.t10; R.t10p=d.t10p; R.t2=d.t2; R.ff=d.ff;
-    R.spread=d.spread; R.yieldCurve=d.yieldCurve; R.t10t2spread=d.t10t2spread;
-    R.hist30=d.hist30||[]; R.isLive=d.live;
-  }catch(e){console.warn('FRED fallback:',e.message);}
-  render();
+function pad(n, w=2) { return String(n).padStart(w, '0'); }
+
+function tick() {
+  const now = new Date();
+  const diff = Math.max(0, LAUNCH - now);
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = pad(d, 3);
+  document.getElementById('cd-hours').textContent = pad(h);
+  document.getElementById('cd-mins').textContent = pad(m);
+  document.getElementById('cd-secs').textContent = pad(s);
 }
 
-function fmt(n,d=2){ return typeof n==='number'?n.toFixed(d):'—'; }
-function chg(now,prev,invert=false){ const d=(now-prev).toFixed(2); const isUp=invert?d<0:d>0; const cls=d==0?'':(isUp?'up':'dn'); return`<span class="${cls}">${parseFloat(d)>0?'▲ +':parseFloat(d)<0?'▼ ':''}`+Math.abs(d)+`%</span>`; }
-function set(id,v){ const e=document.getElementById(id); if(e)e.textContent=v; }
-function html(id,v){ const e=document.getElementById(id); if(e)e.innerHTML=v; }
+tick();
+setInterval(tick, 1000);
 
-function render(){
-  const spread=R.spread!=null?fmt(R.spread):fmt(R.r30-R.t10);
-  const curve=R.yieldCurve||'Normal';
-
-  // Hero card
-  set('hero-r30',fmt(R.r30)+'%'); html('hero-r30-chg',chg(R.r30,R.r30p,true));
-  set('hero-t10',fmt(R.t10)+'%'); html('hero-t10-chg',chg(R.t10,R.t10p,true));
-  set('hero-r15',fmt(R.r15)+'%'); set('hero-ff',fmt(R.ff)+'%');
-  set('hero-t2',fmt(R.t2)+'%'); set('hero-spread','+'+spread+'%');
-  set('hero-curve',curve);
-  set('rate-source',`Source: FRED · Federal Reserve Bank of St. Louis · ${R.isLive?'Live':'Fallback data'}`);
-
-  // Data bar
-  set('db-r30',fmt(R.r30)+'%'); html('db-r30-chg',chg(R.r30,R.r30p,true));
-  set('db-t10',fmt(R.t10)+'%'); html('db-t10-chg',chg(R.t10,R.t10p,true));
-  set('db-ff',fmt(R.ff)+'%'); html('db-ff-chg',chg(R.ff,R.ff,false));
-  set('db-spread','+'+spread+'%');
-  set('db-spread-sub',parseFloat(spread)>2?'Above Historical Norm':'Within Norm');
-  set('db-curve',curve);
-  set('db-curve-sub',R.t10>R.t2?`T10-T2: +${(R.t10-R.t2).toFixed(2)}%`:`T10-T2: ${(R.t10-R.t2).toFixed(2)}%`);
-
-  // Ticker (all instances)
-  ['t-r30','t-r30b'].forEach(id=>set(id,fmt(R.r30)+'%'));
-  ['t-r15','t-r15b'].forEach(id=>set(id,fmt(R.r15)+'%'));
-  ['t-t10','t-t10b'].forEach(id=>set(id,fmt(R.t10)+'%'));
-  ['t-ff','t-ffb'].forEach(id=>set(id,fmt(R.ff)+'%'));
-  ['t-t2','t-t2b'].forEach(id=>set(id,fmt(R.t2)+'%'));
-  ['t-spread','t-spreadb'].forEach(id=>set(id,'+'+spread+'%'));
-  ['t-curve','t-curveb'].forEach(id=>set(id,curve));
-
-  // Mini sparkline chart
-  if(R.hist30.length>1){
-    const W=460,H=60,P=6;
-    const mx=Math.max(...R.hist30),mn=Math.min(...R.hist30),rng=mx-mn||0.5;
-    const pw=(W-P*2)/(R.hist30.length-1);
-    const pts=R.hist30.map((v,i)=>`${(P+i*pw).toFixed(1)},${(P+(1-(v-mn)/rng)*(H-P*2)).toFixed(1)}`).join(' ');
-    document.getElementById('hero-chart').innerHTML=`
-      <polyline points="${pts}" fill="none" stroke="rgba(201,168,76,0.6)" stroke-width="1.5" stroke-linejoin="round"/>
-      <circle cx="${(P+(R.hist30.length-1)*pw).toFixed(1)}" cy="${(P+(1-(R.hist30[R.hist30.length-1]-mn)/rng)*(H-P*2)).toFixed(1)}" r="3" fill="var(--gold)"/>
-    `;
-  }
+// ── EMAIL CAPTURE ──────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('email-input').value;
+  if (!email) return;
+  document.getElementById('capture-form').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+  // In production: POST to /api/waitlist
+  console.log('Waitlist signup:', email);
 }
-
-render();
-loadData();
 </script>
-
-<!-- ═══════════════════════════════════════════════════════════
-     EQUITY NETWORK — AI NEWS TICKER + MODAL
-     Source: /api/news (Claude + web search, 2hr cache)
-═══════════════════════════════════════════════════════════ -->
-<style>
-/* ── NEWS TICKER BAR ───────────────────────── */
-#news-bar{
-  position:fixed;bottom:0;left:0;right:0;z-index:500;
-  height:48px;background:rgba(4,8,18,0.97);
-  border-top:1px solid rgba(59,130,246,0.15);
-  display:flex;align-items:center;
-  font-family:'DM Mono',monospace;
-}
-.news-badge{
-  flex-shrink:0;display:flex;align-items:center;gap:9px;
-  padding:0 21px 0 24px;border-right:1px solid rgba(59,130,246,0.15);
-  font-size:12px;letter-spacing:2.5px;color:#3B82F6;white-space:nowrap;
-}
-.news-dot{width:8px;height:8px;border-radius:50%;background:#3B82F6;animation:newsPulse 2.5s ease-in-out infinite;}
-@keyframes newsPulse{0%,100%{opacity:1}50%{opacity:0.2}}
-.news-ai-tag{
-  flex-shrink:0;font-size:10px;letter-spacing:1.5px;color:rgba(59,130,246,0.45);
-  padding:0 18px;border-right:1px solid rgba(59,130,246,0.08);white-space:nowrap;
-}
-.news-track{flex:1;overflow:hidden;cursor:pointer;position:relative;}
-.news-track::before{content:'';position:absolute;left:0;top:0;bottom:0;width:30px;background:linear-gradient(to right,rgba(4,8,18,0.97),transparent);z-index:1;pointer-events:none;}
-.news-track::after{content:'';position:absolute;right:0;top:0;bottom:0;width:30px;background:linear-gradient(to left,rgba(4,8,18,0.97),transparent);z-index:1;pointer-events:none;}
-.news-scroll{display:inline-flex;white-space:nowrap;animation:newsRun 80s linear infinite;}
-.news-scroll:hover{animation-play-state:paused;}
-.news-item{
-  display:inline-flex;align-items:center;gap:15px;padding:0 42px;
-  font-size:15px;color:rgba(244,241,235,0.7);border-right:1px solid rgba(255,255,255,0.04);
-  transition:color 0.2s;cursor:pointer;
-}
-.news-item:hover{color:rgba(244,241,235,1);}
-.news-item .n-cat{
-  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:1px;
-  background:rgba(59,130,246,0.15);color:rgba(59,130,246,0.8);flex-shrink:0;
-}
-.news-item .n-cat.high{background:rgba(239,68,68,0.12);color:rgba(239,68,68,0.8);}
-.news-item .n-cat.medium{background:rgba(245,158,11,0.12);color:rgba(245,158,11,0.7);}
-.news-item .n-cat.low{background:rgba(16,185,129,0.12);color:rgba(16,185,129,0.7);}
-.news-item .n-num{font-size:12px;color:rgba(59,130,246,0.35);flex-shrink:0;}
-@keyframes newsRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-/* ── NEWS MODAL ────────────────────────────── */
-#news-overlay{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(2,6,14,0.82);backdrop-filter:blur(8px);
-  opacity:0;pointer-events:none;transition:opacity 0.25s;
-  display:flex;align-items:flex-end;justify-content:center;
-}
-@media(min-width:640px){
-  #news-overlay{align-items:center;}
-}
-#news-overlay.open{opacity:1;pointer-events:all;}
-#news-modal{
-  background:#070F1D;border:1px solid rgba(59,130,246,0.2);
-  width:100%;max-width:680px;
-  border-radius:8px 8px 0 0;
-  transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.22,1,0.36,1);
-  position:relative;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
-}
-@media(min-width:640px){
-  #news-modal{
-    border-radius:6px;
-    transform:translateY(20px) scale(0.97);
-    max-height:80vh;
-    transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),opacity 0.3s;
-    opacity:0;
-  }
-  #news-overlay.open #news-modal{transform:translateY(0) scale(1);opacity:1;}
-}
-#news-overlay.open #news-modal{transform:translateY(0);}
-
-/* Modal drag handle (mobile) */
-.modal-handle{
-  width:36px;height:3px;background:rgba(255,255,255,0.1);
-  border-radius:2px;margin:10px auto 0;flex-shrink:0;
-}
-@media(min-width:640px){.modal-handle{display:none;}}
-
-/* Modal header */
-.modal-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 24px 12px;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;
-}
-.modal-header-left{display:flex;align-items:center;gap:10px;}
-.modal-story-num{
-  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
-  color:rgba(59,130,246,0.6);
-}
-.modal-category{
-  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;
-  padding:2px 8px;border-radius:2px;text-transform:uppercase;
-}
-.modal-close{
-  width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);color:rgba(138,149,163,0.7);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:14px;transition:all 0.2s;flex-shrink:0;
-}
-.modal-close:hover{background:rgba(255,255,255,0.1);color:var(--white);}
-
-/* Modal body */
-.modal-body{padding:20px 24px 16px;overflow-y:auto;flex:1;}
-.modal-headline{
-  font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,24px);
-  font-weight:900;line-height:1.2;color:rgba(244,241,235,0.95);
-  margin-bottom:14px;
-}
-.modal-summary{
-  font-size:14px;color:rgba(138,149,163,0.85);line-height:1.75;margin-bottom:16px;
-}
-.modal-meta{
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;
-  color:rgba(138,149,163,0.4);padding-top:14px;
-  border-top:1px solid rgba(255,255,255,0.05);
-}
-.modal-source-link{
-  display:inline-flex;align-items:center;gap:6px;
-  color:rgba(59,130,246,0.7);text-decoration:none;font-size:9px;
-  letter-spacing:1px;padding:5px 12px;border:1px solid rgba(59,130,246,0.2);
-  border-radius:2px;transition:all 0.2s;margin-top:2px;
-}
-.modal-source-link:hover{color:rgba(59,130,246,1);border-color:rgba(59,130,246,0.5);background:rgba(59,130,246,0.05);}
-
-/* Modal nav */
-.modal-nav{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 24px 16px;border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0;
-  gap:12px;
-}
-.modal-nav-btn{
-  display:flex;align-items:center;gap:7px;cursor:pointer;
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;
-  color:rgba(138,149,163,0.5);padding:7px 14px;border:1px solid rgba(255,255,255,0.06);
-  border-radius:2px;background:transparent;transition:all 0.2s;text-transform:uppercase;
-}
-.modal-nav-btn:hover:not(:disabled){color:rgba(244,241,235,0.8);border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);}
-.modal-nav-btn:disabled{opacity:0.25;cursor:default;}
-.modal-nav-dots{display:flex;gap:5px;align-items:center;}
-.modal-nav-dot{
-  width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.12);
-  cursor:pointer;transition:all 0.2s;
-}
-.modal-nav-dot.active{background:rgba(59,130,246,0.7);width:14px;border-radius:3px;}
-.modal-nav-dot:hover:not(.active){background:rgba(255,255,255,0.25);}
-
-/* AI attribution footer */
-.modal-ai-footer{
-  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;
-  color:rgba(138,149,163,0.25);padding:8px 24px;flex-shrink:0;
-  border-top:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;gap:6px;
-}
-.modal-ai-footer::before{content:'◆';font-size:7px;}
-
-/* Loading state */
-.news-loading .news-item{color:rgba(255,255,255,0.3);}
-
-/* Urgency dot on headline */
-.urgency-dot{
-  width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:1px;
-  display:inline-block;margin-right:6px;
-}
-.urgency-dot.high{background:#EF4444;}
-.urgency-dot.medium{background:#F59E0B;}
-.urgency-dot.low{background:#10B981;}
-</style>
-
-<!-- News Ticker Bar -->
-<div id="news-bar">
-  <div class="news-badge"><div class="news-dot"></div>NEWS</div>
-  <div class="news-ai-tag">AI · LIVE</div>
-  <div class="news-track" id="newsTrack">
-    <div class="news-scroll" id="newsScroll">
-      <!-- populated by JS -->
-      <span class="news-item"><span class="n-cat medium">Loading</span><span>Fetching latest housing news…</span></span>
-      <span class="news-item"><span class="n-cat low">FRED</span><span>Live mortgage rate data active</span></span>
-      <span class="news-item"><span class="n-cat medium">Loading</span><span>Fetching latest housing news…</span></span>
-      <span class="news-item"><span class="n-cat low">FRED</span><span>Live mortgage rate data active</span></span>
-    </div>
-  </div>
-</div>
-
-<!-- News Modal Overlay -->
-<div id="news-overlay" role="dialog" aria-modal="true" aria-label="News Story">
-  <div id="news-modal">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <span class="modal-story-num" id="mStoryNum">STORY 1 OF 10</span>
-        <span class="modal-category" id="mCat" style="background:rgba(59,130,246,0.12);color:rgba(59,130,246,0.8);">Market</span>
-      </div>
-      <button class="modal-close" id="mClose" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <h2 class="modal-headline" id="mHeadline">Loading…</h2>
-      <p class="modal-summary" id="mSummary"></p>
-      <div class="modal-meta">
-        <span id="mSource"></span>
-        <a href="#" id="mLink" class="modal-source-link" target="_blank" rel="noopener" style="display:none;">READ FULL STORY →</a>
-      </div>
-    </div>
-    <div class="modal-nav">
-      <button class="modal-nav-btn" id="mPrev" disabled>← PREV</button>
-      <div class="modal-nav-dots" id="mDots"></div>
-      <button class="modal-nav-btn" id="mNext">NEXT →</button>
-    </div>
-    <div class="modal-ai-footer" id="mFooter">Powered by Claude AI · The Equity Network · Updated every 2 hours</div>
-  </div>
-</div>
-
-<script>
-(function(){
-  var stories = [];
-  var currentIdx = 0;
-  var overlay = document.getElementById('news-overlay');
-  var modal   = document.getElementById('news-modal');
-
-  // Category colors
-  var catColors = {
-    Rates:        ['rgba(201,168,76,0.12)','rgba(201,168,76,0.8)'],
-    Market:       ['rgba(59,130,246,0.12)','rgba(59,130,246,0.8)'],
-    Construction: ['rgba(16,185,129,0.12)','rgba(16,185,129,0.8)'],
-    Policy:       ['rgba(139,92,246,0.12)','rgba(139,92,246,0.8)'],
-    Regulation:   ['rgba(236,72,153,0.12)','rgba(236,72,153,0.8)'],
-    Affordability:['rgba(249,115,22,0.12)','rgba(249,115,22,0.8)'],
-    Programs:     ['rgba(6,182,212,0.12)','rgba(6,182,212,0.8)'],
-    Forecast:     ['rgba(168,85,247,0.12)','rgba(168,85,247,0.8)'],
-    Inventory:    ['rgba(16,185,129,0.12)','rgba(16,185,129,0.8)'],
-    Economy:      ['rgba(239,68,68,0.12)','rgba(239,68,68,0.8)'],
-  };
-
-  function catStyle(cat){ return catColors[cat]||catColors.Market; }
-
-  // Build ticker HTML from stories
-  function buildTicker(data){
-    stories = data;
-    var items = '';
-    for(var i=0;i<data.length;i++){
-      var s=data[i];
-      var cs=catStyle(s.category);
-      var urgClass=s.urgency||'medium';
-      items+='<span class="news-item" data-idx="'+i+'">'
-        +'<span class="n-num">'+(i+1).toString().padStart(2,'0')+'</span>'
-        +'<span class="n-cat '+urgClass+'" style="background:'+cs[0]+';color:'+cs[1]+'">'
-        +s.category+'</span>'
-        +'<span class="urgency-dot '+urgClass+'"></span>'
-        +escHtml(s.headline)
-        +'</span>';
-    }
-    // Duplicate for seamless scroll
-    var scroll=document.getElementById('newsScroll');
-    if(scroll){ scroll.innerHTML=items+items; }
-
-    // Bind click on track
-    document.getElementById('newsTrack').addEventListener('click', function(e){
-      var item = e.target.closest('.news-item');
-      if(item){ openModal(parseInt(item.getAttribute('data-idx')||'0')); }
-    });
-  }
-
-  function escHtml(s){
-    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function openModal(idx){
-    currentIdx=idx;
-    renderModal();
-    overlay.classList.add('open');
-    document.body.style.overflow='hidden';
-    // Focus close button for accessibility
-    setTimeout(function(){ document.getElementById('mClose').focus(); }, 100);
-  }
-
-  function closeModal(){
-    overlay.classList.remove('open');
-    document.body.style.overflow='';
-  }
-
-  function renderModal(){
-    if(!stories.length)return;
-    var s=stories[currentIdx];
-    var cs=catStyle(s.category);
-
-    document.getElementById('mStoryNum').textContent='STORY '+(currentIdx+1)+' OF '+stories.length;
-    var catEl=document.getElementById('mCat');
-    catEl.textContent=s.category;
-    catEl.style.background=cs[0]; catEl.style.color=cs[1];
-
-    document.getElementById('mHeadline').textContent=s.headline||'';
-    document.getElementById('mSummary').textContent=s.summary||'';
-
-    var srcEl=document.getElementById('mSource');
-    srcEl.textContent=s.source?'Source: '+s.source:'';
-
-    var linkEl=document.getElementById('mLink');
-    if(s.url&&s.url.startsWith('http')){
-      linkEl.href=s.url;
-      linkEl.style.display='inline-flex';
-    } else {
-      linkEl.style.display='none';
-    }
-
-    // Dots
-    var dotsEl=document.getElementById('mDots');
-    dotsEl.innerHTML='';
-    for(var i=0;i<stories.length;i++){
-      var d=document.createElement('div');
-      d.className='modal-nav-dot'+(i===currentIdx?' active':'');
-      d.setAttribute('data-i',i);
-      d.onclick=(function(ii){return function(){openModal(ii);};})(i);
-      dotsEl.appendChild(d);
-    }
-
-    document.getElementById('mPrev').disabled=(currentIdx===0);
-    document.getElementById('mNext').disabled=(currentIdx===stories.length-1);
-  }
-
-  // Close handlers
-  document.getElementById('mClose').addEventListener('click',closeModal);
-  overlay.addEventListener('click',function(e){ if(e.target===overlay)closeModal(); });
-  document.addEventListener('keydown',function(e){
-    if(!overlay.classList.contains('open'))return;
-    if(e.key==='Escape')closeModal();
-    if(e.key==='ArrowLeft'&&currentIdx>0){currentIdx--;renderModal();}
-    if(e.key==='ArrowRight'&&currentIdx<stories.length-1){currentIdx++;renderModal();}
-  });
-
-  document.getElementById('mPrev').addEventListener('click',function(){
-    if(currentIdx>0){currentIdx--;renderModal();}
-  });
-  document.getElementById('mNext').addEventListener('click',function(){
-    if(currentIdx<stories.length-1){currentIdx++;renderModal();}
-  });
-
-  // Touch swipe on modal body
-  var touchStartX=0;
-  modal.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX;},{passive:true});
-  modal.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-touchStartX;
-    if(Math.abs(dx)>50){
-      if(dx<0&&currentIdx<stories.length-1){currentIdx++;renderModal();}
-      if(dx>0&&currentIdx>0){currentIdx--;renderModal();}
-    }
-  });
-
-  // Adjust body padding for news bar
-  document.body.style.paddingBottom='48px';
-
-  // Fetch news
-  fetch('/api/news')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d.stories&&d.stories.length){
-        buildTicker(d.stories);
-        var footer=document.getElementById('mFooter');
-        if(footer){
-          footer.textContent=(d.fallback?'Fallback data':'Powered by Claude AI')
-            +' · The Equity Network · '
-            +(d.fetchedAt?'Updated '+d.fetchedAt.slice(0,10):'');
-        }
-      }
-    })
-    .catch(function(e){console.warn('News fetch error:',e);});
-})();
-</script>
-<!-- ═══════════════════════════════════════════════════════════ -->
-
 </body>
 </html>
